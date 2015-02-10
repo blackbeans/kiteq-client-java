@@ -12,6 +12,6 @@ public interface KiteQPublisher {
     
     SendResult sendMessage(Message message);
     
-    SendResult sendMessage(Message message, SendMessageCallBack executor);
+    SendResult sendMessage(Message message, SendMessageCallback callback);
 
 }

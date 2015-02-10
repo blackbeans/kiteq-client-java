@@ -11,6 +11,10 @@ public class MessageStatus {
     private TxnStatus status;
     private String reason;
     
+    public void rollback() {
+        this.status = TxnStatus.ROLLBACK;
+    }
+    
     public TxnStatus getStatus() {
         return status;
     }

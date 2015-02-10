@@ -1,4 +1,4 @@
-package com.immomo.kiteq.commons.util;
+package org.kiteq.commons.util;
 
 import java.util.Map;
 

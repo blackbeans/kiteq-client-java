@@ -13,6 +13,7 @@ import org.kiteq.commons.message.Message;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.remoting.client.InnerSendResult;
 import org.kiteq.remoting.client.KiteQIOClient;
+import org.kiteq.remoting.client.handler.NettyClientHandler;
 
 /**
  * @author gaofeihang
@@ -20,34 +21,38 @@ import org.kiteq.remoting.client.KiteQIOClient;
  */
 public class NettyKiteQIOClient implements KiteQIOClient {
     
+    private EventLoopGroup workerGroup;
+    private ChannelFuture chnaChannelFuture;
+    
     public NettyKiteQIOClient(String serverUrl) throws Exception {
         
         HostPort hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        
+        workerGroup = new NioEventLoopGroup();
+        
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(workerGroup);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new NettyClientHandler());
+            }
+        });
 
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(workerGroup);
-            b.channel(NioSocketChannel.class);
-            b.option(ChannelOption.SO_KEEPALIVE, true);
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-//                    ch.pipeline().addLast(new TimeClientHandler());
-                }
-            });
-
-            ChannelFuture f = b.connect(hostPort.getHost(), hostPort.getPort()).sync();
-
-            f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-        }
+        chnaChannelFuture = bootstrap
+                .connect(hostPort.getHost(), hostPort.getPort()).sync();
+    }
+    
+    @Override
+    public void shutdown() {
+        workerGroup.shutdownGracefully();
     }
 
     @Override
     public InnerSendResult sendWithSync(Message message, long timeout) {
-        // TODO Auto-generated method stub
+        chnaChannelFuture.channel().write(message);
         return null;
     }
 

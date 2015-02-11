@@ -11,5 +11,7 @@ public interface KiteQIOClient {
     InnerSendResult sendWithSync(Message message, long timeout);
     
     boolean isConnectted();
+    
+    void shutdown();
 
 }

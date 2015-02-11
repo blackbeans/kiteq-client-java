@@ -15,7 +15,7 @@
         </dependency>
         <dependency>
             <groupId>org.kiteq</groupId>
-            <artifactId>kiteq-protocol</artifactId>
+            <artifactId>kiteq-remoting</artifactId>
         </dependency>
 
         <dependency>

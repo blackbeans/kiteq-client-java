@@ -3,4 +3,4 @@
 
 ### Development
 
-    git clone https://github.com/gaofeihang/kiteq-java.git kiteq
+    git clone https://github.com/blackbeans/kiteq-client-java.git kiteq

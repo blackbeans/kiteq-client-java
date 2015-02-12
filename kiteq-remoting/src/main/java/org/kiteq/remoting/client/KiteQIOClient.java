@@ -8,6 +8,8 @@ import org.kiteq.commons.message.Message;
  */
 public interface KiteQIOClient {
     
+    boolean handshake();
+    
     InnerSendResult sendWithSync(Message message, long timeout);
     
     boolean isConnectted();

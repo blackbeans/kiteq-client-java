@@ -1,4 +1,4 @@
-package org.kiteq.remoting.client.codec;
+package org.kiteq.remoting.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

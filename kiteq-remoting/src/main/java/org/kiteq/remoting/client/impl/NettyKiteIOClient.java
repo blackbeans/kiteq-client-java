@@ -14,11 +14,14 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.client.KiteIOClient;
-import org.kiteq.remoting.client.codec.KiteDecoder;
-import org.kiteq.remoting.client.codec.KiteEncoder;
 import org.kiteq.remoting.client.handler.KiteClientHandler;
-import org.kiteq.remoting.frame.KiteResponse;
-import org.kiteq.remoting.frame.ResponsFuture;
+import org.kiteq.remoting.codec.KiteDecoder;
+import org.kiteq.remoting.codec.KiteEncoder;
+import org.kiteq.remoting.listener.KiteListener;
+import org.kiteq.remoting.listener.ListenerManager;
+import org.kiteq.remoting.response.KiteResponse;
+import org.kiteq.remoting.response.ResponsFuture;
+import org.kiteq.remoting.utils.ChannelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +75,7 @@ public class NettyKiteIOClient implements KiteIOClient {
     public KitePacket sendPacket(KitePacket reqPacket) {
         
         Channel channel = channelFuture.channel();
-        ResponsFuture future = new ResponsFuture(channel.hashCode());
+        ResponsFuture future = new ResponsFuture(ChannelUtils.getChannelId(channel));
         
         ChannelFuture writeFuture = channel.write(reqPacket);
         
@@ -95,6 +98,12 @@ public class NettyKiteIOClient implements KiteIOClient {
         }
         
         return null;
+    }
+    
+    @Override
+    public void registerListener(KiteListener listener) {
+        Channel channel = channelFuture.channel();
+        ListenerManager.register(ChannelUtils.getChannelId(channel), listener);
     }
 
     @Override

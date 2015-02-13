@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.kiteq.client.KitePublisher;
 import org.kiteq.client.KiteSubscriber;
 import org.kiteq.client.message.MessageListener;
+import org.kiteq.client.message.MessageStatus;
 import org.kiteq.client.message.SendMessageCallback;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.util.MessageUtils;
@@ -17,6 +18,7 @@ import org.kiteq.protocol.Protocol;
 import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
+import org.kiteq.remoting.listener.KiteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +36,8 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
     
     private String groupId;
     private String secretKey = "secretKey";
+    
+    private MessageListener messageListener;
 
     public DefaultKiteClient(String groupId) {
         this.groupId = groupId;
@@ -47,6 +51,18 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
                     connMap.put(serverUrl, kiteIOClient);
                     logger.warn("client connection created: {}", serverUrl);
                 }
+                
+                kiteIOClient.registerListener(new KiteListener() {
+                    
+                    @Override
+                    public void packetReceived(KitePacket packet) {
+                        if (messageListener != null) {
+                            Message message = MessageUtils.unpackMessage(packet);
+                            MessageStatus status = new MessageStatus();
+                            messageListener.receiveMessage(message, status);
+                        }
+                    }
+                });
             } catch (Exception e) {
                 logger.error("client connection error: {}", serverUrl);
             }
@@ -120,8 +136,7 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
 
     @Override
     public void setMessageListener(MessageListener messageListener) {
-        // TODO Auto-generated method stub
-
+        this.messageListener = messageListener;
     }
 
 }

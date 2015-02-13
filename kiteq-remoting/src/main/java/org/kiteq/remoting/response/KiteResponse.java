@@ -1,4 +1,4 @@
-package org.kiteq.remoting.frame;
+package org.kiteq.remoting.response;
 
 import org.kiteq.protocol.packet.KitePacket;
 
@@ -10,10 +10,6 @@ public class KiteResponse {
     
     private String requestId;
     private KitePacket packet;
-    
-    public KiteResponse(long requestId, KitePacket packet) {
-        this(String.valueOf(requestId), packet);
-    }
     
     public KiteResponse(String requestId, KitePacket packet) {
         this.requestId = requestId;

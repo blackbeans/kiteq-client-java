@@ -1,4 +1,4 @@
-package org.kiteq.remoting.frame;
+package org.kiteq.remoting.response;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,22 +23,16 @@ public class ResponsFuture implements Future<KiteResponse> {
     
     private volatile KiteResponse response;
     
-    public ResponsFuture(long requestId) {
-        futureMap.put(String.valueOf(requestId), this);
-    }
-    
     public ResponsFuture(String requestId) {
         futureMap.put(requestId, this);
     }
     
-    public static boolean receiveResponse(KiteResponse response) {
+    public static void receiveResponse(KiteResponse response) {
         String requestId = response.getRequestId();
         ResponsFuture future = futureMap.remove(requestId);
         if (future != null) {
             future.setResponse(response);
-            return true;
         }
-        return false;
     }
     
     public void setResponse(KiteResponse response) {

@@ -70,7 +70,7 @@ public class ResponsFuture implements Future<KiteResponse> {
         
         try {
             lock.lock();
-            condition.wait();
+            condition.await();
             return response;
         } finally {
             lock.unlock();

@@ -1,36 +1,58 @@
 package org.kiteq.remoting.client.codec;
 
-import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+
+import org.kiteq.commons.util.ByteArrayUtils;
+import org.kiteq.protocol.packet.KitePacket;
+import org.kiteq.remoting.utils.ByteBufUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author gaofeihang
  * @since Feb 5, 2015
  */
-public class KiteDecoder extends DelimiterBasedFrameDecoder {
+public class KiteDecoder extends LengthFieldBasedFrameDecoder {
+    
+    private static final Logger logger = LoggerFactory.getLogger(KiteDecoder.class);
     
     private static final int MAX_LENGTH = Integer.MAX_VALUE;
-    private static final ByteBuf[] DELIMITERS = Delimiters.lineDelimiter();
 
     public KiteDecoder() {
-        super(MAX_LENGTH, DELIMITERS);
+        super(MAX_LENGTH, 5, 4);
     }
     
     @Override
-    protected Object decode(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
+    protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         
-        ByteBuf buf = (ByteBuf) super.decode(ctx, buffer);
-        byte[] data = new byte[buf.readableBytes()];
-        buf.readBytes(data);
-        buf.release();
+        logger.debug("receive hex: {}", ByteArrayUtils.hexDump(ByteBufUtils.toByteArray(in)));
         
-        ConnAuthAck connAuthAck = ConnAuthAck.parseFrom(data);
+        skipCLRF(in);
         
-        return connAuthAck;
+        ByteBuf buf = (ByteBuf) super.decode(ctx, in);
+        
+        if (buf == null) {
+            return buf;
+        }
+        
+        return KitePacket.parseFrom(buf);
+    }
+    
+    private void skipCLRF(ByteBuf buffer) {
+        
+        if (buffer.readableBytes() < 2) {
+            return;
+        }
+        
+        buffer.markReaderIndex();
+        byte[] skipBytes = new byte[2];
+        buffer.readBytes(skipBytes);
+        
+        if (skipBytes[0] != '\r' || skipBytes[1] != '\n') {
+            buffer.resetReaderIndex();
+        }
     }
 
 }

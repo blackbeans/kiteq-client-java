@@ -1,11 +1,14 @@
 package org.kiteq.remoting.client.handler;
 
-import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
+import org.kiteq.protocol.packet.KitePacket;
+import org.kiteq.remoting.frame.KiteResponse;
+import org.kiteq.remoting.frame.ResponsFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author gaofeihang
@@ -18,9 +21,14 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         
-        if (msg instanceof ConnAuthAck) {
-            ConnAuthAck connAuthAck = (ConnAuthAck) msg;
-            logger.warn("Conn ack received: {}", connAuthAck.toString());
+        if (msg instanceof KitePacket) {
+            KitePacket packet = (KitePacket) msg;
+            
+            Channel channel = ctx.channel();
+            KiteResponse response = new KiteResponse(channel.hashCode(), packet);
+            ResponsFuture.receiveResponse(response);
+            
+            logger.debug("receive packet - cmdType: {}", packet.getCmdType());
         }
         
     }

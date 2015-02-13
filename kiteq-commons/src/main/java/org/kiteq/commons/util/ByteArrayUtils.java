@@ -7,6 +7,21 @@ package org.kiteq.commons.util;
 public class ByteArrayUtils {
     
     private static final char[] HEX_CHAR =  new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    
+    public static String hexDump(byte[] bytes) {
+        
+        if (bytes == null) {
+            return null;
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        
+        for (byte b : bytes) {
+            sb.append(getHexString(b)).append(' ');
+        }
+
+        return sb.toString();
+    }
 
     public static String prettyPrint(byte[] bytes) {
         
@@ -23,7 +38,7 @@ public class ByteArrayUtils {
                 if (sb.length() != 0 && sb.charAt(sb.length() - 1) != ' ') {
                     sb.append(' ');
                 }
-                sb.append(getHexString(b)).append(' ');;
+                sb.append(getHexString(b)).append(' ');
             }
         }
 

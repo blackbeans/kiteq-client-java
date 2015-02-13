@@ -1,6 +1,6 @@
 package org.kiteq.remoting.client;
 
-import org.kiteq.commons.message.Message;
+import org.kiteq.protocol.packet.KitePacket;
 
 /**
  * @author gaofeihang
@@ -8,12 +8,10 @@ import org.kiteq.commons.message.Message;
  */
 public interface KiteIOClient {
     
-    boolean handshake();
-    
-    InnerSendResult sendWithSync(Message message, long timeout);
+    KitePacket sendPacket(KitePacket packet) throws Exception;
     
     void start() throws Exception;
     
-    void shutdown();
+    void close();
 
 }

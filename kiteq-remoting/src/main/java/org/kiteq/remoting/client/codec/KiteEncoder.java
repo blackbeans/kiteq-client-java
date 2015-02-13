@@ -6,7 +6,9 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.util.List;
 
-import org.kiteq.protocol.KiteRemoting.ConnMeta;
+import org.kiteq.commons.util.ByteArrayUtils;
+import org.kiteq.protocol.packet.KitePacket;
+import org.kiteq.remoting.utils.ByteBufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,25 +18,16 @@ import org.slf4j.LoggerFactory;
  */
 public class KiteEncoder extends MessageToMessageEncoder<Object> {
     
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(KiteEncoder.class);
     
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {
         
-        byte[] src = null;
+        KitePacket packet = (KitePacket) msg;
+        ByteBuf buf = packet.toByteBuf();
+        out.add(buf);
         
-        if (msg instanceof ConnMeta) {
-            ConnMeta connMeta = (ConnMeta) msg;
-            src = connMeta.toByteArray();
-        }
-        
-        if (src != null) {
-            ByteBuf buf = ctx.alloc().buffer(src.length + 2);
-            buf.writeBytes(src);
-            buf.writeBytes(new byte[] { '\r', '\n' });
-            out.add(buf);
-        }
+        logger.debug("encoded hex: {}", ByteArrayUtils.hexDump(ByteBufUtils.toByteArray(buf)));
     }
 
 }

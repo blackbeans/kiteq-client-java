@@ -13,5 +13,7 @@ public interface KiteIOClient {
     void start() throws Exception;
     
     void close();
+    
+    String getServerUrl();
 
 }

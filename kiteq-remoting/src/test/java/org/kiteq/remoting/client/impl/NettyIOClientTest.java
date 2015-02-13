@@ -24,13 +24,13 @@ public class NettyIOClientTest {
     private static final String SECRET_KEY = "s-mts-test";
     private static final String SERVER_URL = "localhost:13800";
     
-    private NettyKiteIOClient kiteQIOClient;
+    private NettyKiteIOClient kiteIOClient;
     
     @Before
     public void init() {
         try {
-            kiteQIOClient = new NettyKiteIOClient(SERVER_URL);
-            kiteQIOClient.start();
+            kiteIOClient = new NettyKiteIOClient(SERVER_URL);
+            kiteIOClient.start();
         } catch (Exception e) {
             logger.error("client init error!", e);
         }
@@ -39,7 +39,7 @@ public class NettyIOClientTest {
     @After
     public void close() {
         ThreadUtils.sleep(3000);
-        kiteQIOClient.close();
+        kiteIOClient.close();
     }
     
     @Test
@@ -50,12 +50,12 @@ public class NettyIOClientTest {
                 .setSecretKey(SECRET_KEY)
                 .build();
                 
-        KitePacket reqPacket = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
-        KitePacket respPacket = kiteQIOClient.sendPacket(reqPacket);
+        KitePacket request = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
+        KitePacket response = kiteIOClient.sendPacket(request);
         
-        ConnAuthAck authAck = ConnAuthAck.parseFrom(respPacket.getData());
+        ConnAuthAck ack = ConnAuthAck.parseFrom(response.getData());
         
-        Assert.assertEquals(true, authAck.getStatus());
+        Assert.assertEquals(true, ack.getStatus());
     }
 
 }

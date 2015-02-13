@@ -27,7 +27,7 @@ public class KiteDecoder extends LengthFieldBasedFrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         
-        logger.debug("receive hex: {}", ByteArrayUtils.hexDump(ByteBufUtils.toByteArray(in)));
+        logger.debug("receive hex: {}", ByteArrayUtils.prettyPrint(ByteBufUtils.toByteArray(in)));
         
         skipCLRF(in);
         

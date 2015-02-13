@@ -16,7 +16,7 @@ public abstract class Message implements Serializable {
     private long expiredTime = -1; // -1 for never expired
     private int deliveryLimit = -1; // -1 for unlimited retry times
     private String groupId;
-    private boolean committed;
+    private boolean commit;
     
     public String getMessageId() {
         return messageId;
@@ -66,19 +66,19 @@ public abstract class Message implements Serializable {
         this.groupId = groupId;
     }
     
-    public boolean isCommitted() {
-        return committed;
+    public boolean isCommit() {
+        return commit;
     }
 
-    public void setCommitted(boolean commited) {
-        this.committed = commited;
+    public void setCommit(boolean commit) {
+        this.commit = commit;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (committed ? 1231 : 1237);
+        result = prime * result + (commit ? 1231 : 1237);
         result = prime * result + deliveryLimit;
         result = prime * result + (int) (expiredTime ^ (expiredTime >>> 32));
         result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
@@ -100,7 +100,7 @@ public abstract class Message implements Serializable {
             return false;
         }
         Message other = (Message) obj;
-        if (committed != other.committed) {
+        if (commit != other.commit) {
             return false;
         }
         if (deliveryLimit != other.deliveryLimit) {

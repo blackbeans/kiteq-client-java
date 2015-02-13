@@ -10,8 +10,6 @@ import org.kiteq.commons.message.Message;
  */
 public interface KitePublisher {
     
-    void addPublishTopic(String groupId, String topic);
-    
     SendResult sendMessage(Message message);
     
     SendResult sendMessage(Message message, SendMessageCallback callback);

@@ -31,12 +31,14 @@ public class ResponsFuture implements Future<KiteResponse> {
         futureMap.put(requestId, this);
     }
     
-    public static void receiveResponse(KiteResponse response) {
+    public static boolean receiveResponse(KiteResponse response) {
         String requestId = response.getRequestId();
-        ResponsFuture future = futureMap.get(requestId);
+        ResponsFuture future = futureMap.remove(requestId);
         if (future != null) {
             future.setResponse(response);
+            return true;
         }
+        return false;
     }
     
     public void setResponse(KiteResponse response) {

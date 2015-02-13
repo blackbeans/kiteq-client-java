@@ -97,4 +97,9 @@ public class NettyKiteIOClient implements KiteIOClient {
         return null;
     }
 
+    @Override
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
 }

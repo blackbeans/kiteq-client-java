@@ -10,7 +10,7 @@ public class SendResult {
     
     private boolean success = true;
     private String messageId;
-    private String errorCode;
+    private String errorMessage;
     
     public boolean isSuccess() {
         return success;
@@ -28,12 +28,12 @@ public class SendResult {
         this.messageId = messageId;
     }
     
-    public String getErrorCode() {
-        return errorCode;
+    public String getErrorMessage() {
+        return errorMessage;
     }
     
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.kiteq.commons.util.JsonUtils;
  * @author gaofeihang
  * @since Feb 10, 2015
  */
-public class ByteMessage extends Message {
+public class BytesMessage extends Message {
 
     private static final long serialVersionUID = 1L;
     
@@ -41,7 +41,7 @@ public class ByteMessage extends Message {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ByteMessage other = (ByteMessage) obj;
+        BytesMessage other = (BytesMessage) obj;
         if (!Arrays.equals(body, other.body)) {
             return false;
         }

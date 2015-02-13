@@ -14,6 +14,9 @@ public class Protocol {
     public static final byte CMD_DELIVER_ACK = 0x05;
     public static final byte CMD_TX_ACK = 0x06;
     
+    public static final byte CMD_BYTES_MESSAGE = 0x11;
+    public static final byte CMD_STRING_MESSAGE = 0x12;
+    
     public static final byte[] CMD_STR_CRLF = new byte[] { '\r', '\n' };
     
     public static final int PACKET_HEAD_LEN = 4 + 1 + 4;

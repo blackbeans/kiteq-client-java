@@ -14,20 +14,24 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author gaofeihang
  * @since Feb 12, 2015
  */
-public class ResponsFuture implements Future<ServerResponse> {
+public class ResponsFuture implements Future<KiteResponse> {
     
     private static Map<String, ResponsFuture> futureMap = new ConcurrentHashMap<String, ResponsFuture>();
     
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
     
-    private volatile ServerResponse response;
+    private volatile KiteResponse response;
+    
+    public ResponsFuture(long requestId) {
+        futureMap.put(String.valueOf(requestId), this);
+    }
     
     public ResponsFuture(String requestId) {
         futureMap.put(requestId, this);
     }
     
-    public static void receiveResponse(ServerResponse response) {
+    public static void receiveResponse(KiteResponse response) {
         String requestId = response.getRequestId();
         ResponsFuture future = futureMap.get(requestId);
         if (future != null) {
@@ -35,7 +39,7 @@ public class ResponsFuture implements Future<ServerResponse> {
         }
     }
     
-    public void setResponse(ServerResponse response) {
+    public void setResponse(KiteResponse response) {
         this.response = response;
         
         try {
@@ -62,7 +66,7 @@ public class ResponsFuture implements Future<ServerResponse> {
     }
 
     @Override
-    public ServerResponse get() throws InterruptedException, ExecutionException {
+    public KiteResponse get() throws InterruptedException, ExecutionException {
         
         try {
             lock.lock();
@@ -74,7 +78,7 @@ public class ResponsFuture implements Future<ServerResponse> {
     }
 
     @Override
-    public ServerResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public KiteResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return null;
     }
 

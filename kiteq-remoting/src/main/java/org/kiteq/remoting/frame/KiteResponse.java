@@ -4,7 +4,7 @@ package org.kiteq.remoting.frame;
  * @author gaofeihang
  * @since Feb 12, 2015
  */
-public class ServerResponse {
+public class KiteResponse {
     
     private String requestId;
     private Object model;

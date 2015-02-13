@@ -1,4 +1,5 @@
-package org.kiteq.client;
+package org.kiteq.client.message;
+
 
 /**
  * @author gaofeihang

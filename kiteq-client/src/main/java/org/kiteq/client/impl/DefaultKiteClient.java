@@ -1,17 +1,17 @@
 package org.kiteq.client.impl;
 
-import org.kiteq.client.KiteQPublisher;
-import org.kiteq.client.KiteQSubscriber;
-import org.kiteq.client.MessageListener;
-import org.kiteq.client.SendMessageCallback;
-import org.kiteq.client.SendResult;
+import org.kiteq.client.KitePublisher;
+import org.kiteq.client.KiteSubscriber;
+import org.kiteq.client.message.SendMessageCallback;
+import org.kiteq.client.message.MessageListener;
+import org.kiteq.client.message.SendResult;
 import org.kiteq.commons.message.Message;
 
 /**
  * @author gaofeihang
  * @since Feb 10, 2015
  */
-public class DefaultKiteQClient implements KiteQPublisher, KiteQSubscriber {
+public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
 
     @Override
     public void addPublishTopic(String groupId, String topic) {

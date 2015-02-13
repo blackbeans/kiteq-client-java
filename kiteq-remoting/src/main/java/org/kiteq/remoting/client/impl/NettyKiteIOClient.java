@@ -14,24 +14,32 @@ import org.kiteq.commons.message.Message;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.protocol.KiteRemoting.ConnMeta;
 import org.kiteq.remoting.client.InnerSendResult;
-import org.kiteq.remoting.client.KiteQIOClient;
-import org.kiteq.remoting.client.handler.NettyClientHandler;
+import org.kiteq.remoting.client.KiteIOClient;
+import org.kiteq.remoting.client.handler.KiteClientHandler;
+import org.kiteq.remoting.frame.ResponsFuture;
+import org.kiteq.remoting.frame.KiteResponse;
 
 /**
  * @author gaofeihang
  * @since Feb 11, 2015
  */
-public class NettyKiteQIOClient implements KiteQIOClient {
+public class NettyKiteIOClient implements KiteIOClient {
+    
     
     private String groupId;
+    private String serverUrl;
     private String secretKey = "secretKey";
     
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
     
-    public NettyKiteQIOClient(String groupId, String serverUrl) throws Exception {
+    public NettyKiteIOClient(String groupId, String serverUrl) {
         this.groupId = groupId;
-        
+        this.serverUrl = serverUrl;
+    }
+    
+    @Override
+    public void start() throws Exception {
         HostPort hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
         
         workerGroup = new NioEventLoopGroup();
@@ -43,12 +51,17 @@ public class NettyKiteQIOClient implements KiteQIOClient {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new NettyClientHandler());
+                ch.pipeline().addLast(new KiteClientHandler());
             }
         });
 
         channelFuture = bootstrap
                 .connect(hostPort.getHost(), hostPort.getPort()).sync();
+    }
+    
+    @Override
+    public void shutdown() {
+        workerGroup.shutdownGracefully();
     }
     
     @Override
@@ -59,8 +72,12 @@ public class NettyKiteQIOClient implements KiteQIOClient {
                 .setSecretKey(secretKey).build();
         
         Channel channel = channelFuture.channel();
+        
+        ResponsFuture future = new ResponsFuture(channel.hashCode());
+        
         channel.write(connMeta);
         channel.flush();
+        
         
         return false;
     }
@@ -69,17 +86,6 @@ public class NettyKiteQIOClient implements KiteQIOClient {
     public InnerSendResult sendWithSync(Message message, long timeout) {
         channelFuture.channel().write(message);
         return null;
-    }
-
-    @Override
-    public boolean isConnectted() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
-    @Override
-    public void shutdown() {
-        workerGroup.shutdownGracefully();
     }
 
 }

@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
  * @author gaofeihang
  * @since Feb 5, 2015
  */
-public class MessageEncoder extends MessageToMessageEncoder<Object> {
+public class KiteEncoder extends MessageToMessageEncoder<Object> {
     
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(MessageEncoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(KiteEncoder.class);
     
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {

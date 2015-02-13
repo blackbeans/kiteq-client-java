@@ -17,12 +17,13 @@ public class NettyIOClientTest {
     private static final String GROUP_ID = "s-mts-test";
     private static final String SERVER_URL = "localhost:13800";
     
-    private NettyKiteQIOClient kiteQIOClient;
+    private NettyKiteIOClient kiteQIOClient;
     
     @Before
     public void init() {
         try {
-            kiteQIOClient = new NettyKiteQIOClient(GROUP_ID, SERVER_URL);
+            kiteQIOClient = new NettyKiteIOClient(GROUP_ID, SERVER_URL);
+            kiteQIOClient.start();
         } catch (Exception e) {
             logger.error("client init error!", e);
         }

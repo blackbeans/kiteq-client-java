@@ -11,9 +11,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author gaofeihang
  * @since Feb 11, 2015
  */
-public class NettyClientHandler extends ChannelInboundHandlerAdapter {
+public class KiteClientHandler extends ChannelInboundHandlerAdapter {
     
-    private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class); 
+    private static final Logger logger = LoggerFactory.getLogger(KiteClientHandler.class); 
     
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {

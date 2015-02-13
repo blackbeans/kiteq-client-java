@@ -11,12 +11,12 @@ import io.netty.handler.codec.Delimiters;
  * @author gaofeihang
  * @since Feb 5, 2015
  */
-public class MessageDecoder extends DelimiterBasedFrameDecoder {
+public class KiteDecoder extends DelimiterBasedFrameDecoder {
     
     private static final int MAX_LENGTH = Integer.MAX_VALUE;
     private static final ByteBuf[] DELIMITERS = Delimiters.lineDelimiter();
 
-    public MessageDecoder() {
+    public KiteDecoder() {
         super(MAX_LENGTH, DELIMITERS);
     }
     

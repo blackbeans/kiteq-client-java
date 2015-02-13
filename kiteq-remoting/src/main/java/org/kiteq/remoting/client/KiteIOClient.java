@@ -6,13 +6,13 @@ import org.kiteq.commons.message.Message;
  * @author gaofeihang
  * @since Feb 11, 2015
  */
-public interface KiteQIOClient {
+public interface KiteIOClient {
     
     boolean handshake();
     
     InnerSendResult sendWithSync(Message message, long timeout);
     
-    boolean isConnectted();
+    void start() throws Exception;
     
     void shutdown();
 

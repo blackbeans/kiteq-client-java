@@ -1,4 +1,4 @@
-package org.kiteq.client;
+package org.kiteq.client.message;
 
 import org.kiteq.commons.message.Message;
 

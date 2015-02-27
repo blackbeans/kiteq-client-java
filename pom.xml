@@ -11,6 +11,7 @@
         <module>kiteq-protocol</module>
         <module>kiteq-remoting</module>
         <module>kiteq-client</module>
+        <module>kiteq-benchmark</module>
     </modules>
 
     <dependencyManagement>
@@ -33,6 +34,11 @@
             <dependency>
                 <groupId>org.kiteq</groupId>
                 <artifactId>kiteq-remoting</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kiteq</groupId>
+                <artifactId>kiteq-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

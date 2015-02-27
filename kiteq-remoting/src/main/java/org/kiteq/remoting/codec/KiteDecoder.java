@@ -37,7 +37,11 @@ public class KiteDecoder extends LengthFieldBasedFrameDecoder {
             return buf;
         }
         
-        return KitePacket.parseFrom(buf);
+        try {
+            return KitePacket.parseFrom(buf);
+        } finally {
+            buf.release();
+        }
     }
     
     private void skipCLRF(ByteBuf buffer) {

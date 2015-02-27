@@ -10,13 +10,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kiteq</groupId>
+            <artifactId>kiteq-commons</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
-        
+
         <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-            </dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
     </dependencies>
 </project>

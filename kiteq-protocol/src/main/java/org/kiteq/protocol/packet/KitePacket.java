@@ -3,6 +3,7 @@ package org.kiteq.protocol.packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import org.kiteq.commons.util.ByteArrayUtils;
 import org.kiteq.protocol.Protocol;
 
 /**
@@ -61,6 +62,11 @@ public class KitePacket {
         buf.readBytes(data);
         
         return new KitePacket(opaque, cmdType, data);
+    }
+    
+    @Override
+    public String toString() {
+        return cmdType + ":" + ByteArrayUtils.prettyPrint(data);
     }
 
 }

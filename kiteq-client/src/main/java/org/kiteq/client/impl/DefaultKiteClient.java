@@ -1,10 +1,10 @@
 package org.kiteq.client.impl;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kiteq.client.KitePublisher;
-import org.kiteq.client.KiteSubscriber;
+import org.kiteq.client.KiteClient;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.MessageStatus;
 import org.kiteq.client.message.SendMessageCallback;
@@ -26,22 +26,33 @@ import org.slf4j.LoggerFactory;
  * @author gaofeihang
  * @since Feb 10, 2015
  */
-public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
+public class DefaultKiteClient implements KiteClient {
     
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
     private static final String[] serverList = new String[] { "localhost:13800" };
 
-    private static Map<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
+    private Map<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
     
+    @SuppressWarnings("unused")
+    private String zkAddr;
     private String groupId;
-    private String secretKey = "secretKey";
-    
-    private MessageListener messageListener;
+    private String secretKey;
+    private MessageListener listener;
 
-    public DefaultKiteClient(String groupId) {
+    public DefaultKiteClient(String zkAddr, String groupId, String secretKey) {
+        this(zkAddr, groupId, secretKey, null);
+    }
+    
+    public DefaultKiteClient(String zkAddr, String groupId, String secretKey, MessageListener listener) {
+        this.zkAddr = zkAddr;
         this.groupId = groupId;
-        
+        this.secretKey = secretKey;
+        this.listener = listener;
+    }
+    
+    @Override
+    public void start() {
         for (String serverUrl : serverList) {
             try {
                 KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUrl);
@@ -56,16 +67,24 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
                     
                     @Override
                     public void packetReceived(KitePacket packet) {
-                        if (messageListener != null) {
+                        if (listener != null) {
                             Message message = MessageUtils.unpackMessage(packet);
                             MessageStatus status = new MessageStatus();
-                            messageListener.receiveMessage(message, status);
+                            listener.receiveMessage(message, status);
                         }
                     }
                 });
             } catch (Exception e) {
                 logger.error("client connection error: {}", serverUrl);
             }
+        }
+    }
+
+    @Override
+    public void close() {
+        for (Entry<String, KiteIOClient> entry : connMap.entrySet()) {
+            KiteIOClient kiteIOClient = entry.getValue();
+            kiteIOClient.close();
         }
     }
     
@@ -81,12 +100,10 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
         
         ConnAuthAck ack = ConnAuthAck.parseFrom(reponse.getData());
         
-        boolean success = ack.getStatus();
-        if (!success) {
-            logger.warn("client handshake failed: {}", kiteIOClient.getServerUrl());
-        }
+        boolean status = ack.getStatus();
+        logger.warn("client handshake - serverUrl: {}, status: {}, feedback: {}", kiteIOClient.getServerUrl(), status, ack.getFeedback());
         
-        return success;
+        return status;
     }
     
     private String selectServer() {
@@ -105,12 +122,19 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
         try {
             KitePacket response = kiteIOClient.sendPacket(requestMessage);
             
+            if (response == null) {
+                result.setSuccess(false);
+                return result;
+            }
+            
             MessageStoreAck ack = MessageStoreAck.parseFrom(response.getData());
             
             result.setMessageId(ack.getMessageId());
             result.setSuccess(ack.getStatus());
             
-            logger.warn("receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
+            if (logger.isDebugEnabled()) {
+                logger.debug("receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
+            }
         } catch (Exception e) {
             logger.error("send message error: {}", message, e);
             
@@ -136,7 +160,7 @@ public class DefaultKiteClient implements KitePublisher, KiteSubscriber {
 
     @Override
     public void setMessageListener(MessageListener messageListener) {
-        this.messageListener = messageListener;
+        this.listener = messageListener;
     }
 
 }

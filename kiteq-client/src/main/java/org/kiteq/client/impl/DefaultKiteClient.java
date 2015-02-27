@@ -2,7 +2,7 @@ package org.kiteq.client.impl;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.message.MessageListener;
@@ -28,13 +28,13 @@ import org.slf4j.LoggerFactory;
  * @since Feb 10, 2015
  */
 public class DefaultKiteClient implements KiteClient {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
-    private static final String[] serverList = new String[] { "localhost:13800" };
+    private static final String[] serverList = new String[]{"localhost:13800"};
 
     private Map<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
-    
+
     @SuppressWarnings("unused")
     private String zkAddr;
     private String groupId;
@@ -44,41 +44,49 @@ public class DefaultKiteClient implements KiteClient {
     public DefaultKiteClient(String zkAddr, String groupId, String secretKey) {
         this(zkAddr, groupId, secretKey, null);
     }
-    
+
     public DefaultKiteClient(String zkAddr, String groupId, String secretKey, MessageListener listener) {
         this.zkAddr = zkAddr;
         this.groupId = groupId;
         this.secretKey = secretKey;
         this.listener = listener;
     }
-    
+
+    private static ExecutorService WorkThreadPool = Executors.newFixedThreadPool(100);
+
     @Override
     public void start() {
         for (String serverUrl : serverList) {
             try {
                 final KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUrl);
                 kiteIOClient.start();
-                
+
                 if (handshake(kiteIOClient)) {
                     connMap.put(serverUrl, kiteIOClient);
                     logger.warn("Client connection created: {}", serverUrl);
                 }
-                
+
                 kiteIOClient.registerListener(new KiteListener() {
-                    
+
                     @Override
-                    public void packetReceived(KitePacket packet) {
+                    public void packetReceived(final KitePacket packet) {
                         if (listener != null) {
-                            Message message = MessageUtils.unpackMessage(packet);
-                            MessageStatus status = new MessageStatus();
-                            listener.receiveMessage(message, status);
-                            
-                            KitePacket ackPacket = AckUtils.buildDeliveryAckPacket(message);
-                            try {
-                                kiteIOClient.send(ackPacket);
-                            } catch (Exception e) {
-                                logger.error("Send delivery ack error! ", e);
-                            }
+                            WorkThreadPool.submit(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Message message = MessageUtils.unpackMessage(packet);
+                                        MessageStatus status = new MessageStatus();
+                                        listener.receiveMessage(message, status);
+                                        KitePacket ackPacket = AckUtils.buildDeliveryAckPacket(message);
+                                        kiteIOClient.send(ackPacket);
+                                    } catch (Exception e) {
+                                        logger.error("Send delivery ack error! ", e);
+                                    }
+                                }
+                            });
+
+
                         }
                     }
                 });
@@ -95,62 +103,62 @@ public class DefaultKiteClient implements KiteClient {
             kiteIOClient.close();
         }
     }
-    
+
     private boolean handshake(KiteIOClient kiteIOClient) throws Exception {
-        
+
         ConnMeta connMeta = ConnMeta.newBuilder()
                 .setGroupId(groupId)
                 .setSecretKey(secretKey)
                 .build();
-        
+
         KitePacket request = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
         KitePacket reponse = kiteIOClient.sendAndGet(request);
-        
+
         ConnAuthAck ack = ConnAuthAck.parseFrom(reponse.getData());
-        
+
         boolean status = ack.getStatus();
         logger.warn("Client handshake - serverUrl: {}, status: {}, feedback: {}", kiteIOClient.getServerUrl(), status, ack.getFeedback());
-        
+
         return status;
     }
-    
+
     private String selectServer() {
         return serverList[0];
     }
 
     @Override
     public SendResult sendMessage(Message message) {
-        
+
         String serverUrl = selectServer();
         KiteIOClient kiteIOClient = connMap.get(serverUrl);
-        
+
         KitePacket requestMessage = MessageUtils.packMessage(message);
         SendResult result = new SendResult();
-        
+
         try {
             KitePacket response = kiteIOClient.sendAndGet(requestMessage);
-            
+
             if (response == null) {
                 result.setSuccess(false);
                 return result;
             }
-            
+
             MessageStoreAck ack = MessageStoreAck.parseFrom(response.getData());
-            
+
             result.setMessageId(ack.getMessageId());
             result.setSuccess(ack.getStatus());
-            
+
             if (logger.isDebugEnabled()) {
                 logger.debug("Receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
             }
         } catch (Exception e) {
             logger.error("Send message error: {}", message, e);
-            
+
             result.setMessageId(message.getMessageId());
             result.setSuccess(false);
             result.setErrorMessage(e.getMessage());
         }
-        
+
         return result;
     }
 

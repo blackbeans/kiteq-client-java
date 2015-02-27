@@ -82,6 +82,7 @@ public class DefaultKiteClient implements KiteClient {
                                         kiteIOClient.send(ackPacket);
                                     } catch (Exception e) {
                                         logger.error("Send delivery ack error! ", e);
+
                                     }
                                 }
                             });

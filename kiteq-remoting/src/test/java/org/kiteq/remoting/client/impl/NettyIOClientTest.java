@@ -51,7 +51,7 @@ public class NettyIOClientTest {
                 .build();
                 
         KitePacket request = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
-        KitePacket response = kiteIOClient.sendPacket(request);
+        KitePacket response = kiteIOClient.sendAndGet(request);
         
         ConnAuthAck ack = ConnAuthAck.parseFrom(response.getData());
         

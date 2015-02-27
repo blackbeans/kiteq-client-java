@@ -14,7 +14,7 @@ public abstract class Message implements Serializable {
     private String topic;
     private String messageType;
     private long expiredTime = -1; // -1 for never expired
-    private int deliveryLimit = -1; // -1 for unlimited retry times
+    private int deliverLimit = -1; // -1 for unlimited retry times
     private String groupId;
     private boolean commit;
     
@@ -50,12 +50,12 @@ public abstract class Message implements Serializable {
         this.expiredTime = expiredTime;
     }
     
-    public int getDeliveryLimit() {
-        return deliveryLimit;
+    public int getDeliverLimit() {
+        return deliverLimit;
     }
     
-    public void setDeliveryLimit(int deliveryLimit) {
-        this.deliveryLimit = deliveryLimit;
+    public void setDeliverLimit(int deliverLimit) {
+        this.deliverLimit = deliverLimit;
     }
     
     public String getGroupId() {
@@ -79,7 +79,7 @@ public abstract class Message implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + (commit ? 1231 : 1237);
-        result = prime * result + deliveryLimit;
+        result = prime * result + deliverLimit;
         result = prime * result + (int) (expiredTime ^ (expiredTime >>> 32));
         result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
         result = prime * result + ((messageId == null) ? 0 : messageId.hashCode());
@@ -103,7 +103,7 @@ public abstract class Message implements Serializable {
         if (commit != other.commit) {
             return false;
         }
-        if (deliveryLimit != other.deliveryLimit) {
+        if (deliverLimit != other.deliverLimit) {
             return false;
         }
         if (expiredTime != other.expiredTime) {

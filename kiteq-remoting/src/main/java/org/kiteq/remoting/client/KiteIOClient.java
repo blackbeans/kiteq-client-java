@@ -9,7 +9,9 @@ import org.kiteq.remoting.listener.KiteListener;
  */
 public interface KiteIOClient {
     
-    KitePacket sendPacket(KitePacket packet) throws Exception;
+    KitePacket sendAndGet(KitePacket packet) throws Exception;
+    
+    void send(KitePacket packet) throws Exception;
     
     void registerListener(KiteListener listener);
     

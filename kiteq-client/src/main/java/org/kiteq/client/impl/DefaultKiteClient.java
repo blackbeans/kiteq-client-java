@@ -9,6 +9,7 @@ import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.MessageStatus;
 import org.kiteq.client.message.SendMessageCallback;
 import org.kiteq.client.message.SendResult;
+import org.kiteq.client.util.AckUtils;
 import org.kiteq.client.util.MessageUtils;
 import org.kiteq.commons.message.Message;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
@@ -55,12 +56,12 @@ public class DefaultKiteClient implements KiteClient {
     public void start() {
         for (String serverUrl : serverList) {
             try {
-                KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUrl);
+                final KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUrl);
                 kiteIOClient.start();
                 
                 if (handshake(kiteIOClient)) {
                     connMap.put(serverUrl, kiteIOClient);
-                    logger.warn("client connection created: {}", serverUrl);
+                    logger.warn("Client connection created: {}", serverUrl);
                 }
                 
                 kiteIOClient.registerListener(new KiteListener() {
@@ -71,11 +72,18 @@ public class DefaultKiteClient implements KiteClient {
                             Message message = MessageUtils.unpackMessage(packet);
                             MessageStatus status = new MessageStatus();
                             listener.receiveMessage(message, status);
+                            
+                            KitePacket ackPacket = AckUtils.buildDeliveryAckPacket(message);
+                            try {
+                                kiteIOClient.send(ackPacket);
+                            } catch (Exception e) {
+                                logger.error("Send delivery ack error! ", e);
+                            }
                         }
                     }
                 });
             } catch (Exception e) {
-                logger.error("client connection error: {}", serverUrl);
+                logger.error("Client connection error: {}", serverUrl);
             }
         }
     }
@@ -96,12 +104,12 @@ public class DefaultKiteClient implements KiteClient {
                 .build();
         
         KitePacket request = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
-        KitePacket reponse = kiteIOClient.sendPacket(request);
+        KitePacket reponse = kiteIOClient.sendAndGet(request);
         
         ConnAuthAck ack = ConnAuthAck.parseFrom(reponse.getData());
         
         boolean status = ack.getStatus();
-        logger.warn("client handshake - serverUrl: {}, status: {}, feedback: {}", kiteIOClient.getServerUrl(), status, ack.getFeedback());
+        logger.warn("Client handshake - serverUrl: {}, status: {}, feedback: {}", kiteIOClient.getServerUrl(), status, ack.getFeedback());
         
         return status;
     }
@@ -120,7 +128,7 @@ public class DefaultKiteClient implements KiteClient {
         SendResult result = new SendResult();
         
         try {
-            KitePacket response = kiteIOClient.sendPacket(requestMessage);
+            KitePacket response = kiteIOClient.sendAndGet(requestMessage);
             
             if (response == null) {
                 result.setSuccess(false);
@@ -133,10 +141,10 @@ public class DefaultKiteClient implements KiteClient {
             result.setSuccess(ack.getStatus());
             
             if (logger.isDebugEnabled()) {
-                logger.debug("receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
+                logger.debug("Receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
             }
         } catch (Exception e) {
-            logger.error("send message error: {}", message, e);
+            logger.error("Send message error: {}", message, e);
             
             result.setMessageId(message.getMessageId());
             result.setSuccess(false);

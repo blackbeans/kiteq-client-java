@@ -64,7 +64,7 @@ public class MessageUtils {
                 .setTopic(message.getTopic())
                 .setMessageType(message.getMessageType())
                 .setExpiredTime(message.getExpiredTime())
-                .setDeliveryLimit(message.getDeliveryLimit())
+                .setDeliverLimit(message.getDeliverLimit())
                 .setGroupId(message.getGroupId())
                 .setCommit(message.isCommit())
                 .build();
@@ -120,7 +120,7 @@ public class MessageUtils {
         dst.setTopic(src.getTopic());
         dst.setMessageType(src.getMessageType());
         dst.setExpiredTime(src.getExpiredTime());
-        dst.setDeliveryLimit(src.getDeliveryLimit());
+        dst.setDeliverLimit(src.getDeliverLimit());
         dst.setGroupId(src.getGroupId());
         dst.setCommit(src.getCommit());
     }

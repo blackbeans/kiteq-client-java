@@ -98,7 +98,7 @@ public class KiteProducerBenchmark {
         message.setTopic("trade");
         message.setMessageType("pay-succ");
         message.setExpiredTime(currentTime);
-        message.setDeliveryLimit(-1);
+        message.setDeliverLimit(-1);
         message.setGroupId("go-kite-test");
         message.setCommit(true);
         message.setBody("echo");

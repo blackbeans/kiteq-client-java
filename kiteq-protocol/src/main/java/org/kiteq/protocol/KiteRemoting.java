@@ -5125,23 +5125,23 @@ public final class KiteRemoting {
      */
     long getExpiredTime();
 
-    // required int32 deliveryLimit = 5 [default = -1];
+    // required int32 deliverLimit = 5 [default = -1];
     /**
-     * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+     * <code>required int32 deliverLimit = 5 [default = -1];</code>
      *
      * <pre>
      *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
      * </pre>
      */
-    boolean hasDeliveryLimit();
+    boolean hasDeliverLimit();
     /**
-     * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+     * <code>required int32 deliverLimit = 5 [default = -1];</code>
      *
      * <pre>
      *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
      * </pre>
      */
-    int getDeliveryLimit();
+    int getDeliverLimit();
 
     // required string groupId = 6;
     /**
@@ -5261,7 +5261,7 @@ public final class KiteRemoting {
             }
             case 40: {
               bitField0_ |= 0x00000010;
-              deliveryLimit_ = input.readInt32();
+              deliverLimit_ = input.readInt32();
               break;
             }
             case 50: {
@@ -5491,28 +5491,28 @@ public final class KiteRemoting {
       return expiredTime_;
     }
 
-    // required int32 deliveryLimit = 5 [default = -1];
-    public static final int DELIVERYLIMIT_FIELD_NUMBER = 5;
-    private int deliveryLimit_;
+    // required int32 deliverLimit = 5 [default = -1];
+    public static final int DELIVERLIMIT_FIELD_NUMBER = 5;
+    private int deliverLimit_;
     /**
-     * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+     * <code>required int32 deliverLimit = 5 [default = -1];</code>
      *
      * <pre>
      *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
      * </pre>
      */
-    public boolean hasDeliveryLimit() {
+    public boolean hasDeliverLimit() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+     * <code>required int32 deliverLimit = 5 [default = -1];</code>
      *
      * <pre>
      *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
      * </pre>
      */
-    public int getDeliveryLimit() {
-      return deliveryLimit_;
+    public int getDeliverLimit() {
+      return deliverLimit_;
     }
 
     // required string groupId = 6;
@@ -5599,7 +5599,7 @@ public final class KiteRemoting {
       topic_ = "";
       messageType_ = "";
       expiredTime_ = -1L;
-      deliveryLimit_ = -1;
+      deliverLimit_ = -1;
       groupId_ = "";
       commit_ = false;
     }
@@ -5624,7 +5624,7 @@ public final class KiteRemoting {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasDeliveryLimit()) {
+      if (!hasDeliverLimit()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -5656,7 +5656,7 @@ public final class KiteRemoting {
         output.writeInt64(4, expiredTime_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(5, deliveryLimit_);
+        output.writeInt32(5, deliverLimit_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(6, getGroupIdBytes());
@@ -5691,7 +5691,7 @@ public final class KiteRemoting {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, deliveryLimit_);
+          .computeInt32Size(5, deliverLimit_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
@@ -5825,7 +5825,7 @@ public final class KiteRemoting {
         bitField0_ = (bitField0_ & ~0x00000004);
         expiredTime_ = -1L;
         bitField0_ = (bitField0_ & ~0x00000008);
-        deliveryLimit_ = -1;
+        deliverLimit_ = -1;
         bitField0_ = (bitField0_ & ~0x00000010);
         groupId_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -5878,7 +5878,7 @@ public final class KiteRemoting {
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.deliveryLimit_ = deliveryLimit_;
+        result.deliverLimit_ = deliverLimit_;
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
@@ -5921,8 +5921,8 @@ public final class KiteRemoting {
         if (other.hasExpiredTime()) {
           setExpiredTime(other.getExpiredTime());
         }
-        if (other.hasDeliveryLimit()) {
-          setDeliveryLimit(other.getDeliveryLimit());
+        if (other.hasDeliverLimit()) {
+          setDeliverLimit(other.getDeliverLimit());
         }
         if (other.hasGroupId()) {
           bitField0_ |= 0x00000020;
@@ -5953,7 +5953,7 @@ public final class KiteRemoting {
           
           return false;
         }
-        if (!hasDeliveryLimit()) {
+        if (!hasDeliverLimit()) {
           
           return false;
         }
@@ -6306,51 +6306,51 @@ public final class KiteRemoting {
         return this;
       }
 
-      // required int32 deliveryLimit = 5 [default = -1];
-      private int deliveryLimit_ = -1;
+      // required int32 deliverLimit = 5 [default = -1];
+      private int deliverLimit_ = -1;
       /**
-       * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+       * <code>required int32 deliverLimit = 5 [default = -1];</code>
        *
        * <pre>
        *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
        * </pre>
        */
-      public boolean hasDeliveryLimit() {
+      public boolean hasDeliverLimit() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+       * <code>required int32 deliverLimit = 5 [default = -1];</code>
        *
        * <pre>
        *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
        * </pre>
        */
-      public int getDeliveryLimit() {
-        return deliveryLimit_;
+      public int getDeliverLimit() {
+        return deliverLimit_;
       }
       /**
-       * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+       * <code>required int32 deliverLimit = 5 [default = -1];</code>
        *
        * <pre>
        *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
        * </pre>
        */
-      public Builder setDeliveryLimit(int value) {
+      public Builder setDeliverLimit(int value) {
         bitField0_ |= 0x00000010;
-        deliveryLimit_ = value;
+        deliverLimit_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 deliveryLimit = 5 [default = -1];</code>
+       * <code>required int32 deliverLimit = 5 [default = -1];</code>
        *
        * <pre>
        *投递次数限制，默认-1为没有次数限制，但是随着投递的时间会慢慢衰减
        * </pre>
        */
-      public Builder clearDeliveryLimit() {
+      public Builder clearDeliverLimit() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        deliveryLimit_ = -1;
+        deliverLimit_ = -1;
         onChanged();
         return this;
       }
@@ -7896,15 +7896,15 @@ public final class KiteRemoting {
       "\t\022\017\n\007groupId\030\004 \002(\t\022\024\n\006status\030\005 \002(\010:\004true" +
       "\"i\n\013TxACKPacket\022\021\n\tmessageId\030\001 \002(\t\022\r\n\005to",
       "pic\030\002 \002(\t\022\023\n\013messageType\030\003 \002(\t\022\021\n\006status" +
-      "\030\004 \002(\005:\0010\022\020\n\010feedback\030\005 \002(\t\"\224\001\n\006Header\022\021" +
+      "\030\004 \002(\005:\0010\022\020\n\010feedback\030\005 \002(\t\"\223\001\n\006Header\022\021" +
       "\n\tmessageId\030\001 \002(\t\022\r\n\005topic\030\002 \002(\t\022\023\n\013mess" +
-      "ageType\030\003 \002(\t\022\027\n\013expiredTime\030\004 \002(\003:\002-1\022\031" +
-      "\n\rdeliveryLimit\030\005 \002(\005:\002-1\022\017\n\007groupId\030\006 \002" +
-      "(\t\022\016\n\006commit\030\007 \002(\010\"H\n\014BytesMessage\022*\n\006he" +
-      "ader\030\001 \002(\0132\032.org.kiteq.protocol.Header\022\014" +
-      "\n\004body\030\002 \002(\014\"I\n\rStringMessage\022*\n\006header\030" +
-      "\001 \002(\0132\032.org.kiteq.protocol.Header\022\014\n\004bod" +
-      "y\030\002 \002(\t"
+      "ageType\030\003 \002(\t\022\027\n\013expiredTime\030\004 \002(\003:\002-1\022\030" +
+      "\n\014deliverLimit\030\005 \002(\005:\002-1\022\017\n\007groupId\030\006 \002(" +
+      "\t\022\016\n\006commit\030\007 \002(\010\"H\n\014BytesMessage\022*\n\006hea" +
+      "der\030\001 \002(\0132\032.org.kiteq.protocol.Header\022\014\n" +
+      "\004body\030\002 \002(\014\"I\n\rStringMessage\022*\n\006header\030\001" +
+      " \002(\0132\032.org.kiteq.protocol.Header\022\014\n\004body" +
+      "\030\002 \002(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7952,7 +7952,7 @@ public final class KiteRemoting {
           internal_static_org_kiteq_protocol_Header_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_Header_descriptor,
-              new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliveryLimit", "GroupId", "Commit", });
+              new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", });
           internal_static_org_kiteq_protocol_BytesMessage_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable = new

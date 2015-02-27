@@ -1,8 +1,5 @@
 package org.kiteq.standalone;
 
-import io.netty.util.ResourceLeakDetector;
-import io.netty.util.ResourceLeakDetector.Level;
-
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.MessageListener;
@@ -31,7 +28,9 @@ public class StandaloneKiteSubscriber {
             
             @Override
             public void receiveMessage(Message message, MessageStatus status) {
-                logger.debug("recv: {}", message.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("recv: {}", message.toString());
+                }
             }
         });
     }
@@ -41,7 +40,7 @@ public class StandaloneKiteSubscriber {
     }
     
     public static void main(String[] args) {
-        ResourceLeakDetector.setLevel(Level.ADVANCED);
+        System.setProperty("kiteq.appName", "Consumer");
         new StandaloneKiteSubscriber().start();
     }
 

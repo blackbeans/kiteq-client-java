@@ -27,7 +27,9 @@ public class KiteEncoder extends MessageToMessageEncoder<Object> {
         ByteBuf buf = packet.toByteBuf();
         out.add(buf);
         
-        logger.debug("encoded hex: {}", ByteArrayUtils.hexDump(ByteBufUtils.toByteArray(buf)));
+        if (logger.isDebugEnabled()) {
+            logger.debug("encoded hex: {}", ByteArrayUtils.hexDump(ByteBufUtils.toByteArray(buf)));
+        }
     }
 
 }

@@ -23,6 +23,8 @@ public class MessageStats {
     private static ScheduledExecutorService scheduledExecutorService;
     private static AtomicBoolean inited = new AtomicBoolean(false);
     
+    private static String appName = System.getProperty("kiteq.appName", "");
+    
     public static void recordRead() {
         readCounter.inc();
     }
@@ -40,7 +42,7 @@ public class MessageStats {
                 @Override
                 public void run() {
                     
-                    logger.warn("Stats - read: {}, write: {}",
+                    logger.warn(appName + " Stats - read: {}, write: {}",
                             readCounter.getCountChange(),
                             writeCounter.getCountChange());
                 }

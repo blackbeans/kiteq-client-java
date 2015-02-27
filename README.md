@@ -12,9 +12,7 @@
     
 ### Benchmark
 
-    cd kiteq-benchmark
+    cd kiteq-benchmark/target
     tar -xzvf kiteq-benchmark-make-assembly.tar.gz
-    
-#### Producer
-
-    sh kite_benchmark_producer.sh -t 10
+    sh kite_benchmark_consumer.sh
+    sh kite_benchmark_producer.sh

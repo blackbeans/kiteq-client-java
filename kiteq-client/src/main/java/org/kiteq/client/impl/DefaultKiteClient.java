@@ -32,6 +32,7 @@ public class DefaultKiteClient implements KiteClient {
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
     private static final String[] serverList = new String[]{"localhost:13800"};
+    private static ExecutorService workerThreadPool = Executors.newFixedThreadPool(100);
 
     private Map<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
 
@@ -52,8 +53,6 @@ public class DefaultKiteClient implements KiteClient {
         this.listener = listener;
     }
 
-    private static ExecutorService WorkThreadPool = Executors.newFixedThreadPool(100);
-
     @Override
     public void start() {
         for (String serverUrl : serverList) {
@@ -71,7 +70,7 @@ public class DefaultKiteClient implements KiteClient {
                     @Override
                     public void packetReceived(final KitePacket packet) {
                         if (listener != null) {
-                            WorkThreadPool.submit(new Runnable() {
+                            workerThreadPool.submit(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
@@ -86,8 +85,6 @@ public class DefaultKiteClient implements KiteClient {
                                     }
                                 }
                             });
-
-
                         }
                     }
                 });

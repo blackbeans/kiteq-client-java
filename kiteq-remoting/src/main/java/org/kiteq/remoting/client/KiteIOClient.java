@@ -1,6 +1,5 @@
 package org.kiteq.remoting.client;
 
-import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.listener.KiteListener;
 
 /**
@@ -9,9 +8,9 @@ import org.kiteq.remoting.listener.KiteListener;
  */
 public interface KiteIOClient {
     
-    KitePacket sendAndGet(KitePacket packet) throws Exception;
+    void send(byte cmdType, byte[] data);
     
-    void send(KitePacket packet) throws Exception;
+    <T> T sendAndGet(byte cmdType, byte[] data);
     
     void registerListener(KiteListener listener);
     

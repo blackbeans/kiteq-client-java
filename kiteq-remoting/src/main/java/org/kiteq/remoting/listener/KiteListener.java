@@ -1,6 +1,8 @@
 package org.kiteq.remoting.listener;
 
-import org.kiteq.protocol.packet.KitePacket;
+import org.kiteq.protocol.KiteRemoting.BytesMessage;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
+import org.kiteq.protocol.KiteRemoting.TxACKPacket;
 
 /**
  * @author gaofeihang
@@ -8,6 +10,10 @@ import org.kiteq.protocol.packet.KitePacket;
  */
 public interface KiteListener {
     
-    void packetReceived(KitePacket packet);
+    void txAckReceived(TxACKPacket txAck);
+    
+    void bytesMessageReceived(BytesMessage message);
+    
+    void stringMessageReceived(StringMessage message);
 
 }

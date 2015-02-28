@@ -2,9 +2,6 @@ package org.kiteq.client.util;
 
 import org.kiteq.protocol.KiteRemoting.DeliverAck;
 import org.kiteq.protocol.KiteRemoting.Header;
-import org.kiteq.protocol.KiteRemoting.StringMessage;
-import org.kiteq.protocol.Protocol;
-import org.kiteq.protocol.packet.KitePacket;
 
 /**
  * @author gaofeihang
@@ -12,8 +9,7 @@ import org.kiteq.protocol.packet.KitePacket;
  */
 public class AckUtils {
     
-    public static KitePacket buildDeliverAck(StringMessage message) {
-        Header header = message.getHeader();
+    public static DeliverAck buildDeliverAck(Header header) {
         DeliverAck ack = DeliverAck.newBuilder()
                 .setGroupId(header.getGroupId())
                 .setMessageId(header.getMessageId())
@@ -21,9 +17,7 @@ public class AckUtils {
                 .setTopic(header.getTopic())
                 .setStatus(true)
                 .build();
-        
-        KitePacket packet = new KitePacket(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
-        return packet;
+        return ack;
     }
-
+    
 }

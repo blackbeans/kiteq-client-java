@@ -1,5 +1,7 @@
 package org.kiteq.client.message;
 
+import org.kiteq.protocol.KiteRemoting.TxACKPacket;
+
 /**
  * @author gaofeihang
  * @since Feb 28, 2015
@@ -32,6 +34,14 @@ public class TxResponse {
     
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+    
+    public static TxResponse parseFrom(TxACKPacket txAck) {
+        TxResponse txResponse = new TxResponse();
+        txResponse.setMessageId(txAck.getMessageId());
+        txResponse.setStatus(txAck.getStatus());
+        txResponse.setFeedback(txAck.getFeedback());
+        return txResponse;
     }
 
 }

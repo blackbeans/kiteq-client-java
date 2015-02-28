@@ -8,7 +8,6 @@ import org.kiteq.commons.util.ThreadUtils;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
 import org.kiteq.protocol.KiteRemoting.ConnMeta;
 import org.kiteq.protocol.Protocol;
-import org.kiteq.protocol.packet.KitePacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +49,7 @@ public class NettyIOClientTest {
                 .setSecretKey(SECRET_KEY)
                 .build();
                 
-        KitePacket request = new KitePacket(Protocol.CMD_CONN_META, connMeta.toByteArray());
-        KitePacket response = kiteIOClient.sendAndGet(request);
-        
-        ConnAuthAck ack = ConnAuthAck.parseFrom(response.getData());
+        ConnAuthAck ack = kiteIOClient.sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
         
         Assert.assertEquals(true, ack.getStatus());
     }

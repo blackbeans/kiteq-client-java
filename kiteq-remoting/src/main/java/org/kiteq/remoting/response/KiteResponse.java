@@ -1,7 +1,5 @@
 package org.kiteq.remoting.response;
 
-import org.kiteq.protocol.packet.KitePacket;
-
 /**
  * @author gaofeihang
  * @since Feb 12, 2015
@@ -9,18 +7,18 @@ import org.kiteq.protocol.packet.KitePacket;
 public class KiteResponse {
     
     private String requestId;
-    private KitePacket packet;
+    private Object model;
     
-    public KiteResponse(String requestId, KitePacket packet) {
+    public KiteResponse(String requestId, Object model) {
         this.requestId = requestId;
-        this.packet = packet;
+        this.model = model;
     }
     
     public String getRequestId() {
         return requestId;
     }
     
-    public KitePacket getPacket() {
-        return packet;
+    public Object getModel() {
+        return model;
     }
 }

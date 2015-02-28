@@ -1,7 +1,5 @@
 package org.kiteq.remoting.client.impl;
 
-import java.util.concurrent.TimeUnit;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -12,6 +10,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.util.concurrent.TimeUnit;
 
 import org.kiteq.commons.stats.MessageStats;
 import org.kiteq.commons.util.HostPort;
@@ -77,8 +77,11 @@ public class NettyKiteIOClient implements KiteIOClient {
         workerGroup.shutdownGracefully();
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public KitePacket sendAndGet(KitePacket reqPacket) {
+    public <T> T sendAndGet(byte cmdType, byte[] data) {
+        
+        KitePacket reqPacket = new KitePacket(cmdType, data);
         
         Channel channel = channelFuture.channel();
         String requestId = ChannelUtils.getChannelId(channel);
@@ -107,7 +110,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                 return null;
             }
             
-            return response.getPacket();
+            return (T) response.getModel();
         } catch (Exception e) {
             logger.error("get kite response error!", e);
         }
@@ -116,7 +119,9 @@ public class NettyKiteIOClient implements KiteIOClient {
     }
     
     @Override
-    public void send(KitePacket reqPacket) {
+    public void send(byte cmdType, byte[] data) {
+        
+        KitePacket reqPacket = new KitePacket(cmdType, data);
         
         Channel channel = channelFuture.channel();
         ChannelFuture writeFuture = channel.write(reqPacket);

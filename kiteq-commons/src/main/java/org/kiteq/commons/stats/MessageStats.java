@@ -42,12 +42,16 @@ public class MessageStats {
                 @Override
                 public void run() {
                     
-                    logger.warn(appName + " Stats - read: {}, write: {}",
-                            readCounter.getCountChange(),
-                            writeCounter.getCountChange());
+//                    logger.warn(appName + " Stats - read: {}, write: {}",
+//                            readCounter.getCountChange(),
+//                            writeCounter.getCountChange());
                 }
             }, 0, 1, TimeUnit.SECONDS);
         }
+    }
+    
+    public static void close() {
+        scheduledExecutorService.shutdownNow();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.kiteq.client.message;
 
+import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 
 /**
@@ -9,12 +10,18 @@ import org.kiteq.protocol.KiteRemoting.StringMessage;
 public abstract class ListenerAdapter implements MessageListener {
     
     @Override
-    public boolean onMessage(StringMessage message) {
+    public boolean onStringMessage(StringMessage message) {
         return true;
     }
     
     @Override
-    public void onMessageCheck(String messageId, TxResponse response) {
+    public boolean onBytesMessage(BytesMessage message) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    @Override
+    public void onMessageCheck(TxResponse response) {
     }
 
 }

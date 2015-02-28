@@ -1,5 +1,6 @@
 package org.kiteq.client.message;
 
+import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 
 /**
@@ -8,8 +9,10 @@ import org.kiteq.protocol.KiteRemoting.StringMessage;
  */
 public interface MessageListener {
     
-    boolean onMessage(StringMessage message);
+    boolean onStringMessage(StringMessage message);
     
-    void onMessageCheck(String messageId, TxResponse response);
+    boolean onBytesMessage(BytesMessage message);
+    
+    void onMessageCheck(TxResponse response);
 
 }

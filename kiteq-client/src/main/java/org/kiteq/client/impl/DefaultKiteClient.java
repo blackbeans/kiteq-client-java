@@ -2,19 +2,19 @@ package org.kiteq.client.impl;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.message.MessageListener;
-import org.kiteq.client.message.MessageStatus;
-import org.kiteq.client.message.SendMessageCallback;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.util.AckUtils;
-import org.kiteq.client.util.MessageUtils;
-import org.kiteq.commons.message.Message;
+import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
 import org.kiteq.protocol.KiteRemoting.ConnMeta;
 import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.kiteq.protocol.Protocol;
 import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.client.KiteIOClient;
@@ -74,11 +74,13 @@ public class DefaultKiteClient implements KiteClient {
                                 @Override
                                 public void run() {
                                     try {
-                                        Message message = MessageUtils.unpackMessage(packet);
-                                        MessageStatus status = new MessageStatus();
-                                        listener.receiveMessage(message, status);
-                                        KitePacket ackPacket = AckUtils.buildDeliveryAckPacket(message);
-                                        kiteIOClient.send(ackPacket);
+                                        if (packet.getCmdType() ==  Protocol.CMD_STRING_MESSAGE) {
+                                            StringMessage message = StringMessage.parseFrom(packet.getData());
+                                            listener.onMessage(message);
+                                            
+                                            KitePacket ackPacket = AckUtils.buildDeliverAck(message);
+                                            kiteIOClient.send(ackPacket);
+                                        }
                                     } catch (Exception e) {
                                         logger.error("Send delivery ack error! ", e);
 
@@ -125,12 +127,12 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     @Override
-    public SendResult sendMessage(Message message) {
+    public SendResult sendStringMessage(StringMessage message) {
 
         String serverUrl = selectServer();
         KiteIOClient kiteIOClient = connMap.get(serverUrl);
 
-        KitePacket requestMessage = MessageUtils.packMessage(message);
+        KitePacket requestMessage = new KitePacket(Protocol.CMD_STRING_MESSAGE, message.toByteArray());
         SendResult result = new SendResult();
 
         try {
@@ -152,7 +154,7 @@ public class DefaultKiteClient implements KiteClient {
         } catch (Exception e) {
             logger.error("Send message error: {}", message, e);
 
-            result.setMessageId(message.getMessageId());
+            result.setMessageId(message.getHeader().getMessageId());
             result.setSuccess(false);
             result.setErrorMessage(e.getMessage());
         }
@@ -161,20 +163,14 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     @Override
-    public SendResult sendMessage(Message message, SendMessageCallback callback) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void subscribeMessage(String groupId, String topic, String messageType) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setMessageListener(MessageListener messageListener) {
         this.listener = messageListener;
+    }
+
+    @Override
+    public SendResult sendBytesMessage(BytesMessage message) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

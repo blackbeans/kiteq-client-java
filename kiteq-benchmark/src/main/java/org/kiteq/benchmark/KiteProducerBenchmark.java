@@ -1,18 +1,18 @@
 package org.kiteq.benchmark;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
-import org.kiteq.commons.message.Message;
-import org.kiteq.commons.message.StringMessage;
 import org.kiteq.commons.util.ParamUtils;
 import org.kiteq.commons.util.ThreadUtils;
+import org.kiteq.protocol.KiteRemoting.Header;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,21 +54,14 @@ public class KiteProducerBenchmark {
     public void start() {
         
         for (int i = 0; i < threadNum; i++) {
-            
             final KiteClient client = clients[i];
-            final int threadId = i;
-            
             executorService.execute(new Runnable() {
-                
                 @Override
                 public void run() {
-                    
                     for (int j = 0; j < loopNum; j++) {
-                        client.sendMessage(buildMessage(threadId));
+                        client.sendStringMessage(buildMessage());
                     }
-                    
                     ThreadUtils.sleep(1000);
-                    
                     latch.countDown();
                 }
             });
@@ -87,21 +80,22 @@ public class KiteProducerBenchmark {
         executorService.shutdown();
     }
     
-    private Message buildMessage(int threadId) {
+    private StringMessage buildMessage() {
         
-        long currentTime = System.currentTimeMillis();
+        String messageId = UUID.randomUUID().toString();
         
-        String messageId = threadId + "" + currentTime + "" + RandomUtils.nextInt(0, Short.MAX_VALUE);
+        Header header = Header.newBuilder()
+                .setMessageId(messageId)
+                .setTopic("trade")
+                .setMessageType("pay-succ")
+                .setExpiredTime(System.currentTimeMillis())
+                .setDeliverLimit(-1)
+                .setGroupId("go-kite-test")
+                .setCommit(true).build();
         
-        StringMessage message = new StringMessage();
-        message.setMessageId(messageId);
-        message.setTopic("trade");
-        message.setMessageType("pay-succ");
-        message.setExpiredTime(currentTime);
-        message.setDeliverLimit(-1);
-        message.setGroupId("go-kite-test");
-        message.setCommit(true);
-        message.setBody("echo");
+        StringMessage message = StringMessage.newBuilder()
+                .setHeader(header)
+                .setBody("echo").build();
         
         return message;
     }

@@ -3,8 +3,8 @@ package org.kiteq.standalone;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.MessageListener;
-import org.kiteq.client.message.MessageStatus;
-import org.kiteq.commons.message.Message;
+import org.kiteq.client.message.TxResponse;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +27,16 @@ public class StandaloneKiteSubscriber {
         subscriber = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new MessageListener() {
             
             @Override
-            public void receiveMessage(Message message, MessageStatus status) {
+            public boolean onMessage(StringMessage message) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("recv: {}", message.toString());
                 }
+                return true;
+            }
+
+            @Override
+            public void onMessageCheck(String messageId, TxResponse response) {
+                // TODO Auto-generated method stub
             }
         });
     }

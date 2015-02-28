@@ -1,13 +1,15 @@
 package org.kiteq.client.message;
 
-import org.kiteq.commons.message.Message;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 
 /**
  * @author gaofeihang
- * @since Feb 10, 2015
+ * @since Feb 28, 2015
  */
 public interface MessageListener {
     
-    void receiveMessage(Message message, MessageStatus status);
+    boolean onMessage(StringMessage message);
+    
+    void onMessageCheck(String messageId, TxResponse response);
 
 }

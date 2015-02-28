@@ -13,7 +13,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.concurrent.TimeUnit;
 
-import org.kiteq.commons.stats.MessageStats;
+import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.client.KiteIOClient;
@@ -68,7 +68,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         channelFuture = bootstrap
                 .connect(hostPort.getHost(), hostPort.getPort()).sync();
         
-        MessageStats.start();
+        KiteStats.start();
     }
     
     @Override
@@ -94,7 +94,7 @@ public class NettyKiteIOClient implements KiteIOClient {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
-                    MessageStats.recordWrite();
+                    KiteStats.recordWrite();
                 } else {
                     logger.error("write message fail!", future.cause());
                 }
@@ -130,7 +130,7 @@ public class NettyKiteIOClient implements KiteIOClient {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
-                    MessageStats.recordWrite();
+                    KiteStats.recordWrite();
                 } else {
                     logger.error("write message fail!", future.cause());
                 }

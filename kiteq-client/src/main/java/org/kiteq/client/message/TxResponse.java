@@ -1,6 +1,7 @@
 package org.kiteq.client.message;
 
 import org.kiteq.protocol.KiteRemoting.TxACKPacket;
+import org.kiteq.protocol.Protocol;
 
 /**
  * @author gaofeihang
@@ -34,6 +35,14 @@ public class TxResponse {
     
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+    
+    public void commint() {
+        this.status = Protocol.TX_COMMIT;
+    }
+    
+    public void rollback() {
+        this.status = Protocol.TX_ROLLBACK;
     }
     
     public static TxResponse parseFrom(TxACKPacket txAck) {

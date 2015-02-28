@@ -4,23 +4,17 @@ import java.util.UUID;
 
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
-import org.kiteq.client.message.MessageListener;
+import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
-import org.kiteq.commons.stats.MessageStats;
+import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.JsonUtils;
-import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.Header;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author gaofeihang
- * @since Feb 25, 2015
- */
 public class KiteProducer {
-    
     private static final Logger logger = LoggerFactory.getLogger(KiteProducer.class);
     
     private static final String ZK_ADDR = "localhost:2181";
@@ -30,32 +24,17 @@ public class KiteProducer {
     private KiteClient producer;
     
     public KiteProducer() {
-        producer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new MessageListener() {
-            
-            @Override
-            public boolean onStringMessage(StringMessage message) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-            
+        producer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
             @Override
             public void onMessageCheck(TxResponse response) {
                 logger.warn(JsonUtils.prettyPrint(response));
-                response.setStatus(1);
-            }
-            
-            @Override
-            public boolean onBytesMessage(BytesMessage message) {
-                // TODO Auto-generated method stub
-                return false;
+                response.commint();
             }
         });
     }
     
     private StringMessage buildMessage() {
-        
         String messageId = UUID.randomUUID().toString();
-        
         Header header = Header.newBuilder()
                 .setMessageId(messageId)
                 .setTopic("trade")
@@ -68,26 +47,21 @@ public class KiteProducer {
         StringMessage message = StringMessage.newBuilder()
                 .setHeader(header)
                 .setBody("echo").build();
-        
         return message;
     }
     
     public void start() {
         producer.start();
         
-        StringMessage message = buildMessage();
-        
-        for (int i = 0; i < 1; i++) {
-            SendResult result = producer.sendStringMessage(message);
-            logger.warn("{}, {}", i, result.toString());
-        }
+        SendResult result = producer.sendStringMessage(buildMessage());
+        logger.warn("Send result: {}", result);
         
         producer.close();
-        MessageStats.close();
     }
     
     public static void main(String[] args) {
+        System.setProperty("kiteq.appName", "Producer");
         new KiteProducer().start();
+        KiteStats.close();
     }
-
 }

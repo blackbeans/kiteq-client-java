@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
  * @author gaofeihang
  * @since Feb 25, 2015
  */
-public class MessageStats {
+public class KiteStats {
     
-    private static final Logger logger = LoggerFactory.getLogger(MessageStats.class);
+    private static final Logger logger = LoggerFactory.getLogger(KiteStats.class);
     
     private static Counter readCounter = new Counter();
     private static Counter writeCounter = new Counter();
@@ -42,9 +42,9 @@ public class MessageStats {
                 @Override
                 public void run() {
                     
-//                    logger.warn(appName + " Stats - read: {}, write: {}",
-//                            readCounter.getCountChange(),
-//                            writeCounter.getCountChange());
+                    logger.warn(appName + " Stats - read: {}, write: {}",
+                            readCounter.getCountChange(),
+                            writeCounter.getCountChange());
                 }
             }, 0, 1, TimeUnit.SECONDS);
         }

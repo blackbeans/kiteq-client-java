@@ -2,7 +2,7 @@ package org.kiteq.remoting.client.dispatcher;
 
 import io.netty.channel.Channel;
 
-import org.kiteq.commons.stats.MessageStats;
+import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
 import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
@@ -30,7 +30,7 @@ public class KitePacketDispatcer {
     
     public static void dispatch(Channel channel, KitePacket packet) {
         
-        MessageStats.recordRead();
+        KiteStats.recordRead();
         
         byte cmdType = packet.getCmdType();
 

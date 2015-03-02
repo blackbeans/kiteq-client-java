@@ -10,6 +10,7 @@ import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.client.util.AckUtils;
+import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
 import org.kiteq.protocol.KiteRemoting.ConnMeta;
@@ -70,8 +71,14 @@ public class DefaultKiteClient implements KiteClient {
                     
                     @Override
                     public void txAckReceived(TxACKPacket txAck) {
-                        TxResponse txResponse = TxResponse.parseFrom(txAck);
-                        listener.onMessageCheck(txResponse);
+                        final TxResponse txResponse = TxResponse.parseFrom(txAck);
+                        
+                        ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onMessageCheck(txResponse);
+                            }
+                        });
                         
                         TxACKPacket txAckSend = txAck.toBuilder()
                                 .setStatus(txResponse.getStatus()).build();
@@ -79,15 +86,29 @@ public class DefaultKiteClient implements KiteClient {
                     }
                     
                     @Override
-                    public void bytesMessageReceived(BytesMessage message) {
-                        listener.onBytesMessage(message);
+                    public void bytesMessageReceived(final BytesMessage message) {
+                        
+                        ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onBytesMessage(message);
+                            }
+                        });
+                        
                         DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
                         kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
                     }
                     
                     @Override
-                    public void stringMessageReceived(StringMessage message) {
-                        listener.onStringMessage(message);
+                    public void stringMessageReceived(final StringMessage message) {
+                        
+                        ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onStringMessage(message);
+                            }
+                        });
+                        
                         DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
                         kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
                     }

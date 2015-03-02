@@ -7,7 +7,6 @@ import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
-import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.JsonUtils;
 import org.kiteq.protocol.KiteRemoting.Header;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
@@ -20,6 +19,7 @@ public class KiteProducer {
     private static final String ZK_ADDR = "localhost:2181";
     private static final String GROUP_ID = "pb-mts-test";
     private static final String SECRET_KEY = "123456";
+    private static final String TOPOIC = "trade";
     
     private KiteClient producer;
     
@@ -31,13 +31,14 @@ public class KiteProducer {
                 response.commint();
             }
         });
+        producer.setPublishTopics(new String[] { TOPOIC });
     }
     
     private StringMessage buildMessage() {
         String messageId = UUID.randomUUID().toString();
         Header header = Header.newBuilder()
                 .setMessageId(messageId)
-                .setTopic("trade")
+                .setTopic(TOPOIC)
                 .setMessageType("pay-succ")
                 .setExpiredTime(System.currentTimeMillis())
                 .setDeliverLimit(-1)
@@ -62,6 +63,5 @@ public class KiteProducer {
     public static void main(String[] args) {
         System.setProperty("kiteq.appName", "Producer");
         new KiteProducer().start();
-        KiteStats.close();
     }
 }

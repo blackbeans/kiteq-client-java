@@ -1,6 +1,5 @@
 package org.kiteq.binding.manager;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,12 +23,13 @@ public class BindingManager {
     private static Map<String, BindingManager> instances = new ConcurrentHashMap<String, BindingManager>();
     
     private CuratorFramework curatorClient;
-    private Map<String, String[]> topicServerMap = new ConcurrentHashMap<String, String[]>();
+    private Map<String, List<String>> topicServerMap = new ConcurrentHashMap<String, List<String>>();
     
     public static BindingManager getInstance(String zkAddr) {
         BindingManager bindingManager = instances.get(zkAddr);
         if (bindingManager == null) {
             synchronized (zkAddr.intern()) {
+                bindingManager = instances.get(zkAddr);
                 if (bindingManager == null) {
                     bindingManager = new BindingManager(zkAddr);
                     instances.put(zkAddr, bindingManager);
@@ -45,18 +45,22 @@ public class BindingManager {
         curatorClient.start();
     }
     
-    @SuppressWarnings("unchecked")
     public List<String> getServerList(String topic) {
-        String[] serverList = topicServerMap.get(topic);
-        if (serverList == null) {
-            try {
-                List<String> serverUris = curatorClient.getChildren().forPath(SERVER_PATH + topic);
-                return serverUris;
-            } catch (Exception e) {
-                logger.error("get server list error! topic: {}", topic, e);
+        List<String> serverUris = topicServerMap.get(topic);
+        if (serverUris == null) {
+            synchronized (topic.intern()) {
+                serverUris = topicServerMap.get(topic);
+                if (serverUris == null) {
+                    try {
+                        serverUris = curatorClient.getChildren().forPath(SERVER_PATH + topic);
+                        topicServerMap.put(topic, serverUris);
+                    } catch (Exception e) {
+                        logger.error("get server list error! topic: {}", topic, e);
+                    }
+                }
             }
         }
-        return Collections.EMPTY_LIST;
+        return serverUris;
     }
     
     public void close() {

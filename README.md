@@ -89,7 +89,7 @@
                 @Override
                 public void onMessageCheck(TxResponse response) {
                     logger.warn(JsonUtils.prettyPrint(response));
-                    response.commint();
+                    response.commit();
                 }
             });
             producer.setPublishTopics(new String[] { TOPOIC });

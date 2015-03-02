@@ -37,7 +37,7 @@ public class TxResponse {
         this.feedback = feedback;
     }
     
-    public void commint() {
+    public void commit() {
         this.status = Protocol.TX_COMMIT;
     }
     

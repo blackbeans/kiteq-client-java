@@ -1,5 +1,6 @@
 package org.kiteq.standalone;
 
+import org.kiteq.binding.Binding;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
@@ -25,6 +26,7 @@ public class KiteConsumer {
                 return true;
             }
         });
+        consumer.setBindings(new Binding[] { Binding.bindDirect(GROUP_ID, "trade", "pay-succ", 1000, true) });
     }
     
     public void start() {

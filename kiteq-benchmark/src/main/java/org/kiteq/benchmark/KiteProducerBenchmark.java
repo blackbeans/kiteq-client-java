@@ -28,6 +28,7 @@ public class KiteProducerBenchmark {
     private static final String ZK_ADDR = "localhost:2181";
     private static final String GROUP_ID = "pb-mts-test";
     private static final String SECRET_KEY = "123456";
+    private static final String TOPOIC = "trade";
     
     private int threadNum = 10;
     private int loopNum = 10000 * 10000;
@@ -45,6 +46,7 @@ public class KiteProducerBenchmark {
         clients = new KiteClient[threadNum];
         for (int i = 0; i < clients.length; i++) {
             clients[i] = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY);
+            clients[i].setPublishTopics(new String[] { TOPOIC });
             clients[i].start();
         }
         
@@ -86,7 +88,7 @@ public class KiteProducerBenchmark {
         
         Header header = Header.newBuilder()
                 .setMessageId(messageId)
-                .setTopic("trade")
+                .setTopic(TOPOIC)
                 .setMessageType("pay-succ")
                 .setExpiredTime(System.currentTimeMillis())
                 .setDeliverLimit(-1)

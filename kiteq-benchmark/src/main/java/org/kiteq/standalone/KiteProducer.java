@@ -53,10 +53,8 @@ public class KiteProducer {
     
     public void start() {
         producer.start();
-        
         SendResult result = producer.sendStringMessage(buildMessage());
         logger.warn("Send result: {}", result);
-        
         producer.close();
     }
     

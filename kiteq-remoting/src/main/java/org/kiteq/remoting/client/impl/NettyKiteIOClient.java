@@ -73,7 +73,6 @@ public class NettyKiteIOClient implements KiteIOClient {
     
     @Override
     public void close() {
-        channelFuture.channel().close();
         workerGroup.shutdownGracefully();
     }
     

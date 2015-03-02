@@ -121,19 +121,18 @@ public class DefaultKiteClient implements KiteClient {
             
             // handle transaction response
             @Override
-            public void txAckReceived(TxACKPacket txAck) {
+            public void txAckReceived(final TxACKPacket txAck) {
                 final TxResponse txResponse = TxResponse.parseFrom(txAck);
                 
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
                         listener.onMessageCheck(txResponse);
+                        TxACKPacket txAckSend = txAck.toBuilder()
+                                .setStatus(txResponse.getStatus()).build();
+                        kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend.toByteArray());
                     }
                 });
-                
-                TxACKPacket txAckSend = txAck.toBuilder()
-                        .setStatus(txResponse.getStatus()).build();
-                kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend.toByteArray());
             }
             
             // handle bytes message
@@ -143,12 +142,12 @@ public class DefaultKiteClient implements KiteClient {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onBytesMessage(message);
+                        if (listener.onBytesMessage(message)) {
+                            DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
+                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
+                        }
                     }
                 });
-                
-                DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
             }
             
             // handle string message
@@ -158,12 +157,12 @@ public class DefaultKiteClient implements KiteClient {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onStringMessage(message);
+                        if (listener.onStringMessage(message)) {
+                            DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
+                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
+                        }
                     }
                 });
-                
-                DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
             }
         });
         
@@ -172,13 +171,14 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public void close() {
+        ThreadPoolManager.shutdown();
+        KiteStats.close();
+        bindingManager.close();
+        
         for (Entry<String, KiteIOClient> entry : connMap.entrySet()) {
             KiteIOClient kiteIOClient = entry.getValue();
             kiteIOClient.close();
         }
-        bindingManager.close();
-        KiteStats.close();
-        ThreadPoolManager.shutdown();
     }
 
     private boolean handshake(KiteIOClient kiteIOClient) throws Exception {

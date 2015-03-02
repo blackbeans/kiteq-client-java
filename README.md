@@ -21,6 +21,7 @@
 
 ### Consumer Example
 
+    import org.kiteq.binding.Binding;
     import org.kiteq.client.KiteClient;
     import org.kiteq.client.impl.DefaultKiteClient;
     import org.kiteq.client.message.ListenerAdapter;
@@ -46,6 +47,7 @@
                     return true;
                 }
             });
+            consumer.setBindings(new Binding[] { Binding.bindDirect(GROUP_ID, "trade", "pay-succ", 1000, true) });
         }
         
         public void start() {
@@ -61,14 +63,11 @@
 
 ### Producer Example
 
-    import java.util.UUID;
-    
     import org.kiteq.client.KiteClient;
     import org.kiteq.client.impl.DefaultKiteClient;
     import org.kiteq.client.message.ListenerAdapter;
     import org.kiteq.client.message.SendResult;
     import org.kiteq.client.message.TxResponse;
-    import org.kiteq.commons.stats.KiteStats;
     import org.kiteq.commons.util.JsonUtils;
     import org.kiteq.protocol.KiteRemoting.Header;
     import org.kiteq.protocol.KiteRemoting.StringMessage;
@@ -81,6 +80,7 @@
         private static final String ZK_ADDR = "localhost:2181";
         private static final String GROUP_ID = "pb-mts-test";
         private static final String SECRET_KEY = "123456";
+        private static final String TOPOIC = "trade";
         
         private KiteClient producer;
         
@@ -92,13 +92,14 @@
                     response.commint();
                 }
             });
+            producer.setPublishTopics(new String[] { TOPOIC });
         }
         
         private StringMessage buildMessage() {
             String messageId = UUID.randomUUID().toString();
             Header header = Header.newBuilder()
                     .setMessageId(messageId)
-                    .setTopic("trade")
+                    .setTopic(TOPOIC)
                     .setMessageType("pay-succ")
                     .setExpiredTime(System.currentTimeMillis())
                     .setDeliverLimit(-1)
@@ -113,16 +114,13 @@
         
         public void start() {
             producer.start();
-            
             SendResult result = producer.sendStringMessage(buildMessage());
             logger.warn("Send result: {}", result);
-            
             producer.close();
         }
         
         public static void main(String[] args) {
             System.setProperty("kiteq.appName", "Producer");
             new KiteProducer().start();
-            KiteStats.close();
         }
     }

@@ -4,7 +4,7 @@ import org.kiteq.binding.Binding;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
-import org.kiteq.protocol.KiteRemoting.StringMessage;
+import org.kiteq.client.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class KiteConsumerBenchmark {
     public KiteConsumerBenchmark() {
         consumer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
             @Override
-            public boolean onStringMessage(StringMessage message) {
+            public boolean onMessage(Message message) {
                 return true;
             }
         });

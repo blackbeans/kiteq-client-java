@@ -16,6 +16,7 @@ import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.client.util.AckUtils;
+import org.kiteq.client.util.MessageUtils;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
@@ -142,7 +143,7 @@ public class DefaultKiteClient implements KiteClient {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (listener.onBytesMessage(message)) {
+                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
                             DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
                             kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
                         }
@@ -157,7 +158,7 @@ public class DefaultKiteClient implements KiteClient {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (listener.onStringMessage(message)) {
+                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
                             DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
                             kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
                         }

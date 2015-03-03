@@ -1,7 +1,6 @@
 package org.kiteq.client.message;
 
 import org.kiteq.commons.util.ByteArrayUtils;
-import org.kiteq.protocol.Protocol;
 import org.kiteq.protocol.KiteRemoting.Header;
 
 /**
@@ -9,6 +8,9 @@ import org.kiteq.protocol.KiteRemoting.Header;
  * @since Mar 3, 2015
  */
 public class Message {
+    
+    public static final byte BODY_TYPE_STRING = 1;
+    public static final byte BODY_TYPE_BYTES= 2;
     
     private Header header;
     private byte bodyType;
@@ -24,11 +26,11 @@ public class Message {
     }
     
     public boolean isStringMessage() {
-        return bodyType == Protocol.CMD_STRING_MESSAGE;
+        return bodyType == BODY_TYPE_STRING;
     }
     
     public boolean isBytesMessage() {
-        return bodyType == Protocol.CMD_BYTES_MESSAGE;
+        return bodyType == BODY_TYPE_BYTES;
     }
     
     public void setBodyType(byte bodyType) {
@@ -54,9 +56,9 @@ public class Message {
     @Override
     public String toString() {
         if (isStringMessage()) {
-            return header.toString() + ", " + bodyType + ", " + bodyString;
+            return "[" + header.toString() + ", type=" + bodyType + ", body=" + bodyString + "]";
         } else {
-            return header.toString() + ", " + bodyType + ", " + ByteArrayUtils.prettyPrint(bodyBytes);
+            return "[" + header.toString() + ", type=" + bodyType + ", body=" + ByteArrayUtils.prettyPrint(bodyBytes) + "]";
         }
     }
 

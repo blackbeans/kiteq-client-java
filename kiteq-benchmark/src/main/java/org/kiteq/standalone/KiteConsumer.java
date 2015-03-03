@@ -31,11 +31,11 @@ public class KiteConsumer {
     
     public void start() {
         consumer.start();
+        KiteStats.close();
     }
     
     public static void main(String[] args) {
         System.setProperty("kiteq.appName", "Consumer");
         new KiteConsumer().start();
-        KiteStats.close();
     }
 }

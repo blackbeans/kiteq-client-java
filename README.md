@@ -8,7 +8,7 @@
 ## Build
 
     cd kiteq
-    mvn clean package -Dmaven.test.skip
+    mvn clean install -Dmaven.test.skip
     
 ## Benchmark
 
@@ -16,6 +16,14 @@
     tar -xzvf kiteq-benchmark-make-assembly.tar.gz
     sh kite_benchmark_consumer.sh
     sh kite_benchmark_producer.sh
+    
+## Dependency
+
+    <dependency>
+        <groupId>org.kiteq</groupId>
+        <artifactId>kiteq-client</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 
 ## API
 

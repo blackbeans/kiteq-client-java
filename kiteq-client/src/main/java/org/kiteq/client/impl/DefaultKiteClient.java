@@ -81,19 +81,7 @@ public class DefaultKiteClient implements KiteClient {
                 }
             }
 
-            String producerName;
-            String jvmName = ManagementFactory.getRuntimeMXBean().getName();
-            if (StringUtils.isEmpty(jvmName)) {
-                String hostAddress;
-                try {
-                    hostAddress = InetAddress.getLocalHost().getHostName();
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
-                producerName = hostAddress;
-            } else {
-                producerName = jvmName;
-            }
+            String producerName = getProducerName();
             for (String topic : publishTopics) {
                 bindingManager.registerProducer(topic, groupId, producerName);
             }
@@ -128,7 +116,24 @@ public class DefaultKiteClient implements KiteClient {
             }
         }
     }
-    
+
+    private String getProducerName() {
+        String producerName;
+        String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+        if (StringUtils.isEmpty(jvmName)) {
+            String hostAddress;
+            try {
+                hostAddress = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+            producerName = hostAddress;
+        } else {
+            producerName = jvmName;
+        }
+        return producerName;
+    }
+
     private KiteIOClient createKiteIOClient(String serverUri) throws Exception {
         
         final KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUri);

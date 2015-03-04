@@ -1,6 +1,7 @@
 package org.kiteq.client.impl;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kiteq.binding.Binding;
 import org.kiteq.binding.manager.BindingManager;
 import org.kiteq.client.KiteClient;
@@ -20,6 +21,9 @@ import org.kiteq.remoting.listener.KiteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +79,23 @@ public class DefaultKiteClient implements KiteClient {
                 for (String serverUri : bindingManager.getServerList(topic)) {
                     serverUris.add(serverUri);
                 }
+            }
+
+            String producerName;
+            String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+            if (StringUtils.isEmpty(jvmName)) {
+                String hostAddress;
+                try {
+                    hostAddress = InetAddress.getLocalHost().getHostName();
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
+                producerName = hostAddress;
+            } else {
+                producerName = jvmName;
+            }
+            for (String topic : publishTopics) {
+                bindingManager.registerProducer(topic, groupId, producerName);
             }
         }
         

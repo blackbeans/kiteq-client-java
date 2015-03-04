@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.kiteq.binding.Binding;
 import org.kiteq.commons.util.JsonUtils;
@@ -25,6 +26,8 @@ public class BindingManager {
     private static final Logger logger = LoggerFactory.getLogger(BindingManager.class);
     
     private static final String SERVER_PATH = "/kiteq/server/";
+
+    private static final String PRODUCER_ZK_PATH = "/kiteq/pub";
 
     private static final String CONSUMER_ZK_PATH = "/kiteq/sub";
     
@@ -69,6 +72,15 @@ public class BindingManager {
             }
         }
         return serverUris;
+    }
+
+    public void registerProducer(String topic, String groupId, String producerName) {
+        String path = PRODUCER_ZK_PATH + "/" + topic + "/" + groupId + "/" + producerName;
+        try {
+            curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void registerConsumer(Binding[] bindings) {

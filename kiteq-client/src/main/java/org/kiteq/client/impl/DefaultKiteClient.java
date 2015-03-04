@@ -1,12 +1,5 @@
 package org.kiteq.client.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.kiteq.binding.Binding;
 import org.kiteq.binding.manager.BindingManager;
@@ -19,20 +12,20 @@ import org.kiteq.client.util.AckUtils;
 import org.kiteq.client.util.MessageUtils;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
-import org.kiteq.protocol.KiteRemoting.BytesMessage;
-import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
-import org.kiteq.protocol.KiteRemoting.ConnMeta;
-import org.kiteq.protocol.KiteRemoting.DeliverAck;
-import org.kiteq.protocol.KiteRemoting.Header;
-import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
-import org.kiteq.protocol.KiteRemoting.StringMessage;
-import org.kiteq.protocol.KiteRemoting.TxACKPacket;
+import org.kiteq.protocol.KiteRemoting.*;
 import org.kiteq.protocol.Protocol;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
 import org.kiteq.remoting.listener.KiteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author gaofeihang
@@ -91,6 +84,8 @@ public class DefaultKiteClient implements KiteClient {
                     serverUris.add(serverUri);
                 }
             }
+
+            bindingManager.registerConsumer(bindings);
         }
         
         for (String serverUri : serverUris) {

@@ -1,14 +1,20 @@
 package org.kiteq.binding.manager;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.KeeperException;
+import org.kiteq.binding.Binding;
+import org.kiteq.commons.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author gaofeihang
@@ -19,6 +25,8 @@ public class BindingManager {
     private static final Logger logger = LoggerFactory.getLogger(BindingManager.class);
     
     private static final String SERVER_PATH = "/kiteq/server/";
+
+    private static final String CONSUMER_ZK_PATH = "/kiteq/sub";
     
     private static Map<String, BindingManager> instances = new ConcurrentHashMap<String, BindingManager>();
     
@@ -62,7 +70,51 @@ public class BindingManager {
         }
         return serverUris;
     }
-    
+
+    public void registerConsumer(Binding[] bindings) {
+        Map<Pair<String, String>, List<Binding>> bindingsMap = new HashMap<Pair<String, String>, List<Binding>>();
+        for (Binding binding : bindings) {
+            Pair<String, String> bindingPair = Pair.of(binding.getTopic(), binding.getGroupId());
+            List<Binding> _bindings = bindingsMap.get(bindingPair);
+            if (_bindings == null) {
+                _bindings = new ArrayList<Binding>(1);
+                _bindings.add(binding);
+                bindingsMap.put(bindingPair, _bindings);
+            } else {
+                _bindings.add(binding);
+            }
+        }
+
+        for (Map.Entry<Pair<String, String>, List<Binding>> bindingEntry : bindingsMap.entrySet()) {
+            Pair<String, String> bindingPair = bindingEntry.getKey();
+            String path = CONSUMER_ZK_PATH + "/" + bindingPair.getLeft() + "/" + bindingPair.getRight() + "-bind";
+
+            boolean nodeExisted = false;
+            try {
+                nodeExisted = curatorClient.checkExists().forPath(path) != null;
+            } catch (KeeperException.NoNodeException ignored) {
+                logger.warn("Ignored.", ignored);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            byte[] data = JsonUtils.toJSON(bindingEntry.getValue()).getBytes();
+            try {
+                if (nodeExisted) {
+                    curatorClient.setData().forPath(path, data);
+                } else {
+                    try {
+                        curatorClient.create().creatingParentsIfNeeded().forPath(path, data);
+                    } catch (KeeperException.NodeExistsException ignored) {
+                        logger.warn("Ignored.", ignored);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public void close() {
         curatorClient.close();
     }

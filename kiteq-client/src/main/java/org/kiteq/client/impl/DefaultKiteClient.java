@@ -2,6 +2,10 @@ package org.kiteq.client.impl;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorWatcher;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.kiteq.binding.Binding;
 import org.kiteq.binding.manager.BindingManager;
 import org.kiteq.client.KiteClient;
@@ -24,12 +28,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author gaofeihang
@@ -38,12 +40,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultKiteClient implements KiteClient {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
+
+    private static final Logger DEBUGGER_LOGGER = LoggerFactory.getLogger("debugger");
     
     private String[] publishTopics;
     private Binding[] bindings;
     
     private BindingManager bindingManager;
-    private Map<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
+    private ConcurrentMap<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
 
     private String groupId;
     private String secretKey;
@@ -72,12 +76,10 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public void start() {
-        Set<String> serverUris = new HashSet<String>();
-        
         if (publishTopics != null) {
             for (String topic : publishTopics) {
                 for (String serverUri : bindingManager.getServerList(topic)) {
-                    serverUris.add(serverUri);
+                    createKiteQClient(topic, serverUri);
                 }
             }
 
@@ -89,32 +91,67 @@ public class DefaultKiteClient implements KiteClient {
         
         if (bindings != null) {
             for (Binding binding : bindings) {
-                for (String serverUri : bindingManager.getServerList(binding.getTopic())) {
-                    serverUris.add(serverUri);
+                String topic = binding.getTopic();
+                for (String serverUri : bindingManager.getServerList(topic)) {
+                    createKiteQClient(topic, serverUri);
                 }
             }
 
             bindingManager.registerConsumer(bindings);
         }
-        
-        for (String serverUri : serverUris) {
+    }
+
+    private KiteIOClient createKiteQClient(final String topic, final String serverUri) {
+        KiteIOClient kiteIOClient = connMap.get(serverUri);
+        if (kiteIOClient == null) {
             try {
-                KiteIOClient kiteIOClient = connMap.get(serverUri);
-                if (kiteIOClient == null) {
-                    synchronized (serverUri.intern()) {
-                        if (kiteIOClient == null) {
-                            kiteIOClient = createKiteIOClient(serverUri);
-                            if (handshake(kiteIOClient)) {
-                                connMap.put(serverUri, kiteIOClient);
-                                logger.warn("Client connection created: {}", serverUri);
-                            }
+                kiteIOClient = createKiteIOClient(serverUri);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to create kiteq IO client: server=" + serverUri, e);
+            }
+
+            if (handshake(kiteIOClient)) {
+                KiteIOClient _kiteIOClient;
+                if ((_kiteIOClient = connMap.putIfAbsent(serverUri, kiteIOClient)) != null) {
+                    kiteIOClient = _kiteIOClient;
+                }
+            } else {
+                throw new RuntimeException(
+                        "Unable to create kiteq IO client: server=" + serverUri + ", handshake refused.");
+            }
+        }
+
+        kiteIOClient.getAcceptedTopics().add(topic);
+
+        CuratorFramework curator = bindingManager.getCurator();
+        try {
+            final KiteIOClient finalKiteIOClient = kiteIOClient;
+            curator.checkExists().usingWatcher(new CuratorWatcher() {
+                @Override
+                public void process(WatchedEvent watchedEvent) throws Exception {
+                    if (watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+                        if (DEBUGGER_LOGGER.isDebugEnabled()) {
+                            DEBUGGER_LOGGER.debug("[ZkEvents] Received " + watchedEvent);
+
+                            DEBUGGER_LOGGER.debug("Remove topic " + topic + " from " + finalKiteIOClient);
+                        }
+
+                        finalKiteIOClient.getAcceptedTopics().remove(topic);
+
+                        if (finalKiteIOClient.getAcceptedTopics().isEmpty()) {
+                            connMap.remove(serverUri);
+
+                            finalKiteIOClient.close();
+                            logger.warn(finalKiteIOClient + " closed.");
                         }
                     }
                 }
-            } catch (Exception e) {
-                logger.error("Client connection error: {}", serverUri);
-            }
+            })
+                    .forPath(BindingManager.SERVER_PATH + topic + "/" + serverUri);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return kiteIOClient;
     }
 
     private String getProducerName() {
@@ -138,7 +175,7 @@ public class DefaultKiteClient implements KiteClient {
         
         final KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUri);
         kiteIOClient.start();
-        
+
         kiteIOClient.registerListener(new KiteListener() {
             
             // handle transaction response
@@ -187,7 +224,7 @@ public class DefaultKiteClient implements KiteClient {
                 });
             }
         });
-        
+
         return kiteIOClient;
     }
 
@@ -203,7 +240,7 @@ public class DefaultKiteClient implements KiteClient {
         }
     }
 
-    private boolean handshake(KiteIOClient kiteIOClient) throws Exception {
+    private boolean handshake(KiteIOClient kiteIOClient) {
 
         ConnMeta connMeta = ConnMeta.newBuilder()
                 .setGroupId(groupId)
@@ -237,6 +274,9 @@ public class DefaultKiteClient implements KiteClient {
 
         String serverUrl = selectServer(header.getTopic());
         KiteIOClient kiteIOClient = connMap.get(serverUrl);
+        if (kiteIOClient == null) {
+            kiteIOClient = createKiteQClient(header.getTopic(), serverUrl);
+        }
 
         SendResult result = new SendResult();
 

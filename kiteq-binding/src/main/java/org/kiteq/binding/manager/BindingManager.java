@@ -3,9 +3,12 @@ package org.kiteq.binding.manager;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.kiteq.binding.Binding;
 import org.kiteq.commons.util.JsonUtils;
 import org.slf4j.Logger;
@@ -24,8 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BindingManager {
     
     private static final Logger logger = LoggerFactory.getLogger(BindingManager.class);
-    
-    private static final String SERVER_PATH = "/kiteq/server/";
+
+    private static final Logger DEBUGGER_LOGGER = LoggerFactory.getLogger("debugger");
+
+    public static final String SERVER_PATH = "/kiteq/server/";
 
     private static final String PRODUCER_ZK_PATH = "/kiteq/pub";
 
@@ -55,15 +60,35 @@ public class BindingManager {
         curatorClient = CuratorFrameworkFactory.newClient(zkAddr, retryPolicy);
         curatorClient.start();
     }
-    
-    public List<String> getServerList(String topic) {
+
+    public List<String> getServerList(final String topic) {
         List<String> serverUris = topicServerMap.get(topic);
         if (serverUris == null) {
             synchronized (topic.intern()) {
                 serverUris = topicServerMap.get(topic);
                 if (serverUris == null) {
                     try {
-                        serverUris = curatorClient.getChildren().forPath(SERVER_PATH + topic);
+                        CuratorWatcher serversChangeWatcher = new CuratorWatcher() {
+                            @Override
+                            public void process(WatchedEvent watchedEvent) throws Exception {
+                                if (watchedEvent.getType() == Watcher.Event.EventType.NodeChildrenChanged) {
+                                    List<String> newServersUris = curatorClient.getChildren()
+                                            .usingWatcher(this).forPath(SERVER_PATH + topic);
+
+                                    if (DEBUGGER_LOGGER.isDebugEnabled()) {
+                                        DEBUGGER_LOGGER.debug("[ZkEvents] Received " + watchedEvent);
+
+                                        DEBUGGER_LOGGER.debug("Replace servers "
+                                                + JsonUtils.toJSON(topicServerMap.get(topic))
+                                                + " ->" + JsonUtils.toJSON(newServersUris));
+                                    }
+
+                                    topicServerMap.put(topic, newServersUris);
+                                }
+                            }
+                        };
+                        serverUris = curatorClient.getChildren()
+                                .usingWatcher(serversChangeWatcher).forPath(SERVER_PATH + topic);
                         topicServerMap.put(topic, serverUris);
                     } catch (Exception e) {
                         logger.error("get server list error! topic: {}", topic, e);
@@ -131,4 +156,7 @@ public class BindingManager {
         curatorClient.close();
     }
 
+    public CuratorFramework getCurator() {
+        return curatorClient;
+    }
 }

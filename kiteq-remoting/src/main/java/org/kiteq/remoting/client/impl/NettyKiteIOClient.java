@@ -1,18 +1,10 @@
 package org.kiteq.remoting.client.impl;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
-import java.util.concurrent.TimeUnit;
-
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.protocol.packet.KitePacket;
@@ -28,6 +20,11 @@ import org.kiteq.remoting.utils.ChannelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author gaofeihang
  * @since Feb 11, 2015
@@ -40,6 +37,8 @@ public class NettyKiteIOClient implements KiteIOClient {
     
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
+
+    private Set<String> acceptTopics = Collections.synchronizedSet(new HashSet<String>());
     
     public NettyKiteIOClient(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -149,4 +148,16 @@ public class NettyKiteIOClient implements KiteIOClient {
         return serverUrl;
     }
 
+    @Override
+    public Set<String> getAcceptedTopics() {
+        return acceptTopics;
+    }
+
+    @Override
+    public String toString() {
+        return "NettyKiteIOClient{" +
+                "serverUrl='" + serverUrl + '\'' +
+                ", acceptTopics=" + acceptTopics +
+                '}';
+    }
 }

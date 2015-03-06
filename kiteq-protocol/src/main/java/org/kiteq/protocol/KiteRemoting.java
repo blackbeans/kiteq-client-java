@@ -5187,6 +5187,24 @@ public final class KiteRemoting {
      * </pre>
      */
     boolean getCommit();
+
+    // required bool fly = 8 [default = true];
+    /**
+     * <code>required bool fly = 8 [default = true];</code>
+     *
+     * <pre>
+     *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+     * </pre>
+     */
+    boolean hasFly();
+    /**
+     * <code>required bool fly = 8 [default = true];</code>
+     *
+     * <pre>
+     *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+     * </pre>
+     */
+    boolean getFly();
   }
   /**
    * Protobuf type {@code org.kiteq.protocol.Header}
@@ -5272,6 +5290,11 @@ public final class KiteRemoting {
             case 56: {
               bitField0_ |= 0x00000040;
               commit_ = input.readBool();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000080;
+              fly_ = input.readBool();
               break;
             }
           }
@@ -5594,6 +5617,30 @@ public final class KiteRemoting {
       return commit_;
     }
 
+    // required bool fly = 8 [default = true];
+    public static final int FLY_FIELD_NUMBER = 8;
+    private boolean fly_;
+    /**
+     * <code>required bool fly = 8 [default = true];</code>
+     *
+     * <pre>
+     *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+     * </pre>
+     */
+    public boolean hasFly() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>required bool fly = 8 [default = true];</code>
+     *
+     * <pre>
+     *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+     * </pre>
+     */
+    public boolean getFly() {
+      return fly_;
+    }
+
     private void initFields() {
       messageId_ = "";
       topic_ = "";
@@ -5602,6 +5649,7 @@ public final class KiteRemoting {
       deliverLimit_ = -1;
       groupId_ = "";
       commit_ = false;
+      fly_ = true;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5636,6 +5684,10 @@ public final class KiteRemoting {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasFly()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -5663,6 +5715,9 @@ public final class KiteRemoting {
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeBool(7, commit_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeBool(8, fly_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -5700,6 +5755,10 @@ public final class KiteRemoting {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(7, commit_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, fly_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5831,6 +5890,8 @@ public final class KiteRemoting {
         bitField0_ = (bitField0_ & ~0x00000020);
         commit_ = false;
         bitField0_ = (bitField0_ & ~0x00000040);
+        fly_ = true;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -5887,6 +5948,10 @@ public final class KiteRemoting {
           to_bitField0_ |= 0x00000040;
         }
         result.commit_ = commit_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.fly_ = fly_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5932,6 +5997,9 @@ public final class KiteRemoting {
         if (other.hasCommit()) {
           setCommit(other.getCommit());
         }
+        if (other.hasFly()) {
+          setFly(other.getFly());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -5962,6 +6030,10 @@ public final class KiteRemoting {
           return false;
         }
         if (!hasCommit()) {
+          
+          return false;
+        }
+        if (!hasFly()) {
           
           return false;
         }
@@ -6498,6 +6570,55 @@ public final class KiteRemoting {
       public Builder clearCommit() {
         bitField0_ = (bitField0_ & ~0x00000040);
         commit_ = false;
+        onChanged();
+        return this;
+      }
+
+      // required bool fly = 8 [default = true];
+      private boolean fly_ = true;
+      /**
+       * <code>required bool fly = 8 [default = true];</code>
+       *
+       * <pre>
+       *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+       * </pre>
+       */
+      public boolean hasFly() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>required bool fly = 8 [default = true];</code>
+       *
+       * <pre>
+       *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+       * </pre>
+       */
+      public boolean getFly() {
+        return fly_;
+      }
+      /**
+       * <code>required bool fly = 8 [default = true];</code>
+       *
+       * <pre>
+       *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+       * </pre>
+       */
+      public Builder setFly(boolean value) {
+        bitField0_ |= 0x00000080;
+        fly_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool fly = 8 [default = true];</code>
+       *
+       * <pre>
+       *消息是否为fly模式   fly是先投递再持久化保证投递优先、否则相反是可靠优先
+       * </pre>
+       */
+      public Builder clearFly() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        fly_ = true;
         onChanged();
         return this;
       }
@@ -7896,15 +8017,15 @@ public final class KiteRemoting {
       "\t\022\017\n\007groupId\030\004 \002(\t\022\024\n\006status\030\005 \002(\010:\004true" +
       "\"i\n\013TxACKPacket\022\021\n\tmessageId\030\001 \002(\t\022\r\n\005to",
       "pic\030\002 \002(\t\022\023\n\013messageType\030\003 \002(\t\022\021\n\006status" +
-      "\030\004 \002(\005:\0010\022\020\n\010feedback\030\005 \002(\t\"\223\001\n\006Header\022\021" +
+      "\030\004 \002(\005:\0010\022\020\n\010feedback\030\005 \002(\t\"\246\001\n\006Header\022\021" +
       "\n\tmessageId\030\001 \002(\t\022\r\n\005topic\030\002 \002(\t\022\023\n\013mess" +
       "ageType\030\003 \002(\t\022\027\n\013expiredTime\030\004 \002(\003:\002-1\022\030" +
       "\n\014deliverLimit\030\005 \002(\005:\002-1\022\017\n\007groupId\030\006 \002(" +
-      "\t\022\016\n\006commit\030\007 \002(\010\"H\n\014BytesMessage\022*\n\006hea" +
-      "der\030\001 \002(\0132\032.org.kiteq.protocol.Header\022\014\n" +
-      "\004body\030\002 \002(\014\"I\n\rStringMessage\022*\n\006header\030\001" +
-      " \002(\0132\032.org.kiteq.protocol.Header\022\014\n\004body" +
-      "\030\002 \002(\t"
+      "\t\022\016\n\006commit\030\007 \002(\010\022\021\n\003fly\030\010 \002(\010:\004true\"H\n\014" +
+      "BytesMessage\022*\n\006header\030\001 \002(\0132\032.org.kiteq" +
+      ".protocol.Header\022\014\n\004body\030\002 \002(\014\"I\n\rString" +
+      "Message\022*\n\006header\030\001 \002(\0132\032.org.kiteq.prot" +
+      "ocol.Header\022\014\n\004body\030\002 \002(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7952,7 +8073,7 @@ public final class KiteRemoting {
           internal_static_org_kiteq_protocol_Header_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_Header_descriptor,
-              new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", });
+              new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", });
           internal_static_org_kiteq_protocol_BytesMessage_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable = new

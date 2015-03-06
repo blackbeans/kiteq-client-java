@@ -17,7 +17,9 @@ public interface KiteIOClient {
     void registerListener(KiteListener listener);
     
     void start() throws Exception;
-    
+
+    boolean isDead();
+
     void close();
     
     String getServerUrl();

@@ -8,6 +8,7 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.kiteq.binding.Binding;
 import org.kiteq.binding.manager.BindingManager;
+import org.kiteq.client.ClientManager;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.MessageListener;
@@ -29,9 +30,6 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author gaofeihang
@@ -47,7 +45,8 @@ public class DefaultKiteClient implements KiteClient {
     private Binding[] bindings;
     
     private BindingManager bindingManager;
-    private ConcurrentMap<String, KiteIOClient> connMap = new ConcurrentHashMap<String, KiteIOClient>();
+
+    private final ClientManager clientManager = new ClientManager();
 
     private String groupId;
     private String secretKey;
@@ -102,7 +101,7 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     private KiteIOClient createKiteQClient(final String topic, final String serverUri) {
-        KiteIOClient kiteIOClient = connMap.get(serverUri);
+        KiteIOClient kiteIOClient = clientManager.get(serverUri);
         if (kiteIOClient == null) {
             try {
                 kiteIOClient = createKiteIOClient(serverUri);
@@ -112,7 +111,7 @@ public class DefaultKiteClient implements KiteClient {
 
             if (handshake(kiteIOClient)) {
                 KiteIOClient _kiteIOClient;
-                if ((_kiteIOClient = connMap.putIfAbsent(serverUri, kiteIOClient)) != null) {
+                if ((_kiteIOClient = clientManager.putIfAbsent(serverUri, kiteIOClient)) != null) {
                     kiteIOClient = _kiteIOClient;
                 }
             } else {
@@ -139,15 +138,14 @@ public class DefaultKiteClient implements KiteClient {
                         finalKiteIOClient.getAcceptedTopics().remove(topic);
 
                         if (finalKiteIOClient.getAcceptedTopics().isEmpty()) {
-                            connMap.remove(serverUri);
+                            clientManager.remove(serverUri);
 
                             finalKiteIOClient.close();
                             logger.warn(finalKiteIOClient + " closed.");
                         }
                     }
                 }
-            })
-                    .forPath(BindingManager.SERVER_PATH + topic + "/" + serverUri);
+            }).forPath(BindingManager.SERVER_PATH + topic + "/" + serverUri);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -233,11 +231,7 @@ public class DefaultKiteClient implements KiteClient {
         ThreadPoolManager.shutdown();
         KiteStats.close();
         bindingManager.close();
-        
-        for (Entry<String, KiteIOClient> entry : connMap.entrySet()) {
-            KiteIOClient kiteIOClient = entry.getValue();
-            kiteIOClient.close();
-        }
+        clientManager.close();
     }
 
     private boolean handshake(KiteIOClient kiteIOClient) {
@@ -273,7 +267,7 @@ public class DefaultKiteClient implements KiteClient {
     private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) {
 
         String serverUrl = selectServer(header.getTopic());
-        KiteIOClient kiteIOClient = connMap.get(serverUrl);
+        KiteIOClient kiteIOClient = clientManager.get(serverUrl);
         if (kiteIOClient == null) {
             kiteIOClient = createKiteQClient(header.getTopic(), serverUrl);
         }

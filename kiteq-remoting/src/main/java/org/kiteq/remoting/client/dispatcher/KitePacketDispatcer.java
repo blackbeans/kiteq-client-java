@@ -1,13 +1,10 @@
 package org.kiteq.remoting.client.dispatcher;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.netty.channel.Channel;
-
 import org.kiteq.commons.stats.KiteStats;
-import org.kiteq.protocol.KiteRemoting.BytesMessage;
-import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
-import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
-import org.kiteq.protocol.KiteRemoting.StringMessage;
-import org.kiteq.protocol.KiteRemoting.TxACKPacket;
+import org.kiteq.protocol.KiteRemoting;
+import org.kiteq.protocol.KiteRemoting.*;
 import org.kiteq.protocol.Protocol;
 import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.listener.KiteListener;
@@ -17,8 +14,6 @@ import org.kiteq.remoting.response.ResponseFuture;
 import org.kiteq.remoting.utils.ChannelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * @author gaofeihang
@@ -55,7 +50,9 @@ public class KitePacketDispatcer {
             case Protocol.CMD_STRING_MESSAGE:
                 receiveStringMessage(channel, packet);
                 break;
-
+                case Protocol.CMD_HEARTBEAT:
+                    receiveHeartbeatResp(channel, packet);
+                    break;
             default:
                 receiveUnknownPacket(channel, packet);
                 break;
@@ -67,6 +64,10 @@ public class KitePacketDispatcer {
     
     private static KiteResponse buildKiteResponse(Channel channel, Object model) {
         return new KiteResponse(ChannelUtils.getChannelId(channel), model);
+    }
+
+    private static KiteResponse buildKiteResponse(String requestIdPrefix, Channel channel, Object model) {
+        return new KiteResponse(requestIdPrefix + ChannelUtils.getChannelId(channel), model);
     }
     
     private static KiteListener getKiteListener(Channel channel) {
@@ -97,7 +98,12 @@ public class KitePacketDispatcer {
         StringMessage message = StringMessage.parseFrom(packet.getData());
         getKiteListener(channel).stringMessageReceived(message);
     }
-    
+
+    private static void receiveHeartbeatResp(Channel channel, KitePacket packet) throws InvalidProtocolBufferException {
+        KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.parseFrom(packet.getData());
+        ResponseFuture.receiveResponse(buildKiteResponse(String.valueOf(heartBeat.getVersion()), channel, heartBeat));
+    }
+
     private static void receiveUnknownPacket(Channel channel, KitePacket packet) {
         logger.warn("unknown packet: {}", packet.toString());
     }

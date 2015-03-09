@@ -2,29 +2,41 @@ package org.kiteq.protocol.packet;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import org.kiteq.commons.util.ByteArrayUtils;
 import org.kiteq.protocol.Protocol;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author gaofeihang
  * @since Feb 13, 2015
  */
 public class KitePacket {
-    
+
+    private static final AtomicInteger UNIQUE_ID = new AtomicInteger(0);
+
     private int opaque;
     private byte cmdType;
     private byte[] data;
     
     public KitePacket(byte cmdType, byte[] data) {
-        this.opaque = -1;
+        this.opaque = getPacketId();
         this.cmdType = cmdType;
         this.data = data;
     }
-    
-    public KitePacket(int opaque, byte cmdType, byte[] data) {
+
+    private KitePacket(int opaque, byte cmdType, byte[] data) {
         this(cmdType, data);
         this.opaque = opaque;
+    }
+
+    private int getPacketId() {
+        int id = UNIQUE_ID.getAndIncrement();
+        if (id == Integer.MAX_VALUE) {
+            UNIQUE_ID.compareAndSet(Integer.MAX_VALUE, 0);
+            return UNIQUE_ID.getAndIncrement();
+        }
+        return id;
     }
     
     public int getOpaque() {

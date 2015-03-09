@@ -1,34 +1,30 @@
 package org.kiteq.remoting.response;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author gaofeihang
  * @since Feb 12, 2015
  */
 public class ResponseFuture implements Future<KiteResponse> {
-    
-    private static final Logger logger = LoggerFactory.getLogger(ResponseFuture.class); 
-    
-    private static ConcurrentHashMap<String, ResponseFuture> futureMap = new ConcurrentHashMap<String, ResponseFuture>();
+
+    private static final Logger logger = LoggerFactory.getLogger(ResponseFuture.class);
+
+    private static ConcurrentHashMap<Integer, ResponseFuture> futureMap = new ConcurrentHashMap<Integer, ResponseFuture>();
     
     private Lock lock = new ReentrantLock();
     private Condition condition = lock.newCondition();
-    
-    private String requestId;
+
+    private int requestId;
     private volatile KiteResponse response;
-    
-    public ResponseFuture(String requestId) {
+
+    public ResponseFuture(int requestId) {
         this.requestId = requestId;
         
         if (futureMap.putIfAbsent(requestId, this) != null) {
@@ -37,7 +33,7 @@ public class ResponseFuture implements Future<KiteResponse> {
     }
     
     public static void receiveResponse(KiteResponse response) {
-        String requestId = response.getRequestId();
+        int requestId = response.getRequestId();
         ResponseFuture future = futureMap.remove(requestId);
         if (future != null) {
             future.setResponse(response);

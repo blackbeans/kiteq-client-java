@@ -32,11 +32,11 @@ public class KitePacketDispatcer {
         try {
             switch (cmdType) {
             case Protocol.CMD_CONN_AUTH:
-                receiveConnAuth(channel, packet);
+                receiveConnAuth(packet);
                 break;
                 
             case Protocol.CMD_MESSAGE_STORE_ACK:
-                receiveMessageStoreAck(channel, packet);
+                receiveMessageStoreAck(packet);
                 break;
             
             case Protocol.CMD_TX_ACK:
@@ -51,7 +51,7 @@ public class KitePacketDispatcer {
                 receiveStringMessage(channel, packet);
                 break;
                 case Protocol.CMD_HEARTBEAT:
-                    receiveHeartbeatResp(channel, packet);
+                    receiveHeartbeatResp(packet);
                     break;
             default:
                 receiveUnknownPacket(channel, packet);
@@ -61,27 +61,23 @@ public class KitePacketDispatcer {
             logger.error("Kite packet dispatcher error! packet: {}", packet.toString());
         }
     }
-    
-    private static KiteResponse buildKiteResponse(Channel channel, Object model) {
-        return new KiteResponse(ChannelUtils.getChannelId(channel), model);
+
+    private static KiteResponse buildKiteResponse(KitePacket packet, Object model) {
+        return new KiteResponse(packet.getOpaque(), model);
     }
 
-    private static KiteResponse buildKiteResponse(String requestIdPrefix, Channel channel, Object model) {
-        return new KiteResponse(requestIdPrefix + ChannelUtils.getChannelId(channel), model);
-    }
-    
     private static KiteListener getKiteListener(Channel channel) {
         return ListenerManager.getListener(ChannelUtils.getChannelId(channel));
     }
-    
-    private static void receiveConnAuth(Channel channel, KitePacket packet) throws InvalidProtocolBufferException {
+
+    private static void receiveConnAuth(KitePacket packet) throws InvalidProtocolBufferException {
         ConnAuthAck connAuthAck = ConnAuthAck.parseFrom(packet.getData());
-        ResponseFuture.receiveResponse(buildKiteResponse(channel, connAuthAck));
+        ResponseFuture.receiveResponse(buildKiteResponse(packet, connAuthAck));
     }
-    
-    private static void receiveMessageStoreAck(Channel channel, KitePacket packet) throws InvalidProtocolBufferException {
+
+    private static void receiveMessageStoreAck(KitePacket packet) throws InvalidProtocolBufferException {
         MessageStoreAck messageStoreAck = MessageStoreAck.parseFrom(packet.getData());
-        ResponseFuture.receiveResponse(buildKiteResponse(channel, messageStoreAck));
+        ResponseFuture.receiveResponse(buildKiteResponse(packet, messageStoreAck));
     }
     
     private static void receiveTxAck(Channel channel, KitePacket packet) throws InvalidProtocolBufferException {
@@ -99,9 +95,9 @@ public class KitePacketDispatcer {
         getKiteListener(channel).stringMessageReceived(message);
     }
 
-    private static void receiveHeartbeatResp(Channel channel, KitePacket packet) throws InvalidProtocolBufferException {
+    private static void receiveHeartbeatResp(KitePacket packet) throws InvalidProtocolBufferException {
         KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.parseFrom(packet.getData());
-        ResponseFuture.receiveResponse(buildKiteResponse(String.valueOf(heartBeat.getVersion()), channel, heartBeat));
+        ResponseFuture.receiveResponse(buildKiteResponse(packet, heartBeat));
     }
 
     private static void receiveUnknownPacket(Channel channel, KitePacket packet) {

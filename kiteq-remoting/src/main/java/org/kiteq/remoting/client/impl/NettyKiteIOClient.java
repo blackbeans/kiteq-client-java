@@ -93,8 +93,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                 long version = System.currentTimeMillis();
                 KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
                         .setVersion(version).build();
-                KiteRemoting.HeartBeat response = sendAndGet(String.valueOf(version), Protocol.CMD_HEARTBEAT,
-                        heartBeat.toByteArray());
+                KiteRemoting.HeartBeat response = sendAndGet(Protocol.CMD_HEARTBEAT, heartBeat.toByteArray());
                 if (response != null && response.getVersion() == version) {
                     heartbeatStopCount.set(0);
                 } else {
@@ -137,15 +136,10 @@ public class NettyKiteIOClient implements KiteIOClient {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T sendAndGet(byte cmdType, byte[] data) {
-        return sendAndGet("", cmdType, data);
-    }
-
-    private <T> T sendAndGet(String requestIdPrefix, byte cmdType, byte[] data) {
-        Channel channel = channelFuture.channel();
-        String requestId = requestIdPrefix + ChannelUtils.getChannelId(channel);
-        ResponseFuture future = new ResponseFuture(requestId);
-
         final KitePacket reqPacket = new KitePacket(cmdType, data);
+        ResponseFuture future = new ResponseFuture(reqPacket.getOpaque());
+
+        Channel channel = channelFuture.channel();
         ChannelFuture writeFuture = channel.write(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
             @Override

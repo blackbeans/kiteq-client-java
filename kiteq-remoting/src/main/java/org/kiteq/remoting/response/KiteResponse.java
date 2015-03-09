@@ -5,16 +5,16 @@ package org.kiteq.remoting.response;
  * @since Feb 12, 2015
  */
 public class KiteResponse {
-    
-    private String requestId;
+
+    private int requestId;
     private Object model;
-    
-    public KiteResponse(String requestId, Object model) {
+
+    public KiteResponse(int requestId, Object model) {
         this.requestId = requestId;
         this.model = model;
     }
-    
-    public String getRequestId() {
+
+    public int getRequestId() {
         return requestId;
     }
     

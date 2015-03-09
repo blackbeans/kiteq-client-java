@@ -7,7 +7,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>kiteq-commons</module>
-        <module>kiteq-binding</module>
         <module>kiteq-protocol</module>
         <module>kiteq-remoting</module>
         <module>kiteq-client</module>
@@ -19,11 +18,6 @@
             <dependency>
                 <groupId>org.kiteq</groupId>
                 <artifactId>kiteq-commons</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kiteq</groupId>
-                <artifactId>kiteq-binding</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

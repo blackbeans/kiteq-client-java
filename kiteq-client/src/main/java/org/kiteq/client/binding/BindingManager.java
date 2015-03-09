@@ -1,4 +1,4 @@
-package org.kiteq.binding.manager;
+package org.kiteq.client.binding;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
@@ -9,7 +9,6 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.kiteq.binding.Binding;
 import org.kiteq.commons.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

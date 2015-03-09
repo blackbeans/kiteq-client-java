@@ -1,4 +1,4 @@
-package org.kiteq.binding;
+package org.kiteq.client.binding;
 
 /**
  * @author gaofeihang

@@ -1,6 +1,6 @@
 package org.kiteq.benchmark;
 
-import org.kiteq.binding.Binding;
+import org.kiteq.client.binding.Binding;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;

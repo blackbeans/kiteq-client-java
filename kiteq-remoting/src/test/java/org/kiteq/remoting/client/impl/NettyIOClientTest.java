@@ -28,7 +28,7 @@ public class NettyIOClientTest {
     @Before
     public void init() {
         try {
-            kiteIOClient = new NettyKiteIOClient(SERVER_URL);
+            kiteIOClient = new NettyKiteIOClient(GROUP_ID, SECRET_KEY, SERVER_URL);
             kiteIOClient.start();
         } catch (Exception e) {
             logger.error("client init error!", e);

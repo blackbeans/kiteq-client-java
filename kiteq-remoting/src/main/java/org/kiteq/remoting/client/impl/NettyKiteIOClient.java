@@ -1,5 +1,6 @@
 package org.kiteq.remoting.client.impl;
 
+import com.google.common.collect.MapMaker;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -26,10 +27,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author gaofeihang
@@ -37,14 +40,25 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class NettyKiteIOClient implements KiteIOClient {
 
+    public enum STATE {
+        NONE, RUNNING, RECONNECTING, RECOVERING, STOP
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyKiteIOClient.class);
 
     private static final Logger DEBUGGER_LOGGER = LoggerFactory.getLogger("debugger");
 
+    private final String groupId;
+
+    private final String secretKey;
+
     private String serverUrl;
+
+    private final HostPort hostPort;
     
     private EventLoopGroup workerGroup;
-    private ChannelFuture channelFuture;
+
+    private volatile ChannelFuture channelFuture;
 
     private Set<String> acceptTopics = Collections.synchronizedSet(new HashSet<String>());
 
@@ -52,22 +66,39 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private ScheduledExecutorService heartbeatExecutor;
 
-    public NettyKiteIOClient(String serverUrl) {
+    private final AtomicReference<STATE> state = new AtomicReference<STATE>(STATE.NONE);
+
+    private final ConcurrentMap<KiteListener, Boolean> listeners = new MapMaker().weakKeys().makeMap();
+
+    public NettyKiteIOClient(String groupId, String secretKey, String serverUrl) {
+        this.groupId = groupId;
+        this.secretKey = secretKey;
         this.serverUrl = serverUrl;
+        hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
     }
     
     @Override
     public void start() throws Exception {
-        HostPort hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
-        
+        if (!state.compareAndSet(STATE.NONE, STATE.RUNNING)) {
+            return;
+        }
+
         workerGroup = new NioEventLoopGroup();
-        
+
+        channelFuture = createBootstrap(workerGroup).connect(hostPort.getHost(), hostPort.getPort()).sync();
+
+        KiteStats.start();
+
+        startHeartbeat();
+    }
+
+    private Bootstrap createBootstrap(EventLoopGroup workerGroup) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            
+
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast(new KiteEncoder());
@@ -75,13 +106,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                 ch.pipeline().addLast(new KiteClientHandler());
             }
         });
-
-        channelFuture = bootstrap
-                .connect(hostPort.getHost(), hostPort.getPort()).sync();
-        
-        KiteStats.start();
-
-        startHeartbeat();
+        return bootstrap;
     }
 
     private void startHeartbeat() {
@@ -90,6 +115,10 @@ public class NettyKiteIOClient implements KiteIOClient {
         heartbeatExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                if (state.get() != STATE.RUNNING) {
+                    return;
+                }
+
                 long version = System.currentTimeMillis();
                 KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
                         .setVersion(version).build();
@@ -113,6 +142,66 @@ public class NettyKiteIOClient implements KiteIOClient {
                 stopHeartBeating();
             }
         }));
+    }
+
+    @Override
+    public boolean reconnect() {
+        if (!state.compareAndSet(STATE.RUNNING, STATE.RECONNECTING)) {
+            return false;
+        }
+
+        String oldChannel = ChannelUtils.getChannelId(channelFuture.channel());
+
+        int retryCount = 1;
+        while (!Thread.currentThread().isInterrupted()) {
+            ChannelFuture future = reconnect0(retryCount++);
+
+            if (state.get() == STATE.RECOVERING) {
+                channelFuture = future;
+
+                heartbeatStopCount.set(0);
+
+                String newChannel = ChannelUtils.getChannelId(channelFuture.channel());
+                for (KiteListener listener : listeners.keySet()) {
+                    ListenerManager.register(newChannel, listener);
+                }
+                ListenerManager.unregister(oldChannel);
+
+                if (handshake()) {
+                    state.set(STATE.RUNNING);
+                } else {
+                    LOGGER.warn(this + " reconnecting error: Handshake refused!");
+                    return false;
+                }
+                LOGGER.info(this + " reconnecting success");
+                return true;
+            } else if (state.get() == STATE.STOP) {
+                LOGGER.warn(this + " reconnecting error!");
+                return false;
+            }
+        }
+        LOGGER.warn(this + " reconnecting error: Interrupted");
+        return false;
+    }
+
+    private ChannelFuture reconnect0(final int retryCount) {
+        if (DEBUGGER_LOGGER.isDebugEnabled()) {
+            DEBUGGER_LOGGER.debug(this + " reconnecting retry count " + retryCount);
+        }
+        ChannelFuture future = createBootstrap(workerGroup).connect(hostPort.getHost(), hostPort.getPort()).addListener(
+                new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) throws Exception {
+                        state.set(future.isSuccess() ? STATE.RECOVERING :
+                                (retryCount > 10 ? STATE.STOP : STATE.RECONNECTING));
+                    }
+                });
+        try {
+            Thread.sleep(retryCount * 1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return future;
     }
 
     @Override
@@ -191,6 +280,8 @@ public class NettyKiteIOClient implements KiteIOClient {
     
     @Override
     public void registerListener(KiteListener listener) {
+        listeners.putIfAbsent(listener, true);
+
         Channel channel = channelFuture.channel();
         ListenerManager.register(ChannelUtils.getChannelId(channel), listener);
     }
@@ -206,10 +297,28 @@ public class NettyKiteIOClient implements KiteIOClient {
     }
 
     @Override
+    public boolean handshake() {
+        KiteRemoting.ConnMeta connMeta = KiteRemoting.ConnMeta.newBuilder()
+                .setGroupId(groupId)
+                .setSecretKey(secretKey)
+                .build();
+
+        KiteRemoting.ConnAuthAck ack = sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
+
+        boolean status = ack.getStatus();
+        LOGGER.info("Client handshake - serverUrl: {}, status: {}, feedback: {}",
+                serverUrl, status, ack.getFeedback());
+        return status;
+    }
+
+    @Override
     public String toString() {
         return "NettyKiteIOClient{" +
                 "serverUrl='" + serverUrl + '\'' +
+                ", channelFuture=" + channelFuture +
                 ", acceptTopics=" + acceptTopics +
+                ", heartbeatStopCount=" + heartbeatStopCount +
+                ", state=" + state +
                 '}';
     }
 }

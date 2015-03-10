@@ -1,7 +1,6 @@
 package org.kiteq.client;
 
 import org.kiteq.client.binding.Binding;
-import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
@@ -19,8 +18,6 @@ public interface KiteClient {
     SendResult sendStringMessage(StringMessage message);
     
     SendResult sendBytesMessage(BytesMessage message);
-    
-    void setMessageListener(MessageListener messageListener);
     
     void start();
     

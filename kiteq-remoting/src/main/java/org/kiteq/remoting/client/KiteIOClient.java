@@ -18,6 +18,8 @@ public interface KiteIOClient {
     
     void start() throws Exception;
 
+    boolean reconnect();
+
     boolean isDead();
 
     void close();
@@ -25,4 +27,6 @@ public interface KiteIOClient {
     String getServerUrl();
 
     Set<String> getAcceptedTopics();
+
+    boolean handshake();
 }

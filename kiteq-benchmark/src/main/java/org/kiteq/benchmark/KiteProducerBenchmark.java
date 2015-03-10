@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.commons.util.ParamUtils;
@@ -45,7 +46,7 @@ public class KiteProducerBenchmark {
         
         clients = new KiteClient[threadNum];
         for (int i = 0; i < clients.length; i++) {
-            clients[i] = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY);
+            clients[i] = new DefaultKiteClient(ZK_ADDR, new ClientConfigs(GROUP_ID, SECRET_KEY));
             clients[i].setPublishTopics(new String[] { TOPOIC });
             clients[i].start();
         }

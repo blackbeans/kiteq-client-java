@@ -9,6 +9,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
+import org.kiteq.client.ClientManager;
 import org.kiteq.commons.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author gaofeihang
@@ -39,6 +41,8 @@ public class BindingManager {
     
     private CuratorFramework curatorClient;
     private Map<String, List<String>> topicServerMap = new ConcurrentHashMap<String, List<String>>();
+
+    private final ConcurrentMap<String, ClientManager> clientManagerMap = new ConcurrentHashMap<String, ClientManager>();
     
     public static BindingManager getInstance(String zkAddr) {
         BindingManager bindingManager = instances.get(zkAddr);
@@ -74,15 +78,22 @@ public class BindingManager {
                                     List<String> newServersUris = curatorClient.getChildren()
                                             .usingWatcher(this).forPath(SERVER_PATH + topic);
 
-                                    if (DEBUGGER_LOGGER.isDebugEnabled()) {
-                                        DEBUGGER_LOGGER.debug("[ZkEvents] Received " + watchedEvent);
+                                    ClientManager clientManager = clientManagerMap.get(topic);
+                                    if (clientManager != null) {
+                                        clientManager.refreshServers(topic, newServersUris);
 
-                                        DEBUGGER_LOGGER.debug("Replace servers "
-                                                + JsonUtils.toJSON(topicServerMap.get(topic))
-                                                + " ->" + JsonUtils.toJSON(newServersUris));
+                                        if (DEBUGGER_LOGGER.isDebugEnabled()) {
+                                            DEBUGGER_LOGGER.debug("[ZkEvents] Received " + watchedEvent);
+
+                                            DEBUGGER_LOGGER.debug("Replace servers "
+                                                    + JsonUtils.toJSON(topicServerMap.get(topic))
+                                                    + " ->" + JsonUtils.toJSON(newServersUris));
+                                        }
+
+                                        topicServerMap.put(topic, newServersUris);
+                                    } else {
+                                        logger.error("No ClientManager for topic " + topic);
                                     }
-
-                                    topicServerMap.put(topic, newServersUris);
                                 }
                             }
                         };
@@ -96,6 +107,10 @@ public class BindingManager {
             }
         }
         return serverUris;
+    }
+
+    public void registerClientManager(String topic, ClientManager clientManager) {
+        clientManagerMap.putIfAbsent(topic, clientManager);
     }
 
     public void registerProducer(String topic, String groupId, String producerName) {

@@ -27,7 +27,7 @@ public class ListenerManager {
         KiteListener listener = listeners.get(channel);
         return listener == null ? defaultListener : listener;
     }
-    
+
     private static KiteListener defaultListener = new KiteListener() {
         
         @Override

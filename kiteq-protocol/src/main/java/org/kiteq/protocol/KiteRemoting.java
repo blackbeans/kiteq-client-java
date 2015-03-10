@@ -48,7 +48,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -95,14 +95,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.HeartBeat.class, org.kiteq.protocol.KiteRemoting.HeartBeat.Builder.class);
+              HeartBeat.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<HeartBeat> PARSER =
@@ -115,7 +115,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<HeartBeat> getParserForType() {
       return PARSER;
     }
@@ -178,59 +178,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(byte[] data)
+    public static HeartBeat parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(java.io.InputStream input)
+    public static HeartBeat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseDelimitedFrom(java.io.InputStream input)
+    public static HeartBeat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseDelimitedFrom(
+    public static HeartBeat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.HeartBeat parseFrom(
+    public static HeartBeat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -239,14 +239,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.HeartBeat prototype) {
+    public static Builder newBuilder(HeartBeat prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -259,17 +259,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.HeartBeatOrBuilder {
+       implements HeartBeatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.HeartBeat.class, org.kiteq.protocol.KiteRemoting.HeartBeat.Builder.class);
+                HeartBeat.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.HeartBeat.newBuilder()
@@ -278,7 +278,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -303,23 +303,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_HeartBeat_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.HeartBeat getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.HeartBeat.getDefaultInstance();
+      public HeartBeat getDefaultInstanceForType() {
+        return HeartBeat.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.HeartBeat build() {
-        org.kiteq.protocol.KiteRemoting.HeartBeat result = buildPartial();
+      public HeartBeat build() {
+        HeartBeat result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.HeartBeat buildPartial() {
-        org.kiteq.protocol.KiteRemoting.HeartBeat result = new org.kiteq.protocol.KiteRemoting.HeartBeat(this);
+      public HeartBeat buildPartial() {
+        HeartBeat result = new HeartBeat(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -332,16 +332,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.HeartBeat) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.HeartBeat)other);
+        if (other instanceof HeartBeat) {
+          return mergeFrom((HeartBeat)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.HeartBeat other) {
-        if (other == org.kiteq.protocol.KiteRemoting.HeartBeat.getDefaultInstance()) return this;
+      public Builder mergeFrom(HeartBeat other) {
+        if (other == HeartBeat.getDefaultInstance()) return this;
         if (other.hasVersion()) {
           setVersion(other.getVersion());
         }
@@ -361,11 +361,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.HeartBeat parsedMessage = null;
+        HeartBeat parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.HeartBeat) e.getUnfinishedMessage();
+          parsedMessage = (HeartBeat) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -439,7 +439,7 @@ public final class KiteRemoting {
      *当前客户端连接所属分组名称
      * </pre>
      */
-    java.lang.String getGroupId();
+    String getGroupId();
     /**
      * <code>required string groupId = 1;</code>
      *
@@ -466,7 +466,7 @@ public final class KiteRemoting {
      *当前连接的授权key
      * </pre>
      */
-    java.lang.String getSecretKey();
+    String getSecretKey();
     /**
      * <code>required string secretKey = 2;</code>
      *
@@ -504,7 +504,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -556,14 +556,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.ConnMeta.class, org.kiteq.protocol.KiteRemoting.ConnMeta.Builder.class);
+              ConnMeta.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<ConnMeta> PARSER =
@@ -576,7 +576,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<ConnMeta> getParserForType() {
       return PARSER;
     }
@@ -584,7 +584,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required string groupId = 1;
     public static final int GROUPID_FIELD_NUMBER = 1;
-    private java.lang.Object groupId_;
+    private Object groupId_;
     /**
      * <code>required string groupId = 1;</code>
      *
@@ -602,14 +602,14 @@ public final class KiteRemoting {
      *当前客户端连接所属分组名称
      * </pre>
      */
-    public java.lang.String getGroupId() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getGroupId() {
+      Object ref = groupId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           groupId_ = s;
         }
@@ -625,11 +625,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getGroupIdBytes() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = groupId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         groupId_ = b;
         return b;
       } else {
@@ -639,7 +639,7 @@ public final class KiteRemoting {
 
     // required string secretKey = 2;
     public static final int SECRETKEY_FIELD_NUMBER = 2;
-    private java.lang.Object secretKey_;
+    private Object secretKey_;
     /**
      * <code>required string secretKey = 2;</code>
      *
@@ -657,14 +657,14 @@ public final class KiteRemoting {
      *当前连接的授权key
      * </pre>
      */
-    public java.lang.String getSecretKey() {
-      java.lang.Object ref = secretKey_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getSecretKey() {
+      Object ref = secretKey_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           secretKey_ = s;
         }
@@ -680,11 +680,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getSecretKeyBytes() {
-      java.lang.Object ref = secretKey_;
-      if (ref instanceof java.lang.String) {
+      Object ref = secretKey_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         secretKey_ = b;
         return b;
       } else {
@@ -745,59 +745,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(byte[] data)
+    public static ConnMeta parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(java.io.InputStream input)
+    public static ConnMeta parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseDelimitedFrom(java.io.InputStream input)
+    public static ConnMeta parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseDelimitedFrom(
+    public static ConnMeta parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnMeta parseFrom(
+    public static ConnMeta parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -806,14 +806,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.ConnMeta prototype) {
+    public static Builder newBuilder(ConnMeta prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -826,17 +826,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.ConnMetaOrBuilder {
+       implements ConnMetaOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.ConnMeta.class, org.kiteq.protocol.KiteRemoting.ConnMeta.Builder.class);
+                ConnMeta.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.ConnMeta.newBuilder()
@@ -845,7 +845,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -872,23 +872,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnMeta_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnMeta getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.ConnMeta.getDefaultInstance();
+      public ConnMeta getDefaultInstanceForType() {
+        return ConnMeta.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnMeta build() {
-        org.kiteq.protocol.KiteRemoting.ConnMeta result = buildPartial();
+      public ConnMeta build() {
+        ConnMeta result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnMeta buildPartial() {
-        org.kiteq.protocol.KiteRemoting.ConnMeta result = new org.kiteq.protocol.KiteRemoting.ConnMeta(this);
+      public ConnMeta buildPartial() {
+        ConnMeta result = new ConnMeta(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -905,16 +905,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.ConnMeta) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.ConnMeta)other);
+        if (other instanceof ConnMeta) {
+          return mergeFrom((ConnMeta)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.ConnMeta other) {
-        if (other == org.kiteq.protocol.KiteRemoting.ConnMeta.getDefaultInstance()) return this;
+      public Builder mergeFrom(ConnMeta other) {
+        if (other == ConnMeta.getDefaultInstance()) return this;
         if (other.hasGroupId()) {
           bitField0_ |= 0x00000001;
           groupId_ = other.groupId_;
@@ -945,11 +945,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.ConnMeta parsedMessage = null;
+        ConnMeta parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.ConnMeta) e.getUnfinishedMessage();
+          parsedMessage = (ConnMeta) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -961,7 +961,7 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required string groupId = 1;
-      private java.lang.Object groupId_ = "";
+      private Object groupId_ = "";
       /**
        * <code>required string groupId = 1;</code>
        *
@@ -979,15 +979,15 @@ public final class KiteRemoting {
        *当前客户端连接所属分组名称
        * </pre>
        */
-      public java.lang.String getGroupId() {
-        java.lang.Object ref = groupId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getGroupId() {
+        Object ref = groupId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           groupId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -999,11 +999,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getGroupIdBytes() {
-        java.lang.Object ref = groupId_;
+        Object ref = groupId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           groupId_ = b;
           return b;
         } else {
@@ -1018,7 +1018,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setGroupId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1059,7 +1059,7 @@ public final class KiteRemoting {
       }
 
       // required string secretKey = 2;
-      private java.lang.Object secretKey_ = "";
+      private Object secretKey_ = "";
       /**
        * <code>required string secretKey = 2;</code>
        *
@@ -1077,15 +1077,15 @@ public final class KiteRemoting {
        *当前连接的授权key
        * </pre>
        */
-      public java.lang.String getSecretKey() {
-        java.lang.Object ref = secretKey_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getSecretKey() {
+        Object ref = secretKey_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           secretKey_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -1097,11 +1097,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getSecretKeyBytes() {
-        java.lang.Object ref = secretKey_;
+        Object ref = secretKey_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           secretKey_ = b;
           return b;
         } else {
@@ -1116,7 +1116,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setSecretKey(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1204,7 +1204,7 @@ public final class KiteRemoting {
      *返回原因
      * </pre>
      */
-    java.lang.String getFeedback();
+    String getFeedback();
     /**
      * <code>required string feedback = 2;</code>
      *
@@ -1242,7 +1242,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -1294,14 +1294,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.ConnAuthAck.class, org.kiteq.protocol.KiteRemoting.ConnAuthAck.Builder.class);
+              ConnAuthAck.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<ConnAuthAck> PARSER =
@@ -1314,7 +1314,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<ConnAuthAck> getParserForType() {
       return PARSER;
     }
@@ -1346,7 +1346,7 @@ public final class KiteRemoting {
 
     // required string feedback = 2;
     public static final int FEEDBACK_FIELD_NUMBER = 2;
-    private java.lang.Object feedback_;
+    private Object feedback_;
     /**
      * <code>required string feedback = 2;</code>
      *
@@ -1364,14 +1364,14 @@ public final class KiteRemoting {
      *返回原因
      * </pre>
      */
-    public java.lang.String getFeedback() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getFeedback() {
+      Object ref = feedback_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           feedback_ = s;
         }
@@ -1387,11 +1387,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getFeedbackBytes() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
+      Object ref = feedback_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         feedback_ = b;
         return b;
       } else {
@@ -1452,59 +1452,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(byte[] data)
+    public static ConnAuthAck parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(java.io.InputStream input)
+    public static ConnAuthAck parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseDelimitedFrom(java.io.InputStream input)
+    public static ConnAuthAck parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseDelimitedFrom(
+    public static ConnAuthAck parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.ConnAuthAck parseFrom(
+    public static ConnAuthAck parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1513,14 +1513,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.ConnAuthAck prototype) {
+    public static Builder newBuilder(ConnAuthAck prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1533,17 +1533,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.ConnAuthAckOrBuilder {
+       implements ConnAuthAckOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.ConnAuthAck.class, org.kiteq.protocol.KiteRemoting.ConnAuthAck.Builder.class);
+                ConnAuthAck.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.ConnAuthAck.newBuilder()
@@ -1552,7 +1552,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1579,23 +1579,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_ConnAuthAck_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnAuthAck getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.ConnAuthAck.getDefaultInstance();
+      public ConnAuthAck getDefaultInstanceForType() {
+        return ConnAuthAck.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnAuthAck build() {
-        org.kiteq.protocol.KiteRemoting.ConnAuthAck result = buildPartial();
+      public ConnAuthAck build() {
+        ConnAuthAck result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.ConnAuthAck buildPartial() {
-        org.kiteq.protocol.KiteRemoting.ConnAuthAck result = new org.kiteq.protocol.KiteRemoting.ConnAuthAck(this);
+      public ConnAuthAck buildPartial() {
+        ConnAuthAck result = new ConnAuthAck(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1612,16 +1612,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.ConnAuthAck) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.ConnAuthAck)other);
+        if (other instanceof ConnAuthAck) {
+          return mergeFrom((ConnAuthAck)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.ConnAuthAck other) {
-        if (other == org.kiteq.protocol.KiteRemoting.ConnAuthAck.getDefaultInstance()) return this;
+      public Builder mergeFrom(ConnAuthAck other) {
+        if (other == ConnAuthAck.getDefaultInstance()) return this;
         if (other.hasStatus()) {
           setStatus(other.getStatus());
         }
@@ -1650,11 +1650,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.ConnAuthAck parsedMessage = null;
+        ConnAuthAck parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.ConnAuthAck) e.getUnfinishedMessage();
+          parsedMessage = (ConnAuthAck) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1715,7 +1715,7 @@ public final class KiteRemoting {
       }
 
       // required string feedback = 2;
-      private java.lang.Object feedback_ = "";
+      private Object feedback_ = "";
       /**
        * <code>required string feedback = 2;</code>
        *
@@ -1733,15 +1733,15 @@ public final class KiteRemoting {
        *返回原因
        * </pre>
        */
-      public java.lang.String getFeedback() {
-        java.lang.Object ref = feedback_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getFeedback() {
+        Object ref = feedback_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           feedback_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -1753,11 +1753,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getFeedbackBytes() {
-        java.lang.Object ref = feedback_;
+        Object ref = feedback_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           feedback_ = b;
           return b;
         } else {
@@ -1772,7 +1772,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setFeedback(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1834,7 +1834,7 @@ public final class KiteRemoting {
     /**
      * <code>required string messageId = 1;</code>
      */
-    java.lang.String getMessageId();
+    String getMessageId();
     /**
      * <code>required string messageId = 1;</code>
      */
@@ -1875,7 +1875,7 @@ public final class KiteRemoting {
      *返回原因
      * </pre>
      */
-    java.lang.String getFeedback();
+    String getFeedback();
     /**
      * <code>required string feedback = 3;</code>
      *
@@ -1913,7 +1913,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -1970,14 +1970,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.MessageStoreAck.class, org.kiteq.protocol.KiteRemoting.MessageStoreAck.Builder.class);
+              MessageStoreAck.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageStoreAck> PARSER =
@@ -1990,7 +1990,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<MessageStoreAck> getParserForType() {
       return PARSER;
     }
@@ -1998,7 +1998,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required string messageId = 1;
     public static final int MESSAGEID_FIELD_NUMBER = 1;
-    private java.lang.Object messageId_;
+    private Object messageId_;
     /**
      * <code>required string messageId = 1;</code>
      */
@@ -2008,14 +2008,14 @@ public final class KiteRemoting {
     /**
      * <code>required string messageId = 1;</code>
      */
-    public java.lang.String getMessageId() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageId() {
+      Object ref = messageId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageId_ = s;
         }
@@ -2027,11 +2027,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageIdBytes() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageId_ = b;
         return b;
       } else {
@@ -2065,7 +2065,7 @@ public final class KiteRemoting {
 
     // required string feedback = 3;
     public static final int FEEDBACK_FIELD_NUMBER = 3;
-    private java.lang.Object feedback_;
+    private Object feedback_;
     /**
      * <code>required string feedback = 3;</code>
      *
@@ -2083,14 +2083,14 @@ public final class KiteRemoting {
      *返回原因
      * </pre>
      */
-    public java.lang.String getFeedback() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getFeedback() {
+      Object ref = feedback_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           feedback_ = s;
         }
@@ -2106,11 +2106,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getFeedbackBytes() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
+      Object ref = feedback_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         feedback_ = b;
         return b;
       } else {
@@ -2183,59 +2183,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(byte[] data)
+    public static MessageStoreAck parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(java.io.InputStream input)
+    public static MessageStoreAck parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseDelimitedFrom(java.io.InputStream input)
+    public static MessageStoreAck parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseDelimitedFrom(
+    public static MessageStoreAck parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.MessageStoreAck parseFrom(
+    public static MessageStoreAck parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2244,14 +2244,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.MessageStoreAck prototype) {
+    public static Builder newBuilder(MessageStoreAck prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2264,17 +2264,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.MessageStoreAckOrBuilder {
+       implements MessageStoreAckOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.MessageStoreAck.class, org.kiteq.protocol.KiteRemoting.MessageStoreAck.Builder.class);
+                MessageStoreAck.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.MessageStoreAck.newBuilder()
@@ -2283,7 +2283,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2312,23 +2312,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_MessageStoreAck_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.MessageStoreAck getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.MessageStoreAck.getDefaultInstance();
+      public MessageStoreAck getDefaultInstanceForType() {
+        return MessageStoreAck.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.MessageStoreAck build() {
-        org.kiteq.protocol.KiteRemoting.MessageStoreAck result = buildPartial();
+      public MessageStoreAck build() {
+        MessageStoreAck result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.MessageStoreAck buildPartial() {
-        org.kiteq.protocol.KiteRemoting.MessageStoreAck result = new org.kiteq.protocol.KiteRemoting.MessageStoreAck(this);
+      public MessageStoreAck buildPartial() {
+        MessageStoreAck result = new MessageStoreAck(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2349,16 +2349,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.MessageStoreAck) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.MessageStoreAck)other);
+        if (other instanceof MessageStoreAck) {
+          return mergeFrom((MessageStoreAck)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.MessageStoreAck other) {
-        if (other == org.kiteq.protocol.KiteRemoting.MessageStoreAck.getDefaultInstance()) return this;
+      public Builder mergeFrom(MessageStoreAck other) {
+        if (other == MessageStoreAck.getDefaultInstance()) return this;
         if (other.hasMessageId()) {
           bitField0_ |= 0x00000001;
           messageId_ = other.messageId_;
@@ -2396,11 +2396,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.MessageStoreAck parsedMessage = null;
+        MessageStoreAck parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.MessageStoreAck) e.getUnfinishedMessage();
+          parsedMessage = (MessageStoreAck) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2412,7 +2412,7 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required string messageId = 1;
-      private java.lang.Object messageId_ = "";
+      private Object messageId_ = "";
       /**
        * <code>required string messageId = 1;</code>
        */
@@ -2422,15 +2422,15 @@ public final class KiteRemoting {
       /**
        * <code>required string messageId = 1;</code>
        */
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageId() {
+        Object ref = messageId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -2438,11 +2438,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+        Object ref = messageId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageId_ = b;
           return b;
         } else {
@@ -2453,7 +2453,7 @@ public final class KiteRemoting {
        * <code>required string messageId = 1;</code>
        */
       public Builder setMessageId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -2535,7 +2535,7 @@ public final class KiteRemoting {
       }
 
       // required string feedback = 3;
-      private java.lang.Object feedback_ = "";
+      private Object feedback_ = "";
       /**
        * <code>required string feedback = 3;</code>
        *
@@ -2553,15 +2553,15 @@ public final class KiteRemoting {
        *返回原因
        * </pre>
        */
-      public java.lang.String getFeedback() {
-        java.lang.Object ref = feedback_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getFeedback() {
+        Object ref = feedback_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           feedback_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -2573,11 +2573,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getFeedbackBytes() {
-        java.lang.Object ref = feedback_;
+        Object ref = feedback_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           feedback_ = b;
           return b;
         } else {
@@ -2592,7 +2592,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setFeedback(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -2662,7 +2662,7 @@ public final class KiteRemoting {
      *消息id
      * </pre>
      */
-    java.lang.String getMessageId();
+    String getMessageId();
     /**
      * <code>required string messageId = 1;</code>
      *
@@ -2681,7 +2681,7 @@ public final class KiteRemoting {
     /**
      * <code>required string topic = 2;</code>
      */
-    java.lang.String getTopic();
+    String getTopic();
     /**
      * <code>required string topic = 2;</code>
      */
@@ -2696,7 +2696,7 @@ public final class KiteRemoting {
     /**
      * <code>required string messageType = 3;</code>
      */
-    java.lang.String getMessageType();
+    String getMessageType();
     /**
      * <code>required string messageType = 3;</code>
      */
@@ -2719,7 +2719,7 @@ public final class KiteRemoting {
      *消息处理  
      * </pre>
      */
-    java.lang.String getGroupId();
+    String getGroupId();
     /**
      * <code>required string groupId = 4;</code>
      *
@@ -2775,7 +2775,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -2842,14 +2842,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.DeliverAck.class, org.kiteq.protocol.KiteRemoting.DeliverAck.Builder.class);
+              DeliverAck.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<DeliverAck> PARSER =
@@ -2862,7 +2862,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<DeliverAck> getParserForType() {
       return PARSER;
     }
@@ -2870,7 +2870,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required string messageId = 1;
     public static final int MESSAGEID_FIELD_NUMBER = 1;
-    private java.lang.Object messageId_;
+    private Object messageId_;
     /**
      * <code>required string messageId = 1;</code>
      *
@@ -2888,14 +2888,14 @@ public final class KiteRemoting {
      *消息id
      * </pre>
      */
-    public java.lang.String getMessageId() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageId() {
+      Object ref = messageId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageId_ = s;
         }
@@ -2911,11 +2911,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageIdBytes() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageId_ = b;
         return b;
       } else {
@@ -2925,7 +2925,7 @@ public final class KiteRemoting {
 
     // required string topic = 2;
     public static final int TOPIC_FIELD_NUMBER = 2;
-    private java.lang.Object topic_;
+    private Object topic_;
     /**
      * <code>required string topic = 2;</code>
      */
@@ -2935,14 +2935,14 @@ public final class KiteRemoting {
     /**
      * <code>required string topic = 2;</code>
      */
-    public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getTopic() {
+      Object ref = topic_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           topic_ = s;
         }
@@ -2954,11 +2954,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
+      Object ref = topic_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         topic_ = b;
         return b;
       } else {
@@ -2968,7 +2968,7 @@ public final class KiteRemoting {
 
     // required string messageType = 3;
     public static final int MESSAGETYPE_FIELD_NUMBER = 3;
-    private java.lang.Object messageType_;
+    private Object messageType_;
     /**
      * <code>required string messageType = 3;</code>
      */
@@ -2978,14 +2978,14 @@ public final class KiteRemoting {
     /**
      * <code>required string messageType = 3;</code>
      */
-    public java.lang.String getMessageType() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageType() {
+      Object ref = messageType_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageType_ = s;
         }
@@ -2997,11 +2997,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageTypeBytes() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageType_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageType_ = b;
         return b;
       } else {
@@ -3011,7 +3011,7 @@ public final class KiteRemoting {
 
     // required string groupId = 4;
     public static final int GROUPID_FIELD_NUMBER = 4;
-    private java.lang.Object groupId_;
+    private Object groupId_;
     /**
      * <code>required string groupId = 4;</code>
      *
@@ -3029,14 +3029,14 @@ public final class KiteRemoting {
      *消息处理  
      * </pre>
      */
-    public java.lang.String getGroupId() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getGroupId() {
+      Object ref = groupId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           groupId_ = s;
         }
@@ -3052,11 +3052,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getGroupIdBytes() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = groupId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         groupId_ = b;
         return b;
       } else {
@@ -3177,59 +3177,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(byte[] data)
+    public static DeliverAck parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(java.io.InputStream input)
+    public static DeliverAck parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseDelimitedFrom(java.io.InputStream input)
+    public static DeliverAck parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseDelimitedFrom(
+    public static DeliverAck parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.DeliverAck parseFrom(
+    public static DeliverAck parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3238,14 +3238,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.DeliverAck prototype) {
+    public static Builder newBuilder(DeliverAck prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3258,17 +3258,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.DeliverAckOrBuilder {
+       implements DeliverAckOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.DeliverAck.class, org.kiteq.protocol.KiteRemoting.DeliverAck.Builder.class);
+                DeliverAck.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.DeliverAck.newBuilder()
@@ -3277,7 +3277,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -3310,23 +3310,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_DeliverAck_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.DeliverAck getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.DeliverAck.getDefaultInstance();
+      public DeliverAck getDefaultInstanceForType() {
+        return DeliverAck.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.DeliverAck build() {
-        org.kiteq.protocol.KiteRemoting.DeliverAck result = buildPartial();
+      public DeliverAck build() {
+        DeliverAck result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.DeliverAck buildPartial() {
-        org.kiteq.protocol.KiteRemoting.DeliverAck result = new org.kiteq.protocol.KiteRemoting.DeliverAck(this);
+      public DeliverAck buildPartial() {
+        DeliverAck result = new DeliverAck(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -3355,16 +3355,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.DeliverAck) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.DeliverAck)other);
+        if (other instanceof DeliverAck) {
+          return mergeFrom((DeliverAck)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.DeliverAck other) {
-        if (other == org.kiteq.protocol.KiteRemoting.DeliverAck.getDefaultInstance()) return this;
+      public Builder mergeFrom(DeliverAck other) {
+        if (other == DeliverAck.getDefaultInstance()) return this;
         if (other.hasMessageId()) {
           bitField0_ |= 0x00000001;
           messageId_ = other.messageId_;
@@ -3420,11 +3420,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.DeliverAck parsedMessage = null;
+        DeliverAck parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.DeliverAck) e.getUnfinishedMessage();
+          parsedMessage = (DeliverAck) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -3436,7 +3436,7 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required string messageId = 1;
-      private java.lang.Object messageId_ = "";
+      private Object messageId_ = "";
       /**
        * <code>required string messageId = 1;</code>
        *
@@ -3454,15 +3454,15 @@ public final class KiteRemoting {
        *消息id
        * </pre>
        */
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageId() {
+        Object ref = messageId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -3474,11 +3474,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+        Object ref = messageId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageId_ = b;
           return b;
         } else {
@@ -3493,7 +3493,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setMessageId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -3534,7 +3534,7 @@ public final class KiteRemoting {
       }
 
       // required string topic = 2;
-      private java.lang.Object topic_ = "";
+      private Object topic_ = "";
       /**
        * <code>required string topic = 2;</code>
        */
@@ -3544,15 +3544,15 @@ public final class KiteRemoting {
       /**
        * <code>required string topic = 2;</code>
        */
-      public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getTopic() {
+        Object ref = topic_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           topic_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -3560,11 +3560,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getTopicBytes() {
-        java.lang.Object ref = topic_;
+        Object ref = topic_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           topic_ = b;
           return b;
         } else {
@@ -3575,7 +3575,7 @@ public final class KiteRemoting {
        * <code>required string topic = 2;</code>
        */
       public Builder setTopic(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -3608,7 +3608,7 @@ public final class KiteRemoting {
       }
 
       // required string messageType = 3;
-      private java.lang.Object messageType_ = "";
+      private Object messageType_ = "";
       /**
        * <code>required string messageType = 3;</code>
        */
@@ -3618,15 +3618,15 @@ public final class KiteRemoting {
       /**
        * <code>required string messageType = 3;</code>
        */
-      public java.lang.String getMessageType() {
-        java.lang.Object ref = messageType_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageType() {
+        Object ref = messageType_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageType_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -3634,11 +3634,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageTypeBytes() {
-        java.lang.Object ref = messageType_;
+        Object ref = messageType_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageType_ = b;
           return b;
         } else {
@@ -3649,7 +3649,7 @@ public final class KiteRemoting {
        * <code>required string messageType = 3;</code>
        */
       public Builder setMessageType(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -3682,7 +3682,7 @@ public final class KiteRemoting {
       }
 
       // required string groupId = 4;
-      private java.lang.Object groupId_ = "";
+      private Object groupId_ = "";
       /**
        * <code>required string groupId = 4;</code>
        *
@@ -3700,15 +3700,15 @@ public final class KiteRemoting {
        *消息处理  
        * </pre>
        */
-      public java.lang.String getGroupId() {
-        java.lang.Object ref = groupId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getGroupId() {
+        Object ref = groupId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           groupId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -3720,11 +3720,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getGroupIdBytes() {
-        java.lang.Object ref = groupId_;
+        Object ref = groupId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           groupId_ = b;
           return b;
         } else {
@@ -3739,7 +3739,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setGroupId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -3858,7 +3858,7 @@ public final class KiteRemoting {
      *消息Id
      * </pre>
      */
-    java.lang.String getMessageId();
+    String getMessageId();
     /**
      * <code>required string messageId = 1;</code>
      *
@@ -3877,7 +3877,7 @@ public final class KiteRemoting {
     /**
      * <code>required string topic = 2;</code>
      */
-    java.lang.String getTopic();
+    String getTopic();
     /**
      * <code>required string topic = 2;</code>
      */
@@ -3892,7 +3892,7 @@ public final class KiteRemoting {
     /**
      * <code>required string messageType = 3;</code>
      */
-    java.lang.String getMessageType();
+    String getMessageType();
     /**
      * <code>required string messageType = 3;</code>
      */
@@ -3933,7 +3933,7 @@ public final class KiteRemoting {
      *回馈
      * </pre>
      */
-    java.lang.String getFeedback();
+    String getFeedback();
     /**
      * <code>required string feedback = 5;</code>
      *
@@ -3971,7 +3971,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -4038,14 +4038,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.TxACKPacket.class, org.kiteq.protocol.KiteRemoting.TxACKPacket.Builder.class);
+              TxACKPacket.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<TxACKPacket> PARSER =
@@ -4058,7 +4058,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<TxACKPacket> getParserForType() {
       return PARSER;
     }
@@ -4066,7 +4066,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required string messageId = 1;
     public static final int MESSAGEID_FIELD_NUMBER = 1;
-    private java.lang.Object messageId_;
+    private Object messageId_;
     /**
      * <code>required string messageId = 1;</code>
      *
@@ -4084,14 +4084,14 @@ public final class KiteRemoting {
      *消息Id
      * </pre>
      */
-    public java.lang.String getMessageId() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageId() {
+      Object ref = messageId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageId_ = s;
         }
@@ -4107,11 +4107,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageIdBytes() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageId_ = b;
         return b;
       } else {
@@ -4121,7 +4121,7 @@ public final class KiteRemoting {
 
     // required string topic = 2;
     public static final int TOPIC_FIELD_NUMBER = 2;
-    private java.lang.Object topic_;
+    private Object topic_;
     /**
      * <code>required string topic = 2;</code>
      */
@@ -4131,14 +4131,14 @@ public final class KiteRemoting {
     /**
      * <code>required string topic = 2;</code>
      */
-    public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getTopic() {
+      Object ref = topic_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           topic_ = s;
         }
@@ -4150,11 +4150,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
+      Object ref = topic_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         topic_ = b;
         return b;
       } else {
@@ -4164,7 +4164,7 @@ public final class KiteRemoting {
 
     // required string messageType = 3;
     public static final int MESSAGETYPE_FIELD_NUMBER = 3;
-    private java.lang.Object messageType_;
+    private Object messageType_;
     /**
      * <code>required string messageType = 3;</code>
      */
@@ -4174,14 +4174,14 @@ public final class KiteRemoting {
     /**
      * <code>required string messageType = 3;</code>
      */
-    public java.lang.String getMessageType() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageType() {
+      Object ref = messageType_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageType_ = s;
         }
@@ -4193,11 +4193,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageTypeBytes() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageType_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageType_ = b;
         return b;
       } else {
@@ -4231,7 +4231,7 @@ public final class KiteRemoting {
 
     // required string feedback = 5;
     public static final int FEEDBACK_FIELD_NUMBER = 5;
-    private java.lang.Object feedback_;
+    private Object feedback_;
     /**
      * <code>required string feedback = 5;</code>
      *
@@ -4249,14 +4249,14 @@ public final class KiteRemoting {
      *回馈
      * </pre>
      */
-    public java.lang.String getFeedback() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getFeedback() {
+      Object ref = feedback_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           feedback_ = s;
         }
@@ -4272,11 +4272,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getFeedbackBytes() {
-      java.lang.Object ref = feedback_;
-      if (ref instanceof java.lang.String) {
+      Object ref = feedback_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         feedback_ = b;
         return b;
       } else {
@@ -4373,59 +4373,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(byte[] data)
+    public static TxACKPacket parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(java.io.InputStream input)
+    public static TxACKPacket parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseDelimitedFrom(java.io.InputStream input)
+    public static TxACKPacket parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseDelimitedFrom(
+    public static TxACKPacket parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.TxACKPacket parseFrom(
+    public static TxACKPacket parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4434,14 +4434,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.TxACKPacket prototype) {
+    public static Builder newBuilder(TxACKPacket prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -4454,17 +4454,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.TxACKPacketOrBuilder {
+       implements TxACKPacketOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.TxACKPacket.class, org.kiteq.protocol.KiteRemoting.TxACKPacket.Builder.class);
+                TxACKPacket.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.TxACKPacket.newBuilder()
@@ -4473,7 +4473,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -4506,23 +4506,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_TxACKPacket_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.TxACKPacket getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.TxACKPacket.getDefaultInstance();
+      public TxACKPacket getDefaultInstanceForType() {
+        return TxACKPacket.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.TxACKPacket build() {
-        org.kiteq.protocol.KiteRemoting.TxACKPacket result = buildPartial();
+      public TxACKPacket build() {
+        TxACKPacket result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.TxACKPacket buildPartial() {
-        org.kiteq.protocol.KiteRemoting.TxACKPacket result = new org.kiteq.protocol.KiteRemoting.TxACKPacket(this);
+      public TxACKPacket buildPartial() {
+        TxACKPacket result = new TxACKPacket(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -4551,16 +4551,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.TxACKPacket) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.TxACKPacket)other);
+        if (other instanceof TxACKPacket) {
+          return mergeFrom((TxACKPacket)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.TxACKPacket other) {
-        if (other == org.kiteq.protocol.KiteRemoting.TxACKPacket.getDefaultInstance()) return this;
+      public Builder mergeFrom(TxACKPacket other) {
+        if (other == TxACKPacket.getDefaultInstance()) return this;
         if (other.hasMessageId()) {
           bitField0_ |= 0x00000001;
           messageId_ = other.messageId_;
@@ -4616,11 +4616,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.TxACKPacket parsedMessage = null;
+        TxACKPacket parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.TxACKPacket) e.getUnfinishedMessage();
+          parsedMessage = (TxACKPacket) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -4632,7 +4632,7 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required string messageId = 1;
-      private java.lang.Object messageId_ = "";
+      private Object messageId_ = "";
       /**
        * <code>required string messageId = 1;</code>
        *
@@ -4650,15 +4650,15 @@ public final class KiteRemoting {
        *消息Id
        * </pre>
        */
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageId() {
+        Object ref = messageId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -4670,11 +4670,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+        Object ref = messageId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageId_ = b;
           return b;
         } else {
@@ -4689,7 +4689,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setMessageId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4730,7 +4730,7 @@ public final class KiteRemoting {
       }
 
       // required string topic = 2;
-      private java.lang.Object topic_ = "";
+      private Object topic_ = "";
       /**
        * <code>required string topic = 2;</code>
        */
@@ -4740,15 +4740,15 @@ public final class KiteRemoting {
       /**
        * <code>required string topic = 2;</code>
        */
-      public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getTopic() {
+        Object ref = topic_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           topic_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -4756,11 +4756,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getTopicBytes() {
-        java.lang.Object ref = topic_;
+        Object ref = topic_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           topic_ = b;
           return b;
         } else {
@@ -4771,7 +4771,7 @@ public final class KiteRemoting {
        * <code>required string topic = 2;</code>
        */
       public Builder setTopic(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4804,7 +4804,7 @@ public final class KiteRemoting {
       }
 
       // required string messageType = 3;
-      private java.lang.Object messageType_ = "";
+      private Object messageType_ = "";
       /**
        * <code>required string messageType = 3;</code>
        */
@@ -4814,15 +4814,15 @@ public final class KiteRemoting {
       /**
        * <code>required string messageType = 3;</code>
        */
-      public java.lang.String getMessageType() {
-        java.lang.Object ref = messageType_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageType() {
+        Object ref = messageType_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageType_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -4830,11 +4830,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageTypeBytes() {
-        java.lang.Object ref = messageType_;
+        Object ref = messageType_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageType_ = b;
           return b;
         } else {
@@ -4845,7 +4845,7 @@ public final class KiteRemoting {
        * <code>required string messageType = 3;</code>
        */
       public Builder setMessageType(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -4927,7 +4927,7 @@ public final class KiteRemoting {
       }
 
       // required string feedback = 5;
-      private java.lang.Object feedback_ = "";
+      private Object feedback_ = "";
       /**
        * <code>required string feedback = 5;</code>
        *
@@ -4945,15 +4945,15 @@ public final class KiteRemoting {
        *回馈
        * </pre>
        */
-      public java.lang.String getFeedback() {
-        java.lang.Object ref = feedback_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getFeedback() {
+        Object ref = feedback_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           feedback_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -4965,11 +4965,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getFeedbackBytes() {
-        java.lang.Object ref = feedback_;
+        Object ref = feedback_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           feedback_ = b;
           return b;
         } else {
@@ -4984,7 +4984,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setFeedback(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -5046,7 +5046,7 @@ public final class KiteRemoting {
     /**
      * <code>required string messageId = 1;</code>
      */
-    java.lang.String getMessageId();
+    String getMessageId();
     /**
      * <code>required string messageId = 1;</code>
      */
@@ -5069,7 +5069,7 @@ public final class KiteRemoting {
      *topic类型
      * </pre>
      */
-    java.lang.String getTopic();
+    String getTopic();
     /**
      * <code>required string topic = 2;</code>
      *
@@ -5096,7 +5096,7 @@ public final class KiteRemoting {
      *消息类型
      * </pre>
      */
-    java.lang.String getMessageType();
+    String getMessageType();
     /**
      * <code>required string messageType = 3;</code>
      *
@@ -5159,7 +5159,7 @@ public final class KiteRemoting {
      * 消息发送来源
      * </pre>
      */
-    java.lang.String getGroupId();
+    String getGroupId();
     /**
      * <code>required string groupId = 6;</code>
      *
@@ -5229,7 +5229,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -5311,14 +5311,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_Header_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_Header_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.Header.class, org.kiteq.protocol.KiteRemoting.Header.Builder.class);
+              Header.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<Header> PARSER =
@@ -5331,7 +5331,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<Header> getParserForType() {
       return PARSER;
     }
@@ -5339,7 +5339,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required string messageId = 1;
     public static final int MESSAGEID_FIELD_NUMBER = 1;
-    private java.lang.Object messageId_;
+    private Object messageId_;
     /**
      * <code>required string messageId = 1;</code>
      */
@@ -5349,14 +5349,14 @@ public final class KiteRemoting {
     /**
      * <code>required string messageId = 1;</code>
      */
-    public java.lang.String getMessageId() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageId() {
+      Object ref = messageId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageId_ = s;
         }
@@ -5368,11 +5368,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageIdBytes() {
-      java.lang.Object ref = messageId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageId_ = b;
         return b;
       } else {
@@ -5382,7 +5382,7 @@ public final class KiteRemoting {
 
     // required string topic = 2;
     public static final int TOPIC_FIELD_NUMBER = 2;
-    private java.lang.Object topic_;
+    private Object topic_;
     /**
      * <code>required string topic = 2;</code>
      *
@@ -5400,14 +5400,14 @@ public final class KiteRemoting {
      *topic类型
      * </pre>
      */
-    public java.lang.String getTopic() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getTopic() {
+      Object ref = topic_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           topic_ = s;
         }
@@ -5423,11 +5423,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getTopicBytes() {
-      java.lang.Object ref = topic_;
-      if (ref instanceof java.lang.String) {
+      Object ref = topic_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         topic_ = b;
         return b;
       } else {
@@ -5437,7 +5437,7 @@ public final class KiteRemoting {
 
     // required string messageType = 3;
     public static final int MESSAGETYPE_FIELD_NUMBER = 3;
-    private java.lang.Object messageType_;
+    private Object messageType_;
     /**
      * <code>required string messageType = 3;</code>
      *
@@ -5455,14 +5455,14 @@ public final class KiteRemoting {
      *消息类型
      * </pre>
      */
-    public java.lang.String getMessageType() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getMessageType() {
+      Object ref = messageType_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           messageType_ = s;
         }
@@ -5478,11 +5478,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getMessageTypeBytes() {
-      java.lang.Object ref = messageType_;
-      if (ref instanceof java.lang.String) {
+      Object ref = messageType_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         messageType_ = b;
         return b;
       } else {
@@ -5540,7 +5540,7 @@ public final class KiteRemoting {
 
     // required string groupId = 6;
     public static final int GROUPID_FIELD_NUMBER = 6;
-    private java.lang.Object groupId_;
+    private Object groupId_;
     /**
      * <code>required string groupId = 6;</code>
      *
@@ -5558,14 +5558,14 @@ public final class KiteRemoting {
      * 消息发送来源
      * </pre>
      */
-    public java.lang.String getGroupId() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getGroupId() {
+      Object ref = groupId_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           groupId_ = s;
         }
@@ -5581,11 +5581,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getGroupIdBytes() {
-      java.lang.Object ref = groupId_;
-      if (ref instanceof java.lang.String) {
+      Object ref = groupId_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         groupId_ = b;
         return b;
       } else {
@@ -5766,59 +5766,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(byte[] data)
+    public static Header parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(java.io.InputStream input)
+    public static Header parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseDelimitedFrom(java.io.InputStream input)
+    public static Header parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseDelimitedFrom(
+    public static Header parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.Header parseFrom(
+    public static Header parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5827,14 +5827,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.Header prototype) {
+    public static Builder newBuilder(Header prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -5843,17 +5843,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.HeaderOrBuilder {
+       implements HeaderOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_Header_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_Header_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.Header.class, org.kiteq.protocol.KiteRemoting.Header.Builder.class);
+                Header.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.Header.newBuilder()
@@ -5862,7 +5862,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -5901,23 +5901,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_Header_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.Header getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+      public Header getDefaultInstanceForType() {
+        return Header.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.Header build() {
-        org.kiteq.protocol.KiteRemoting.Header result = buildPartial();
+      public Header build() {
+        Header result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.Header buildPartial() {
-        org.kiteq.protocol.KiteRemoting.Header result = new org.kiteq.protocol.KiteRemoting.Header(this);
+      public Header buildPartial() {
+        Header result = new Header(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -5958,16 +5958,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.Header) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.Header)other);
+        if (other instanceof Header) {
+          return mergeFrom((Header)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.Header other) {
-        if (other == org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance()) return this;
+      public Builder mergeFrom(Header other) {
+        if (other == Header.getDefaultInstance()) return this;
         if (other.hasMessageId()) {
           bitField0_ |= 0x00000001;
           messageId_ = other.messageId_;
@@ -6044,11 +6044,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.Header parsedMessage = null;
+        Header parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.Header) e.getUnfinishedMessage();
+          parsedMessage = (Header) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -6060,7 +6060,7 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required string messageId = 1;
-      private java.lang.Object messageId_ = "";
+      private Object messageId_ = "";
       /**
        * <code>required string messageId = 1;</code>
        */
@@ -6070,15 +6070,15 @@ public final class KiteRemoting {
       /**
        * <code>required string messageId = 1;</code>
        */
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageId() {
+        Object ref = messageId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -6086,11 +6086,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+        Object ref = messageId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageId_ = b;
           return b;
         } else {
@@ -6101,7 +6101,7 @@ public final class KiteRemoting {
        * <code>required string messageId = 1;</code>
        */
       public Builder setMessageId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -6134,7 +6134,7 @@ public final class KiteRemoting {
       }
 
       // required string topic = 2;
-      private java.lang.Object topic_ = "";
+      private Object topic_ = "";
       /**
        * <code>required string topic = 2;</code>
        *
@@ -6152,15 +6152,15 @@ public final class KiteRemoting {
        *topic类型
        * </pre>
        */
-      public java.lang.String getTopic() {
-        java.lang.Object ref = topic_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getTopic() {
+        Object ref = topic_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           topic_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -6172,11 +6172,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getTopicBytes() {
-        java.lang.Object ref = topic_;
+        Object ref = topic_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           topic_ = b;
           return b;
         } else {
@@ -6191,7 +6191,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setTopic(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -6232,7 +6232,7 @@ public final class KiteRemoting {
       }
 
       // required string messageType = 3;
-      private java.lang.Object messageType_ = "";
+      private Object messageType_ = "";
       /**
        * <code>required string messageType = 3;</code>
        *
@@ -6250,15 +6250,15 @@ public final class KiteRemoting {
        *消息类型
        * </pre>
        */
-      public java.lang.String getMessageType() {
-        java.lang.Object ref = messageType_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getMessageType() {
+        Object ref = messageType_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           messageType_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -6270,11 +6270,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getMessageTypeBytes() {
-        java.lang.Object ref = messageType_;
+        Object ref = messageType_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           messageType_ = b;
           return b;
         } else {
@@ -6289,7 +6289,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setMessageType(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -6428,7 +6428,7 @@ public final class KiteRemoting {
       }
 
       // required string groupId = 6;
-      private java.lang.Object groupId_ = "";
+      private Object groupId_ = "";
       /**
        * <code>required string groupId = 6;</code>
        *
@@ -6446,15 +6446,15 @@ public final class KiteRemoting {
        * 消息发送来源
        * </pre>
        */
-      public java.lang.String getGroupId() {
-        java.lang.Object ref = groupId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getGroupId() {
+        Object ref = groupId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           groupId_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -6466,11 +6466,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getGroupIdBytes() {
-        java.lang.Object ref = groupId_;
+        Object ref = groupId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           groupId_ = b;
           return b;
         } else {
@@ -6485,7 +6485,7 @@ public final class KiteRemoting {
        * </pre>
        */
       public Builder setGroupId(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -6645,11 +6645,11 @@ public final class KiteRemoting {
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    org.kiteq.protocol.KiteRemoting.Header getHeader();
+    Header getHeader();
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder();
+    HeaderOrBuilder getHeaderOrBuilder();
 
     // required bytes body = 2;
     /**
@@ -6688,7 +6688,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -6717,11 +6717,11 @@ public final class KiteRemoting {
               break;
             }
             case 10: {
-              org.kiteq.protocol.KiteRemoting.Header.Builder subBuilder = null;
+              Header.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = header_.toBuilder();
               }
-              header_ = input.readMessage(org.kiteq.protocol.KiteRemoting.Header.PARSER, extensionRegistry);
+              header_ = input.readMessage(Header.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(header_);
                 header_ = subBuilder.buildPartial();
@@ -6748,14 +6748,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.BytesMessage.class, org.kiteq.protocol.KiteRemoting.BytesMessage.Builder.class);
+              BytesMessage.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<BytesMessage> PARSER =
@@ -6768,7 +6768,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<BytesMessage> getParserForType() {
       return PARSER;
     }
@@ -6776,7 +6776,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required .org.kiteq.protocol.Header header = 1;
     public static final int HEADER_FIELD_NUMBER = 1;
-    private org.kiteq.protocol.KiteRemoting.Header header_;
+    private Header header_;
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
@@ -6786,13 +6786,13 @@ public final class KiteRemoting {
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    public org.kiteq.protocol.KiteRemoting.Header getHeader() {
+    public Header getHeader() {
       return header_;
     }
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    public org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder() {
+    public HeaderOrBuilder getHeaderOrBuilder() {
       return header_;
     }
 
@@ -6813,7 +6813,7 @@ public final class KiteRemoting {
     }
 
     private void initFields() {
-      header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+      header_ = Header.getDefaultInstance();
       body_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -6869,59 +6869,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(byte[] data)
+    public static BytesMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(java.io.InputStream input)
+    public static BytesMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseDelimitedFrom(java.io.InputStream input)
+    public static BytesMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseDelimitedFrom(
+    public static BytesMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.BytesMessage parseFrom(
+    public static BytesMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -6930,14 +6930,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.BytesMessage prototype) {
+    public static Builder newBuilder(BytesMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -6950,17 +6950,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.BytesMessageOrBuilder {
+       implements BytesMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.BytesMessage.class, org.kiteq.protocol.KiteRemoting.BytesMessage.Builder.class);
+                BytesMessage.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.BytesMessage.newBuilder()
@@ -6969,7 +6969,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -6985,7 +6985,7 @@ public final class KiteRemoting {
       public Builder clear() {
         super.clear();
         if (headerBuilder_ == null) {
-          header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+          header_ = Header.getDefaultInstance();
         } else {
           headerBuilder_.clear();
         }
@@ -7001,23 +7001,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_BytesMessage_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.BytesMessage getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.BytesMessage.getDefaultInstance();
+      public BytesMessage getDefaultInstanceForType() {
+        return BytesMessage.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.BytesMessage build() {
-        org.kiteq.protocol.KiteRemoting.BytesMessage result = buildPartial();
+      public BytesMessage build() {
+        BytesMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.BytesMessage buildPartial() {
-        org.kiteq.protocol.KiteRemoting.BytesMessage result = new org.kiteq.protocol.KiteRemoting.BytesMessage(this);
+      public BytesMessage buildPartial() {
+        BytesMessage result = new BytesMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7038,16 +7038,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.BytesMessage) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.BytesMessage)other);
+        if (other instanceof BytesMessage) {
+          return mergeFrom((BytesMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.BytesMessage other) {
-        if (other == org.kiteq.protocol.KiteRemoting.BytesMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(BytesMessage other) {
+        if (other == BytesMessage.getDefaultInstance()) return this;
         if (other.hasHeader()) {
           mergeHeader(other.getHeader());
         }
@@ -7078,11 +7078,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.BytesMessage parsedMessage = null;
+        BytesMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.BytesMessage) e.getUnfinishedMessage();
+          parsedMessage = (BytesMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -7094,9 +7094,9 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required .org.kiteq.protocol.Header header = 1;
-      private org.kiteq.protocol.KiteRemoting.Header header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+      private Header header_ = Header.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder> headerBuilder_;
+          Header, Header.Builder, HeaderOrBuilder> headerBuilder_;
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
@@ -7106,7 +7106,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.Header getHeader() {
+      public Header getHeader() {
         if (headerBuilder_ == null) {
           return header_;
         } else {
@@ -7116,7 +7116,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public Builder setHeader(org.kiteq.protocol.KiteRemoting.Header value) {
+      public Builder setHeader(Header value) {
         if (headerBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7133,7 +7133,7 @@ public final class KiteRemoting {
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
       public Builder setHeader(
-          org.kiteq.protocol.KiteRemoting.Header.Builder builderForValue) {
+          Header.Builder builderForValue) {
         if (headerBuilder_ == null) {
           header_ = builderForValue.build();
           onChanged();
@@ -7146,12 +7146,12 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public Builder mergeHeader(org.kiteq.protocol.KiteRemoting.Header value) {
+      public Builder mergeHeader(Header value) {
         if (headerBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              header_ != org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance()) {
+              header_ != Header.getDefaultInstance()) {
             header_ =
-              org.kiteq.protocol.KiteRemoting.Header.newBuilder(header_).mergeFrom(value).buildPartial();
+              Header.newBuilder(header_).mergeFrom(value).buildPartial();
           } else {
             header_ = value;
           }
@@ -7167,7 +7167,7 @@ public final class KiteRemoting {
        */
       public Builder clearHeader() {
         if (headerBuilder_ == null) {
-          header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+          header_ = Header.getDefaultInstance();
           onChanged();
         } else {
           headerBuilder_.clear();
@@ -7178,7 +7178,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.Header.Builder getHeaderBuilder() {
+      public Header.Builder getHeaderBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getHeaderFieldBuilder().getBuilder();
@@ -7186,7 +7186,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder() {
+      public HeaderOrBuilder getHeaderOrBuilder() {
         if (headerBuilder_ != null) {
           return headerBuilder_.getMessageOrBuilder();
         } else {
@@ -7197,11 +7197,11 @@ public final class KiteRemoting {
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder> 
+          Header, Header.Builder, HeaderOrBuilder>
           getHeaderFieldBuilder() {
         if (headerBuilder_ == null) {
           headerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder>(
+              Header, Header.Builder, HeaderOrBuilder>(
                   header_,
                   getParentForChildren(),
                   isClean());
@@ -7268,11 +7268,11 @@ public final class KiteRemoting {
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    org.kiteq.protocol.KiteRemoting.Header getHeader();
+    Header getHeader();
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder();
+    HeaderOrBuilder getHeaderOrBuilder();
 
     // required string body = 2;
     /**
@@ -7282,7 +7282,7 @@ public final class KiteRemoting {
     /**
      * <code>required string body = 2;</code>
      */
-    java.lang.String getBody();
+    String getBody();
     /**
      * <code>required string body = 2;</code>
      */
@@ -7316,7 +7316,7 @@ public final class KiteRemoting {
     }
 
     private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
+    @Override
     public final com.google.protobuf.UnknownFieldSet
         getUnknownFields() {
       return this.unknownFields;
@@ -7345,11 +7345,11 @@ public final class KiteRemoting {
               break;
             }
             case 10: {
-              org.kiteq.protocol.KiteRemoting.Header.Builder subBuilder = null;
+              Header.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = header_.toBuilder();
               }
-              header_ = input.readMessage(org.kiteq.protocol.KiteRemoting.Header.PARSER, extensionRegistry);
+              header_ = input.readMessage(Header.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(header_);
                 header_ = subBuilder.buildPartial();
@@ -7376,14 +7376,14 @@ public final class KiteRemoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
+      return KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_fieldAccessorTable
+      return KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.kiteq.protocol.KiteRemoting.StringMessage.class, org.kiteq.protocol.KiteRemoting.StringMessage.Builder.class);
+              StringMessage.class, Builder.class);
     }
 
     public static com.google.protobuf.Parser<StringMessage> PARSER =
@@ -7396,7 +7396,7 @@ public final class KiteRemoting {
       }
     };
 
-    @java.lang.Override
+    @Override
     public com.google.protobuf.Parser<StringMessage> getParserForType() {
       return PARSER;
     }
@@ -7404,7 +7404,7 @@ public final class KiteRemoting {
     private int bitField0_;
     // required .org.kiteq.protocol.Header header = 1;
     public static final int HEADER_FIELD_NUMBER = 1;
-    private org.kiteq.protocol.KiteRemoting.Header header_;
+    private Header header_;
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
@@ -7414,19 +7414,19 @@ public final class KiteRemoting {
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    public org.kiteq.protocol.KiteRemoting.Header getHeader() {
+    public Header getHeader() {
       return header_;
     }
     /**
      * <code>required .org.kiteq.protocol.Header header = 1;</code>
      */
-    public org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder() {
+    public HeaderOrBuilder getHeaderOrBuilder() {
       return header_;
     }
 
     // required string body = 2;
     public static final int BODY_FIELD_NUMBER = 2;
-    private java.lang.Object body_;
+    private Object body_;
     /**
      * <code>required string body = 2;</code>
      */
@@ -7436,14 +7436,14 @@ public final class KiteRemoting {
     /**
      * <code>required string body = 2;</code>
      */
-    public java.lang.String getBody() {
-      java.lang.Object ref = body_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
+    public String getBody() {
+      Object ref = body_;
+      if (ref instanceof String) {
+        return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
+        String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           body_ = s;
         }
@@ -7455,11 +7455,11 @@ public final class KiteRemoting {
      */
     public com.google.protobuf.ByteString
         getBodyBytes() {
-      java.lang.Object ref = body_;
-      if (ref instanceof java.lang.String) {
+      Object ref = body_;
+      if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+                (String) ref);
         body_ = b;
         return b;
       } else {
@@ -7468,7 +7468,7 @@ public final class KiteRemoting {
     }
 
     private void initFields() {
-      header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+      header_ = Header.getDefaultInstance();
       body_ = "";
     }
     private byte memoizedIsInitialized = -1;
@@ -7524,59 +7524,59 @@ public final class KiteRemoting {
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
+    @Override
+    protected Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(byte[] data)
+    public static StringMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(java.io.InputStream input)
+    public static StringMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseDelimitedFrom(java.io.InputStream input)
+    public static StringMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseDelimitedFrom(
+    public static StringMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static org.kiteq.protocol.KiteRemoting.StringMessage parseFrom(
+    public static StringMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -7585,14 +7585,14 @@ public final class KiteRemoting {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(org.kiteq.protocol.KiteRemoting.StringMessage prototype) {
+    public static Builder newBuilder(StringMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
-    @java.lang.Override
+    @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -7605,17 +7605,17 @@ public final class KiteRemoting {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements org.kiteq.protocol.KiteRemoting.StringMessageOrBuilder {
+       implements StringMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_fieldAccessorTable
+        return KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.kiteq.protocol.KiteRemoting.StringMessage.class, org.kiteq.protocol.KiteRemoting.StringMessage.Builder.class);
+                StringMessage.class, Builder.class);
       }
 
       // Construct using org.kiteq.protocol.KiteRemoting.StringMessage.newBuilder()
@@ -7624,7 +7624,7 @@ public final class KiteRemoting {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -7640,7 +7640,7 @@ public final class KiteRemoting {
       public Builder clear() {
         super.clear();
         if (headerBuilder_ == null) {
-          header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+          header_ = Header.getDefaultInstance();
         } else {
           headerBuilder_.clear();
         }
@@ -7656,23 +7656,23 @@ public final class KiteRemoting {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.kiteq.protocol.KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
+        return KiteRemoting.internal_static_org_kiteq_protocol_StringMessage_descriptor;
       }
 
-      public org.kiteq.protocol.KiteRemoting.StringMessage getDefaultInstanceForType() {
-        return org.kiteq.protocol.KiteRemoting.StringMessage.getDefaultInstance();
+      public StringMessage getDefaultInstanceForType() {
+        return StringMessage.getDefaultInstance();
       }
 
-      public org.kiteq.protocol.KiteRemoting.StringMessage build() {
-        org.kiteq.protocol.KiteRemoting.StringMessage result = buildPartial();
+      public StringMessage build() {
+        StringMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.kiteq.protocol.KiteRemoting.StringMessage buildPartial() {
-        org.kiteq.protocol.KiteRemoting.StringMessage result = new org.kiteq.protocol.KiteRemoting.StringMessage(this);
+      public StringMessage buildPartial() {
+        StringMessage result = new StringMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7693,16 +7693,16 @@ public final class KiteRemoting {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.kiteq.protocol.KiteRemoting.StringMessage) {
-          return mergeFrom((org.kiteq.protocol.KiteRemoting.StringMessage)other);
+        if (other instanceof StringMessage) {
+          return mergeFrom((StringMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.kiteq.protocol.KiteRemoting.StringMessage other) {
-        if (other == org.kiteq.protocol.KiteRemoting.StringMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(StringMessage other) {
+        if (other == StringMessage.getDefaultInstance()) return this;
         if (other.hasHeader()) {
           mergeHeader(other.getHeader());
         }
@@ -7735,11 +7735,11 @@ public final class KiteRemoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.kiteq.protocol.KiteRemoting.StringMessage parsedMessage = null;
+        StringMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.kiteq.protocol.KiteRemoting.StringMessage) e.getUnfinishedMessage();
+          parsedMessage = (StringMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -7751,9 +7751,9 @@ public final class KiteRemoting {
       private int bitField0_;
 
       // required .org.kiteq.protocol.Header header = 1;
-      private org.kiteq.protocol.KiteRemoting.Header header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+      private Header header_ = Header.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder> headerBuilder_;
+          Header, Header.Builder, HeaderOrBuilder> headerBuilder_;
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
@@ -7763,7 +7763,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.Header getHeader() {
+      public Header getHeader() {
         if (headerBuilder_ == null) {
           return header_;
         } else {
@@ -7773,7 +7773,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public Builder setHeader(org.kiteq.protocol.KiteRemoting.Header value) {
+      public Builder setHeader(Header value) {
         if (headerBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7790,7 +7790,7 @@ public final class KiteRemoting {
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
       public Builder setHeader(
-          org.kiteq.protocol.KiteRemoting.Header.Builder builderForValue) {
+          Header.Builder builderForValue) {
         if (headerBuilder_ == null) {
           header_ = builderForValue.build();
           onChanged();
@@ -7803,12 +7803,12 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public Builder mergeHeader(org.kiteq.protocol.KiteRemoting.Header value) {
+      public Builder mergeHeader(Header value) {
         if (headerBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              header_ != org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance()) {
+              header_ != Header.getDefaultInstance()) {
             header_ =
-              org.kiteq.protocol.KiteRemoting.Header.newBuilder(header_).mergeFrom(value).buildPartial();
+              Header.newBuilder(header_).mergeFrom(value).buildPartial();
           } else {
             header_ = value;
           }
@@ -7824,7 +7824,7 @@ public final class KiteRemoting {
        */
       public Builder clearHeader() {
         if (headerBuilder_ == null) {
-          header_ = org.kiteq.protocol.KiteRemoting.Header.getDefaultInstance();
+          header_ = Header.getDefaultInstance();
           onChanged();
         } else {
           headerBuilder_.clear();
@@ -7835,7 +7835,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.Header.Builder getHeaderBuilder() {
+      public Header.Builder getHeaderBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getHeaderFieldBuilder().getBuilder();
@@ -7843,7 +7843,7 @@ public final class KiteRemoting {
       /**
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
-      public org.kiteq.protocol.KiteRemoting.HeaderOrBuilder getHeaderOrBuilder() {
+      public HeaderOrBuilder getHeaderOrBuilder() {
         if (headerBuilder_ != null) {
           return headerBuilder_.getMessageOrBuilder();
         } else {
@@ -7854,11 +7854,11 @@ public final class KiteRemoting {
        * <code>required .org.kiteq.protocol.Header header = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder> 
+          Header, Header.Builder, HeaderOrBuilder>
           getHeaderFieldBuilder() {
         if (headerBuilder_ == null) {
           headerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              org.kiteq.protocol.KiteRemoting.Header, org.kiteq.protocol.KiteRemoting.Header.Builder, org.kiteq.protocol.KiteRemoting.HeaderOrBuilder>(
+              Header, Header.Builder, HeaderOrBuilder>(
                   header_,
                   getParentForChildren(),
                   isClean());
@@ -7868,7 +7868,7 @@ public final class KiteRemoting {
       }
 
       // required string body = 2;
-      private java.lang.Object body_ = "";
+      private Object body_ = "";
       /**
        * <code>required string body = 2;</code>
        */
@@ -7878,15 +7878,15 @@ public final class KiteRemoting {
       /**
        * <code>required string body = 2;</code>
        */
-      public java.lang.String getBody() {
-        java.lang.Object ref = body_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+      public String getBody() {
+        Object ref = body_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
           body_ = s;
           return s;
         } else {
-          return (java.lang.String) ref;
+          return (String) ref;
         }
       }
       /**
@@ -7894,11 +7894,11 @@ public final class KiteRemoting {
        */
       public com.google.protobuf.ByteString
           getBodyBytes() {
-        java.lang.Object ref = body_;
+        Object ref = body_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+                  (String) ref);
           body_ = b;
           return b;
         } else {
@@ -7909,7 +7909,7 @@ public final class KiteRemoting {
        * <code>required string body = 2;</code>
        */
       public Builder setBody(
-          java.lang.String value) {
+          String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -8005,7 +8005,7 @@ public final class KiteRemoting {
   private static com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
-    java.lang.String[] descriptorData = {
+    String[] descriptorData = {
       "\n\023kite_remoting.proto\022\022org.kiteq.protoco" +
       "l\"\034\n\tHeartBeat\022\017\n\007version\030\001 \002(\003\".\n\010ConnM" +
       "eta\022\017\n\007groupId\030\001 \002(\t\022\021\n\tsecretKey\030\002 \002(\t\"" +
@@ -8037,55 +8037,55 @@ public final class KiteRemoting {
           internal_static_org_kiteq_protocol_HeartBeat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_HeartBeat_descriptor,
-              new java.lang.String[] { "Version", });
+              new String[] { "Version", });
           internal_static_org_kiteq_protocol_ConnMeta_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_org_kiteq_protocol_ConnMeta_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_ConnMeta_descriptor,
-              new java.lang.String[] { "GroupId", "SecretKey", });
+              new String[] { "GroupId", "SecretKey", });
           internal_static_org_kiteq_protocol_ConnAuthAck_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_org_kiteq_protocol_ConnAuthAck_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_ConnAuthAck_descriptor,
-              new java.lang.String[] { "Status", "Feedback", });
+              new String[] { "Status", "Feedback", });
           internal_static_org_kiteq_protocol_MessageStoreAck_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_org_kiteq_protocol_MessageStoreAck_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_MessageStoreAck_descriptor,
-              new java.lang.String[] { "MessageId", "Status", "Feedback", });
+              new String[] { "MessageId", "Status", "Feedback", });
           internal_static_org_kiteq_protocol_DeliverAck_descriptor =
             getDescriptor().getMessageTypes().get(4);
           internal_static_org_kiteq_protocol_DeliverAck_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_DeliverAck_descriptor,
-              new java.lang.String[] { "MessageId", "Topic", "MessageType", "GroupId", "Status", });
+              new String[] { "MessageId", "Topic", "MessageType", "GroupId", "Status", });
           internal_static_org_kiteq_protocol_TxACKPacket_descriptor =
             getDescriptor().getMessageTypes().get(5);
           internal_static_org_kiteq_protocol_TxACKPacket_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_TxACKPacket_descriptor,
-              new java.lang.String[] { "MessageId", "Topic", "MessageType", "Status", "Feedback", });
+              new String[] { "MessageId", "Topic", "MessageType", "Status", "Feedback", });
           internal_static_org_kiteq_protocol_Header_descriptor =
             getDescriptor().getMessageTypes().get(6);
           internal_static_org_kiteq_protocol_Header_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_Header_descriptor,
-              new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", });
+              new String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", });
           internal_static_org_kiteq_protocol_BytesMessage_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_org_kiteq_protocol_BytesMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_BytesMessage_descriptor,
-              new java.lang.String[] { "Header", "Body", });
+              new String[] { "Header", "Body", });
           internal_static_org_kiteq_protocol_StringMessage_descriptor =
             getDescriptor().getMessageTypes().get(8);
           internal_static_org_kiteq_protocol_StringMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_kiteq_protocol_StringMessage_descriptor,
-              new java.lang.String[] { "Header", "Body", });
+              new String[] { "Header", "Body", });
           return null;
         }
       };

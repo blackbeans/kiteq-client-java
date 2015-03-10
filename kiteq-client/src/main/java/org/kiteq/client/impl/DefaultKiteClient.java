@@ -1,35 +1,28 @@
 package org.kiteq.client.impl;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.CuratorWatcher;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.kiteq.client.binding.Binding;
-import org.kiteq.client.binding.BindingManager;
+import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.ClientManager;
 import org.kiteq.client.KiteClient;
+import org.kiteq.client.binding.Binding;
+import org.kiteq.client.binding.BindingManager;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
-import org.kiteq.client.message.TxResponse;
-import org.kiteq.client.util.AckUtils;
-import org.kiteq.client.util.MessageUtils;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
-import org.kiteq.protocol.KiteRemoting.*;
+import org.kiteq.protocol.KiteRemoting.BytesMessage;
+import org.kiteq.protocol.KiteRemoting.Header;
+import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.kiteq.protocol.Protocol;
 import org.kiteq.remoting.client.KiteIOClient;
-import org.kiteq.remoting.client.impl.NettyKiteIOClient;
-import org.kiteq.remoting.listener.KiteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 
 /**
  * @author gaofeihang
@@ -39,28 +32,26 @@ public class DefaultKiteClient implements KiteClient {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
-    private static final Logger DEBUGGER_LOGGER = LoggerFactory.getLogger("debugger");
-    
     private String[] publishTopics;
     private Binding[] bindings;
     
     private BindingManager bindingManager;
 
-    private final ClientManager clientManager = new ClientManager();
+    private final ClientManager clientManager;
 
-    private String groupId;
-    private String secretKey;
-    private MessageListener listener;
+    private final ClientConfigs clientConfigs;
 
-    public DefaultKiteClient(String zkAddr, String groupId, String secretKey) {
-        this(zkAddr, groupId, secretKey, new ListenerAdapter() {});
+    public DefaultKiteClient(String zkAddr, ClientConfigs clientConfigs) {
+        this(zkAddr, clientConfigs, new ListenerAdapter() {
+
+        });
     }
 
-    public DefaultKiteClient(String zkAddr, String groupId, String secretKey, MessageListener listener) {
+    public DefaultKiteClient(String zkAddr, ClientConfigs clientConfigs, MessageListener listener) {
         this.bindingManager = BindingManager.getInstance(zkAddr);
-        this.groupId = groupId;
-        this.secretKey = secretKey;
-        this.listener = listener;
+        this.clientConfigs = clientConfigs;
+
+        clientManager = new ClientManager(bindingManager, clientConfigs, listener);
     }
     
     @Override
@@ -77,79 +68,29 @@ public class DefaultKiteClient implements KiteClient {
     public void start() {
         if (publishTopics != null) {
             for (String topic : publishTopics) {
-                for (String serverUri : bindingManager.getServerList(topic)) {
-                    createKiteQClient(topic, serverUri);
-                }
+                clientManager.refreshServers(topic, bindingManager.getServerList(topic));
             }
 
             String producerName = getProducerName();
             for (String topic : publishTopics) {
-                bindingManager.registerProducer(topic, groupId, producerName);
+                bindingManager.registerProducer(topic, clientConfigs.groupId, producerName);
+
+                bindingManager.registerClientManager(topic, clientManager);
             }
         }
         
         if (bindings != null) {
             for (Binding binding : bindings) {
                 String topic = binding.getTopic();
-                for (String serverUri : bindingManager.getServerList(topic)) {
-                    createKiteQClient(topic, serverUri);
-                }
+                clientManager.refreshServers(topic, bindingManager.getServerList(topic));
+            }
+
+            for (Binding binding : bindings) {
+                bindingManager.registerClientManager(binding.getTopic(), clientManager);
             }
 
             bindingManager.registerConsumer(bindings);
         }
-    }
-
-    private KiteIOClient createKiteQClient(final String topic, final String serverUri) {
-        KiteIOClient kiteIOClient = clientManager.get(serverUri);
-        if (kiteIOClient == null) {
-            try {
-                kiteIOClient = createKiteIOClient(serverUri);
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to create kiteq IO client: server=" + serverUri, e);
-            }
-
-            if (handshake(kiteIOClient)) {
-                KiteIOClient _kiteIOClient;
-                if ((_kiteIOClient = clientManager.putIfAbsent(serverUri, kiteIOClient)) != null) {
-                    kiteIOClient = _kiteIOClient;
-                }
-            } else {
-                throw new RuntimeException(
-                        "Unable to create kiteq IO client: server=" + serverUri + ", handshake refused.");
-            }
-        }
-
-        kiteIOClient.getAcceptedTopics().add(topic);
-
-        CuratorFramework curator = bindingManager.getCurator();
-        try {
-            final KiteIOClient finalKiteIOClient = kiteIOClient;
-            curator.checkExists().usingWatcher(new CuratorWatcher() {
-                @Override
-                public void process(WatchedEvent watchedEvent) throws Exception {
-                    if (watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
-                        if (DEBUGGER_LOGGER.isDebugEnabled()) {
-                            DEBUGGER_LOGGER.debug("[ZkEvents] Received " + watchedEvent);
-
-                            DEBUGGER_LOGGER.debug("Remove topic " + topic + " from " + finalKiteIOClient);
-                        }
-
-                        finalKiteIOClient.getAcceptedTopics().remove(topic);
-
-                        if (finalKiteIOClient.getAcceptedTopics().isEmpty()) {
-                            clientManager.remove(serverUri);
-
-                            finalKiteIOClient.close();
-                            logger.warn(finalKiteIOClient + " closed.");
-                        }
-                    }
-                }
-            }).forPath(BindingManager.SERVER_PATH + topic + "/" + serverUri);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return kiteIOClient;
     }
 
     private String getProducerName() {
@@ -169,89 +110,12 @@ public class DefaultKiteClient implements KiteClient {
         return producerName;
     }
 
-    private KiteIOClient createKiteIOClient(String serverUri) throws Exception {
-        
-        final KiteIOClient kiteIOClient = new NettyKiteIOClient(serverUri);
-        kiteIOClient.start();
-
-        kiteIOClient.registerListener(new KiteListener() {
-            
-            // handle transaction response
-            @Override
-            public void txAckReceived(final TxACKPacket txAck) {
-                final TxResponse txResponse = TxResponse.parseFrom(txAck);
-                
-                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onMessageCheck(txResponse);
-                        TxACKPacket txAckSend = txAck.toBuilder()
-                                .setStatus(txResponse.getStatus()).build();
-                        kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend.toByteArray());
-                    }
-                });
-            }
-            
-            // handle bytes message
-            @Override
-            public void bytesMessageReceived(final BytesMessage message) {
-                
-                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
-                            DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
-                        }
-                    }
-                });
-            }
-            
-            // handle string message
-            @Override
-            public void stringMessageReceived(final StringMessage message) {
-                
-                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
-                            DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
-                        }
-                    }
-                });
-            }
-        });
-
-        return kiteIOClient;
-    }
-
     @Override
     public void close() {
         ThreadPoolManager.shutdown();
         KiteStats.close();
         bindingManager.close();
         clientManager.close();
-    }
-
-    private boolean handshake(KiteIOClient kiteIOClient) {
-
-        ConnMeta connMeta = ConnMeta.newBuilder()
-                .setGroupId(groupId)
-                .setSecretKey(secretKey)
-                .build();
-
-        ConnAuthAck ack = kiteIOClient.sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
-
-        boolean status = ack.getStatus();
-        logger.warn("Client handshake - serverUrl: {}, status: {}, feedback: {}", kiteIOClient.getServerUrl(), status, ack.getFeedback());
-
-        return status;
-    }
-
-    private String selectServer(String topic) {
-        List<String> serverUris = bindingManager.getServerList(topic);
-        return serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
     }
     
     @Override
@@ -265,16 +129,9 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) {
-
-        String serverUrl = selectServer(header.getTopic());
-        KiteIOClient kiteIOClient = clientManager.get(serverUrl);
-        if (kiteIOClient == null) {
-            kiteIOClient = createKiteQClient(header.getTopic(), serverUrl);
-        }
-
         SendResult result = new SendResult();
-
         try {
+            KiteIOClient kiteIOClient = clientManager.get(header.getTopic());
             MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, data);
 
             if (ack == null) {
@@ -298,10 +155,4 @@ public class DefaultKiteClient implements KiteClient {
 
         return result;
     }
-
-    @Override
-    public void setMessageListener(MessageListener messageListener) {
-        this.listener = messageListener;
-    }
-
 }

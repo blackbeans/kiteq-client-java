@@ -1,5 +1,6 @@
 package org.kiteq.benchmark;
 
+import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
@@ -20,7 +21,7 @@ public class KiteConsumerBenchmark {
     private KiteClient consumer;
     
     public KiteConsumerBenchmark() {
-        consumer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
+        consumer = new DefaultKiteClient(ZK_ADDR, new ClientConfigs(GROUP_ID, SECRET_KEY), new ListenerAdapter() {
             @Override
             public boolean onMessage(Message message) {
                 return true;

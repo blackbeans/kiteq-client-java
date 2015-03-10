@@ -94,7 +94,8 @@ public class KiteProducerBenchmark {
                 .setExpiredTime(System.currentTimeMillis())
                 .setDeliverLimit(-1)
                 .setGroupId("go-kite-test")
-                .setCommit(true).build();
+                .setCommit(true)
+                .setFly(true).build();
         
         StringMessage message = StringMessage.newBuilder()
                 .setHeader(header)

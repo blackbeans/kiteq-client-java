@@ -57,7 +57,7 @@ public class KiteProducer {
         producer.start();
         while (!Thread.currentThread().isInterrupted()) {
             SendResult result = producer.sendStringMessage(buildMessage());
-//            logger.warn("Send result: {}", result);
+            logger.warn("Send result: {}", result);
 
             try {
                 Thread.sleep(1000);

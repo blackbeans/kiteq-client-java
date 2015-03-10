@@ -1,11 +1,5 @@
 package org.kiteq.benchmark;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
@@ -17,6 +11,12 @@ import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * @author gaofeihang
  * @since Jan 5, 2015
@@ -26,27 +26,28 @@ public class KiteProducerBenchmark {
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(KiteProducerBenchmark.class);
     
-    private static final String ZK_ADDR = "localhost:2181";
     private static final String GROUP_ID = "pb-mts-test";
     private static final String SECRET_KEY = "123456";
     private static final String TOPOIC = "trade";
     
     private int threadNum = 10;
-    private int loopNum = 10000 * 10000;
-    
+
     private KiteClient[] clients;
     
     private ExecutorService executorService;
     private CountDownLatch latch = new CountDownLatch(threadNum);
+
+    private final long sendInterval;
     
     public KiteProducerBenchmark(String[] args) {
-        
         Map<String, String> params = ParamUtils.parse(args);
+        String zkAddr = params.get("-zkAddr");
+        sendInterval = NumberUtils.toLong(params.get("-sendInterval"), 1000);
         threadNum = NumberUtils.toInt(params.get("-t"), threadNum);
         
         clients = new KiteClient[threadNum];
         for (int i = 0; i < clients.length; i++) {
-            clients[i] = new DefaultKiteClient(ZK_ADDR, new ClientConfigs(GROUP_ID, SECRET_KEY));
+            clients[i] = new DefaultKiteClient(zkAddr, new ClientConfigs(GROUP_ID, SECRET_KEY));
             clients[i].setPublishTopics(new String[] { TOPOIC });
             clients[i].start();
         }
@@ -61,10 +62,11 @@ public class KiteProducerBenchmark {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-                    for (int j = 0; j < loopNum; j++) {
+                    while (!Thread.currentThread().isInterrupted()) {
                         client.sendStringMessage(buildMessage());
+
+                        ThreadUtils.sleep(sendInterval);
                     }
-                    ThreadUtils.sleep(1000);
                     latch.countDown();
                 }
             });

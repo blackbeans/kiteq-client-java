@@ -1,7 +1,6 @@
 package org.kiteq.standalone;
 
-import java.util.UUID;
-
+import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
@@ -12,6 +11,8 @@ import org.kiteq.protocol.KiteRemoting.Header;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.UUID;
 
 public class KiteProducer {
     private static final Logger logger = LoggerFactory.getLogger(KiteProducer.class);
@@ -24,7 +25,7 @@ public class KiteProducer {
     private KiteClient producer;
     
     public KiteProducer() {
-        producer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
+        producer = new DefaultKiteClient(ZK_ADDR, new ClientConfigs(GROUP_ID, SECRET_KEY), new ListenerAdapter() {
             @Override
             public void onMessageCheck(TxResponse response) {
                 logger.warn(JsonUtils.prettyPrint(response));
@@ -43,7 +44,8 @@ public class KiteProducer {
                 .setExpiredTime(System.currentTimeMillis())
                 .setDeliverLimit(-1)
                 .setGroupId("go-kite-test")
-                .setCommit(false).build();
+                .setCommit(false)
+                .setFly(true).build();
         
         StringMessage message = StringMessage.newBuilder()
                 .setHeader(header)
@@ -53,13 +55,24 @@ public class KiteProducer {
     
     public void start() {
         producer.start();
-        SendResult result = producer.sendStringMessage(buildMessage());
-        logger.warn("Send result: {}", result);
+        while (!Thread.currentThread().isInterrupted()) {
+            SendResult result = producer.sendStringMessage(buildMessage());
+//            logger.warn("Send result: {}", result);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
         producer.close();
     }
     
     public static void main(String[] args) {
+        Thread.currentThread().setName("KiteqProducer");
         System.setProperty("kiteq.appName", "Producer");
-        new KiteProducer().start();
+        for (int i = 0; i < 1; ++i) {
+            new KiteProducer().start();
+        }
     }
 }

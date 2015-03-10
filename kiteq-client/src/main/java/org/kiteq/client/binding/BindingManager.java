@@ -14,10 +14,8 @@ import org.kiteq.commons.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -114,7 +112,8 @@ public class BindingManager {
     }
 
     public void registerProducer(String topic, String groupId, String producerName) {
-        String path = PRODUCER_ZK_PATH + "/" + topic + "/" + groupId + "/" + producerName;
+        String path = PRODUCER_ZK_PATH + "/" + topic + "/" + groupId + "/" + producerName
+                + "@" + new SimpleDateFormat("yyyyMMddHHmmss.SSS").format(new Date());
         try {
             curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
         } catch (Exception e) {

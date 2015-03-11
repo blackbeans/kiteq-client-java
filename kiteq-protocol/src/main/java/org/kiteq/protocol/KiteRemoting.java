@@ -6115,49 +6115,49 @@ public final class KiteRemoting {
      */
     boolean getFly();
 
-    // repeated .Entry property = 9;
+    // repeated .Entry properties = 9;
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
     java.util.List<Entry>
-        getPropertyList();
+        getPropertiesList();
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    Entry getProperty(int index);
+    Entry getProperties(int index);
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    int getPropertyCount();
+    int getPropertiesCount();
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
     java.util.List<? extends EntryOrBuilder>
-        getPropertyOrBuilderList();
+        getPropertiesOrBuilderList();
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    EntryOrBuilder getPropertyOrBuilder(
+    EntryOrBuilder getPropertiesOrBuilder(
             int index);
   }
   /**
@@ -6253,10 +6253,10 @@ public final class KiteRemoting {
             }
             case 74: {
               if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
-                property_ = new java.util.ArrayList<Entry>();
+                properties_ = new java.util.ArrayList<Entry>();
                 mutable_bitField0_ |= 0x00000100;
               }
-              property_.add(input.readMessage(Entry.PARSER, extensionRegistry));
+              properties_.add(input.readMessage(Entry.PARSER, extensionRegistry));
               break;
             }
           }
@@ -6268,7 +6268,7 @@ public final class KiteRemoting {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
-          property_ = java.util.Collections.unmodifiableList(property_);
+          properties_ = java.util.Collections.unmodifiableList(properties_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -6606,60 +6606,60 @@ public final class KiteRemoting {
       return fly_;
     }
 
-    // repeated .Entry property = 9;
-    public static final int PROPERTY_FIELD_NUMBER = 9;
-    private java.util.List<Entry> property_;
+    // repeated .Entry properties = 9;
+    public static final int PROPERTIES_FIELD_NUMBER = 9;
+    private java.util.List<Entry> properties_;
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    public java.util.List<Entry> getPropertyList() {
-      return property_;
+    public java.util.List<Entry> getPropertiesList() {
+      return properties_;
     }
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
     public java.util.List<? extends EntryOrBuilder>
-        getPropertyOrBuilderList() {
-      return property_;
+        getPropertiesOrBuilderList() {
+      return properties_;
     }
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    public int getPropertyCount() {
-      return property_.size();
+    public int getPropertiesCount() {
+      return properties_.size();
     }
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    public Entry getProperty(int index) {
-      return property_.get(index);
+    public Entry getProperties(int index) {
+      return properties_.get(index);
     }
     /**
-     * <code>repeated .Entry property = 9;</code>
+     * <code>repeated .Entry properties = 9;</code>
      *
      * <pre>
      *用户自定义的消息属性其实就是Map
      * </pre>
      */
-    public EntryOrBuilder getPropertyOrBuilder(
+    public EntryOrBuilder getPropertiesOrBuilder(
         int index) {
-      return property_.get(index);
+      return properties_.get(index);
     }
 
     private void initFields() {
@@ -6671,7 +6671,7 @@ public final class KiteRemoting {
       groupId_ = "";
       commit_ = false;
       fly_ = false;
-      property_ = java.util.Collections.emptyList();
+      properties_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6710,8 +6710,8 @@ public final class KiteRemoting {
         memoizedIsInitialized = 0;
         return false;
       }
-      for (int i = 0; i < getPropertyCount(); i++) {
-        if (!getProperty(i).isInitialized()) {
+      for (int i = 0; i < getPropertiesCount(); i++) {
+        if (!getProperties(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -6747,8 +6747,8 @@ public final class KiteRemoting {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(8, fly_);
       }
-      for (int i = 0; i < property_.size(); i++) {
-        output.writeMessage(9, property_.get(i));
+      for (int i = 0; i < properties_.size(); i++) {
+        output.writeMessage(9, properties_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -6791,9 +6791,9 @@ public final class KiteRemoting {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(8, fly_);
       }
-      for (int i = 0; i < property_.size(); i++) {
+      for (int i = 0; i < properties_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, property_.get(i));
+          .computeMessageSize(9, properties_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6903,7 +6903,7 @@ public final class KiteRemoting {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPropertyFieldBuilder();
+          getPropertiesFieldBuilder();
         }
       }
       private static Builder create() {
@@ -6928,11 +6928,11 @@ public final class KiteRemoting {
         bitField0_ = (bitField0_ & ~0x00000040);
         fly_ = false;
         bitField0_ = (bitField0_ & ~0x00000080);
-        if (propertyBuilder_ == null) {
-          property_ = java.util.Collections.emptyList();
+        if (propertiesBuilder_ == null) {
+          properties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000100);
         } else {
-          propertyBuilder_.clear();
+          propertiesBuilder_.clear();
         }
         return this;
       }
@@ -6994,14 +6994,14 @@ public final class KiteRemoting {
           to_bitField0_ |= 0x00000080;
         }
         result.fly_ = fly_;
-        if (propertyBuilder_ == null) {
+        if (propertiesBuilder_ == null) {
           if (((bitField0_ & 0x00000100) == 0x00000100)) {
-            property_ = java.util.Collections.unmodifiableList(property_);
+            properties_ = java.util.Collections.unmodifiableList(properties_);
             bitField0_ = (bitField0_ & ~0x00000100);
           }
-          result.property_ = property_;
+          result.properties_ = properties_;
         } else {
-          result.property_ = propertyBuilder_.build();
+          result.properties_ = propertiesBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -7051,29 +7051,29 @@ public final class KiteRemoting {
         if (other.hasFly()) {
           setFly(other.getFly());
         }
-        if (propertyBuilder_ == null) {
-          if (!other.property_.isEmpty()) {
-            if (property_.isEmpty()) {
-              property_ = other.property_;
+        if (propertiesBuilder_ == null) {
+          if (!other.properties_.isEmpty()) {
+            if (properties_.isEmpty()) {
+              properties_ = other.properties_;
               bitField0_ = (bitField0_ & ~0x00000100);
             } else {
-              ensurePropertyIsMutable();
-              property_.addAll(other.property_);
+              ensurePropertiesIsMutable();
+              properties_.addAll(other.properties_);
             }
             onChanged();
           }
         } else {
-          if (!other.property_.isEmpty()) {
-            if (propertyBuilder_.isEmpty()) {
-              propertyBuilder_.dispose();
-              propertyBuilder_ = null;
-              property_ = other.property_;
+          if (!other.properties_.isEmpty()) {
+            if (propertiesBuilder_.isEmpty()) {
+              propertiesBuilder_.dispose();
+              propertiesBuilder_ = null;
+              properties_ = other.properties_;
               bitField0_ = (bitField0_ & ~0x00000100);
-              propertyBuilder_ = 
+              propertiesBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPropertyFieldBuilder() : null;
+                   getPropertiesFieldBuilder() : null;
             } else {
-              propertyBuilder_.addAllMessages(other.property_);
+              propertiesBuilder_.addAllMessages(other.properties_);
             }
           }
         }
@@ -7114,8 +7114,8 @@ public final class KiteRemoting {
           
           return false;
         }
-        for (int i = 0; i < getPropertyCount(); i++) {
-          if (!getProperty(i).isInitialized()) {
+        for (int i = 0; i < getPropertiesCount(); i++) {
+          if (!getProperties(i).isInitialized()) {
             
             return false;
           }
@@ -7706,316 +7706,316 @@ public final class KiteRemoting {
         return this;
       }
 
-      // repeated .Entry property = 9;
-      private java.util.List<Entry> property_ =
+      // repeated .Entry properties = 9;
+      private java.util.List<Entry> properties_ =
         java.util.Collections.emptyList();
-      private void ensurePropertyIsMutable() {
+      private void ensurePropertiesIsMutable() {
         if (!((bitField0_ & 0x00000100) == 0x00000100)) {
-          property_ = new java.util.ArrayList<Entry>(property_);
+          properties_ = new java.util.ArrayList<Entry>(properties_);
           bitField0_ |= 0x00000100;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          Entry, Entry.Builder, EntryOrBuilder> propertyBuilder_;
+          Entry, Entry.Builder, EntryOrBuilder> propertiesBuilder_;
 
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public java.util.List<Entry> getPropertyList() {
-        if (propertyBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(property_);
+      public java.util.List<Entry> getPropertiesList() {
+        if (propertiesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(properties_);
         } else {
-          return propertyBuilder_.getMessageList();
+          return propertiesBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public int getPropertyCount() {
-        if (propertyBuilder_ == null) {
-          return property_.size();
+      public int getPropertiesCount() {
+        if (propertiesBuilder_ == null) {
+          return properties_.size();
         } else {
-          return propertyBuilder_.getCount();
+          return propertiesBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Entry getProperty(int index) {
-        if (propertyBuilder_ == null) {
-          return property_.get(index);
+      public Entry getProperties(int index) {
+        if (propertiesBuilder_ == null) {
+          return properties_.get(index);
         } else {
-          return propertyBuilder_.getMessage(index);
+          return propertiesBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder setProperty(
+      public Builder setProperties(
           int index, Entry value) {
-        if (propertyBuilder_ == null) {
+        if (propertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePropertyIsMutable();
-          property_.set(index, value);
+          ensurePropertiesIsMutable();
+          properties_.set(index, value);
           onChanged();
         } else {
-          propertyBuilder_.setMessage(index, value);
+          propertiesBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder setProperty(
+      public Builder setProperties(
           int index, Entry.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.set(index, builderForValue.build());
+        if (propertiesBuilder_ == null) {
+          ensurePropertiesIsMutable();
+          properties_.set(index, builderForValue.build());
           onChanged();
         } else {
-          propertyBuilder_.setMessage(index, builderForValue.build());
+          propertiesBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder addProperty(Entry value) {
-        if (propertyBuilder_ == null) {
+      public Builder addProperties(Entry value) {
+        if (propertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePropertyIsMutable();
-          property_.add(value);
+          ensurePropertiesIsMutable();
+          properties_.add(value);
           onChanged();
         } else {
-          propertyBuilder_.addMessage(value);
+          propertiesBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder addProperty(
+      public Builder addProperties(
           int index, Entry value) {
-        if (propertyBuilder_ == null) {
+        if (propertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensurePropertyIsMutable();
-          property_.add(index, value);
+          ensurePropertiesIsMutable();
+          properties_.add(index, value);
           onChanged();
         } else {
-          propertyBuilder_.addMessage(index, value);
+          propertiesBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder addProperty(
+      public Builder addProperties(
           Entry.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.add(builderForValue.build());
+        if (propertiesBuilder_ == null) {
+          ensurePropertiesIsMutable();
+          properties_.add(builderForValue.build());
           onChanged();
         } else {
-          propertyBuilder_.addMessage(builderForValue.build());
+          propertiesBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder addProperty(
+      public Builder addProperties(
           int index, Entry.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.add(index, builderForValue.build());
+        if (propertiesBuilder_ == null) {
+          ensurePropertiesIsMutable();
+          properties_.add(index, builderForValue.build());
           onChanged();
         } else {
-          propertyBuilder_.addMessage(index, builderForValue.build());
+          propertiesBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder addAllProperty(
+      public Builder addAllProperties(
           Iterable<? extends Entry> values) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          super.addAll(values, property_);
+        if (propertiesBuilder_ == null) {
+          ensurePropertiesIsMutable();
+          super.addAll(values, properties_);
           onChanged();
         } else {
-          propertyBuilder_.addAllMessages(values);
+          propertiesBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder clearProperty() {
-        if (propertyBuilder_ == null) {
-          property_ = java.util.Collections.emptyList();
+      public Builder clearProperties() {
+        if (propertiesBuilder_ == null) {
+          properties_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000100);
           onChanged();
         } else {
-          propertyBuilder_.clear();
+          propertiesBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Builder removeProperty(int index) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.remove(index);
+      public Builder removeProperties(int index) {
+        if (propertiesBuilder_ == null) {
+          ensurePropertiesIsMutable();
+          properties_.remove(index);
           onChanged();
         } else {
-          propertyBuilder_.remove(index);
+          propertiesBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Entry.Builder getPropertyBuilder(
+      public Entry.Builder getPropertiesBuilder(
           int index) {
-        return getPropertyFieldBuilder().getBuilder(index);
+        return getPropertiesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public EntryOrBuilder getPropertyOrBuilder(
+      public EntryOrBuilder getPropertiesOrBuilder(
           int index) {
-        if (propertyBuilder_ == null) {
-          return property_.get(index);  } else {
-          return propertyBuilder_.getMessageOrBuilder(index);
+        if (propertiesBuilder_ == null) {
+          return properties_.get(index);  } else {
+          return propertiesBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
       public java.util.List<? extends EntryOrBuilder>
-           getPropertyOrBuilderList() {
-        if (propertyBuilder_ != null) {
-          return propertyBuilder_.getMessageOrBuilderList();
+           getPropertiesOrBuilderList() {
+        if (propertiesBuilder_ != null) {
+          return propertiesBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(property_);
+          return java.util.Collections.unmodifiableList(properties_);
         }
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Entry.Builder addPropertyBuilder() {
-        return getPropertyFieldBuilder().addBuilder(
+      public Entry.Builder addPropertiesBuilder() {
+        return getPropertiesFieldBuilder().addBuilder(
             Entry.getDefaultInstance());
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
-      public Entry.Builder addPropertyBuilder(
+      public Entry.Builder addPropertiesBuilder(
           int index) {
-        return getPropertyFieldBuilder().addBuilder(
+        return getPropertiesFieldBuilder().addBuilder(
             index, Entry.getDefaultInstance());
       }
       /**
-       * <code>repeated .Entry property = 9;</code>
+       * <code>repeated .Entry properties = 9;</code>
        *
        * <pre>
        *用户自定义的消息属性其实就是Map
        * </pre>
        */
       public java.util.List<Entry.Builder>
-           getPropertyBuilderList() {
-        return getPropertyFieldBuilder().getBuilderList();
+           getPropertiesBuilderList() {
+        return getPropertiesFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
           Entry, Entry.Builder, EntryOrBuilder>
-          getPropertyFieldBuilder() {
-        if (propertyBuilder_ == null) {
-          propertyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          getPropertiesFieldBuilder() {
+        if (propertiesBuilder_ == null) {
+          propertiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               Entry, Entry.Builder, EntryOrBuilder>(
-                  property_,
+                  properties_,
                   ((bitField0_ & 0x00000100) == 0x00000100),
                   getParentForChildren(),
                   isClean());
-          property_ = null;
+          properties_ = null;
         }
-        return propertyBuilder_;
+        return propertiesBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Header)
@@ -9418,15 +9418,15 @@ public final class KiteRemoting {
       "messageId\030\001 \002(\t\022\027\n\006header\030\002 \002(\0132\007.Header",
       "\022\r\n\005topic\030\003 \002(\t\022\023\n\013messageType\030\004 \002(\t\022\021\n\006" +
       "status\030\005 \002(\005:\0010\022\020\n\010feedback\030\006 \002(\t\"#\n\005Ent" +
-      "ry\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\"\302\001\n\006Heade" +
+      "ry\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\"\304\001\n\006Heade" +
       "r\022\021\n\tmessageId\030\001 \002(\t\022\r\n\005topic\030\002 \002(\t\022\023\n\013m" +
       "essageType\030\003 \002(\t\022\027\n\013expiredTime\030\004 \002(\003:\002-" +
       "1\022\031\n\014deliverLimit\030\005 \002(\005:\003100\022\017\n\007groupId\030" +
       "\006 \002(\t\022\016\n\006commit\030\007 \002(\010\022\022\n\003fly\030\010 \002(\010:\005fals" +
-      "e\022\030\n\010property\030\t \003(\0132\006.Entry\"5\n\014BytesMess" +
-      "age\022\027\n\006header\030\001 \002(\0132\007.Header\022\014\n\004body\030\002 \002" +
-      "(\014\"6\n\rStringMessage\022\027\n\006header\030\001 \002(\0132\007.He",
-      "ader\022\014\n\004body\030\002 \002(\t"
+      "e\022\032\n\nproperties\030\t \003(\0132\006.Entry\"5\n\014BytesMe" +
+      "ssage\022\027\n\006header\030\001 \002(\0132\007.Header\022\014\n\004body\030\002" +
+      " \002(\014\"6\n\rStringMessage\022\027\n\006header\030\001 \002(\0132\007.",
+      "Header\022\014\n\004body\030\002 \002(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -9480,7 +9480,7 @@ public final class KiteRemoting {
           internal_static_Header_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Header_descriptor,
-              new String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", "Property", });
+              new String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", "Properties", });
           internal_static_BytesMessage_descriptor =
             getDescriptor().getMessageTypes().get(8);
           internal_static_BytesMessage_fieldAccessorTable = new

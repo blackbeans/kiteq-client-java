@@ -1,5 +1,6 @@
 package org.kiteq.standalone;
 
+import com.google.protobuf.ByteString;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
@@ -7,11 +8,12 @@ import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.commons.util.JsonUtils;
+import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.KiteRemoting.Header;
-import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class KiteProducer {
@@ -34,8 +36,8 @@ public class KiteProducer {
         });
         producer.setPublishTopics(new String[] { TOPOIC });
     }
-    
-    private StringMessage buildMessage() {
+
+    private KiteRemoting.BytesMessage buildMessage() {
         String messageId = UUID.randomUUID().toString();
         Header header = Header.newBuilder()
                 .setMessageId(messageId)
@@ -44,19 +46,24 @@ public class KiteProducer {
                 .setExpiredTime(System.currentTimeMillis())
                 .setDeliverLimit(-1)
                 .setGroupId("go-kite-test")
-                .setCommit(false)
+                .setCommit(true)
                 .setFly(true).build();
-        
-        StringMessage message = StringMessage.newBuilder()
-                .setHeader(header)
-                .setBody("echo").build();
-        return message;
+        byte[] bytes = new byte[512];
+        Random random = new Random(System.currentTimeMillis());
+        for (int i = 0; i < 512; ++i) {
+            int anInt = random.nextInt(127);
+            if (anInt == 10 || anInt == 13) {
+                anInt += 1;
+            }
+            bytes[i] = (byte) anInt;
+        }
+        return KiteRemoting.BytesMessage.newBuilder().setHeader(header).setBody(ByteString.copyFrom(bytes)).build();
     }
     
     public void start() {
         producer.start();
         while (!Thread.currentThread().isInterrupted()) {
-            SendResult result = producer.sendStringMessage(buildMessage());
+            SendResult result = producer.sendBytesMessage(buildMessage());
             logger.warn("Send result: {}", result);
 
             try {

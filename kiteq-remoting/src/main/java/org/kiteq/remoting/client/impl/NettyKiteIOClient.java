@@ -27,10 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -55,8 +52,10 @@ public class NettyKiteIOClient implements KiteIOClient {
     private String serverUrl;
 
     private final HostPort hostPort;
-    
-    private EventLoopGroup workerGroup;
+
+    private final Bootstrap bootstrap;
+
+    private final EventLoopGroup workerGroup;
 
     private volatile ChannelFuture channelFuture;
 
@@ -75,25 +74,8 @@ public class NettyKiteIOClient implements KiteIOClient {
         this.secretKey = secretKey;
         this.serverUrl = serverUrl;
         hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
-    }
-    
-    @Override
-    public void start() throws Exception {
-        if (!state.compareAndSet(STATE.NONE, STATE.RUNNING)) {
-            return;
-        }
-
         workerGroup = new NioEventLoopGroup();
-
-        channelFuture = createBootstrap(workerGroup).connect(hostPort.getHost(), hostPort.getPort()).sync();
-
-        KiteStats.start();
-
-        startHeartbeat();
-    }
-
-    private Bootstrap createBootstrap(EventLoopGroup workerGroup) {
-        Bootstrap bootstrap = new Bootstrap();
+        bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
@@ -106,7 +88,19 @@ public class NettyKiteIOClient implements KiteIOClient {
                 ch.pipeline().addLast(new KiteClientHandler());
             }
         });
-        return bootstrap;
+    }
+    
+    @Override
+    public void start() throws Exception {
+        if (!state.compareAndSet(STATE.NONE, STATE.RUNNING)) {
+            return;
+        }
+
+        channelFuture = bootstrap.connect(hostPort.getHost(), hostPort.getPort()).sync();
+
+        KiteStats.start();
+
+        startHeartbeat();
     }
 
     private void startHeartbeat() {
@@ -175,7 +169,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                 }
                 LOGGER.info(this + " reconnecting success");
                 return true;
-            } else if (state.get() == STATE.STOP) {
+            } else if (retryCount > 10 || state.get() == STATE.STOP) {
                 LOGGER.warn(this + " reconnecting error!");
                 return false;
             }
@@ -188,14 +182,21 @@ public class NettyKiteIOClient implements KiteIOClient {
         if (DEBUGGER_LOGGER.isDebugEnabled()) {
             DEBUGGER_LOGGER.debug(this + " reconnecting retry count " + retryCount);
         }
-        ChannelFuture future = createBootstrap(workerGroup).connect(hostPort.getHost(), hostPort.getPort()).addListener(
-                new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        state.set(future.isSuccess() ? STATE.RECOVERING :
-                                (retryCount > 10 ? STATE.STOP : STATE.RECONNECTING));
-                    }
-                });
+        ChannelFuture future = null;
+        try {
+            future = bootstrap.connect(hostPort.getHost(), hostPort.getPort()).addListener(
+                    new ChannelFutureListener() {
+                        @Override
+                        public void operationComplete(ChannelFuture future) throws Exception {
+                            if (future.isSuccess()) {
+                                state.set(STATE.RECOVERING);
+                            }
+                        }
+                    });
+        } catch (RejectedExecutionException ignored) {
+            // looks like some one else has close the channel externally
+            // for instance, the zookeeper watcher
+        }
         try {
             Thread.sleep(retryCount * 1000);
         } catch (InterruptedException e) {

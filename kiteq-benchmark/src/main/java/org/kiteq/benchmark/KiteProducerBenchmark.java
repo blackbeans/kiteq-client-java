@@ -13,16 +13,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author gaofeihang
  * @since Jan 5, 2015
  */
 public class KiteProducerBenchmark {
+
+    static final AtomicLong messageId = new AtomicLong(0);
     
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(KiteProducerBenchmark.class);
@@ -30,13 +32,12 @@ public class KiteProducerBenchmark {
     private static final String GROUP_ID = "pb-mts-test";
     private static final String SECRET_KEY = "123456";
     private static final String TOPOIC = "trade";
-    
-    private int threadNum = 10;
+
+    private final int threadNum;
 
     private KiteClient[] clients;
     
     private ExecutorService executorService;
-    private CountDownLatch latch = new CountDownLatch(threadNum);
 
     private final long sendInterval;
     
@@ -46,7 +47,7 @@ public class KiteProducerBenchmark {
         System.out.println("zkAddr=" + zkAddr);
         sendInterval = NumberUtils.toLong(params.get("-sendInterval"), 1000);
         System.out.println("sendInterval=" + sendInterval);
-        threadNum = NumberUtils.toInt(params.get("-t"), threadNum);
+        threadNum = NumberUtils.toInt(params.get("-t"), Runtime.getRuntime().availableProcessors() * 2);
         System.out.println("threadNum=" + threadNum);
 
         clients = new KiteClient[threadNum];
@@ -60,7 +61,8 @@ public class KiteProducerBenchmark {
     }
     
     public void start() {
-        
+        final CountDownLatch latch = new CountDownLatch(threadNum);
+
         for (int i = 0; i < threadNum; i++) {
             final KiteClient client = clients[i];
             executorService.execute(new Runnable() {
@@ -69,7 +71,9 @@ public class KiteProducerBenchmark {
                     while (!Thread.currentThread().isInterrupted()) {
                         client.sendStringMessage(buildMessage());
 
-                        ThreadUtils.sleep(sendInterval);
+                        if (sendInterval > 0) {
+                            ThreadUtils.sleep(sendInterval);
+                        }
                     }
                     latch.countDown();
                 }
@@ -90,9 +94,7 @@ public class KiteProducerBenchmark {
     }
     
     private StringMessage buildMessage() {
-        
-        String messageId = UUID.randomUUID().toString();
-        
+        String messageId = String.valueOf(KiteProducerBenchmark.messageId.getAndIncrement());
         Header header = Header.newBuilder()
                 .setMessageId(messageId)
                 .setTopic(TOPOIC)
@@ -102,17 +104,11 @@ public class KiteProducerBenchmark {
                 .setGroupId("go-kite-test")
                 .setCommit(true)
                 .setFly(true).build();
-        
-        StringMessage message = StringMessage.newBuilder()
-                .setHeader(header)
-                .setBody("echo").build();
-        
-        return message;
+        return StringMessage.newBuilder().setHeader(header).setBody("echo").build();
     }
     
     public static void main(String[] args) {
         System.setProperty("kiteq.appName", "Producer");
         new KiteProducerBenchmark(args).start();
     }
-
 }

@@ -1,5 +1,6 @@
 package org.kiteq.benchmark;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
@@ -41,10 +42,13 @@ public class KiteProducerBenchmark {
     
     public KiteProducerBenchmark(String[] args) {
         Map<String, String> params = ParamUtils.parse(args);
-        String zkAddr = params.get("-zkAddr");
+        String zkAddr = StringUtils.defaultString(params.get("-zkAddr"), "localhost:2181");
+        System.out.println("zkAddr=" + zkAddr);
         sendInterval = NumberUtils.toLong(params.get("-sendInterval"), 1000);
+        System.out.println("sendInterval=" + sendInterval);
         threadNum = NumberUtils.toInt(params.get("-t"), threadNum);
-        
+        System.out.println("threadNum=" + threadNum);
+
         clients = new KiteClient[threadNum];
         for (int i = 0; i < clients.length; i++) {
             clients[i] = new DefaultKiteClient(zkAddr, new ClientConfigs(GROUP_ID, SECRET_KEY));

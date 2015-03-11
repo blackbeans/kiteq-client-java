@@ -1,13 +1,14 @@
 package org.kiteq.commons.threadpool;
 
+import org.kiteq.commons.Configs;
+import org.kiteq.commons.util.NamedThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import org.kiteq.commons.util.NamedThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author gaofeihang
@@ -17,9 +18,9 @@ public class ThreadPoolManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ThreadPoolManager.class);
 
-    private static final int corePoolSize = 5;
-    private static final int maximumPoolSize = 100;
-    private static final long keepAliveTime = 300L;
+    private static final int corePoolSize = Configs.THREAD_CORE_POOL_SIZE;
+    private static final int maximumPoolSize = Configs.THREAD_MAX_POOL_SIZE;
+    private static final long keepAliveTime = Configs.THREAD_KEEPALIVE_TIME;
 
     private static RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
 

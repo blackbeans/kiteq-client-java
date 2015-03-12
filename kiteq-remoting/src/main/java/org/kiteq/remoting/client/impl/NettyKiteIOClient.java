@@ -39,7 +39,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NettyKiteIOClient implements KiteIOClient {
 
     public enum STATE {
-        NONE, RUNNING, RECONNECTING, RECOVERING, STOP
+        NONE,
+        PREPARE, // handshake
+        RUNNING, RECONNECTING, RECOVERING, STOP
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyKiteIOClient.class);
@@ -91,7 +93,7 @@ public class NettyKiteIOClient implements KiteIOClient {
     
     @Override
     public void start() throws Exception {
-        if (!state.compareAndSet(STATE.NONE, STATE.RUNNING)) {
+        if (!state.compareAndSet(STATE.NONE, STATE.PREPARE)) {
             return;
         }
 
@@ -266,10 +268,13 @@ public class NettyKiteIOClient implements KiteIOClient {
 
         KiteRemoting.ConnAuthAck ack = sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
 
-        boolean status = ack.getStatus();
+        boolean success = ack.getStatus();
         LOGGER.info("Client handshake - serverUrl: {}, status: {}, feedback: {}",
-                serverUrl, status, ack.getFeedback());
-        return status;
+                serverUrl, success, ack.getFeedback());
+        if (success) {
+            state.compareAndSet(STATE.PREPARE, STATE.RUNNING);
+        }
+        return success;
     }
 
     @Override

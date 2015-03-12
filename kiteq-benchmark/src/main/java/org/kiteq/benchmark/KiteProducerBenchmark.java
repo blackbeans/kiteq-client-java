@@ -6,6 +6,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.ParamUtils;
 import org.kiteq.commons.util.ThreadUtils;
 import org.kiteq.protocol.KiteRemoting;
@@ -75,7 +76,11 @@ public class KiteProducerBenchmark {
                             @Override
                             public void run() {
                                 while (!Thread.currentThread().isInterrupted()) {
-                                    client.sendBytesMessage(buildMessage());
+                                    try {
+                                        client.sendBytesMessage(buildMessage());
+                                    } catch (NoKiteqServerException e) {
+                                        break;
+                                    }
 
                                     if (sendInterval > 0) {
                                         ThreadUtils.sleep(sendInterval);

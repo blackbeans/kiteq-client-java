@@ -9,6 +9,7 @@ import org.kiteq.client.binding.BindingManager;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
+import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
@@ -119,16 +120,16 @@ public class DefaultKiteClient implements KiteClient {
     }
     
     @Override
-    public SendResult sendStringMessage(StringMessage message) {
+    public SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException {
         return innerSendMessage(Protocol.CMD_STRING_MESSAGE, message.toByteArray(), message.getHeader());
     }
     
     @Override
-    public SendResult sendBytesMessage(BytesMessage message) {
+    public SendResult sendBytesMessage(BytesMessage message) throws NoKiteqServerException {
         return innerSendMessage(Protocol.CMD_BYTES_MESSAGE, message.toByteArray(), message.getHeader());
     }
 
-    private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) {
+    private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) throws NoKiteqServerException {
         SendResult result = new SendResult();
         try {
             KiteIOClient kiteIOClient = clientManager.get(header.getTopic());
@@ -145,6 +146,8 @@ public class DefaultKiteClient implements KiteClient {
             if (logger.isDebugEnabled()) {
                 logger.debug("Receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
             }
+        } catch (NoKiteqServerException ex) {
+            throw ex;
         } catch (Exception e) {
             logger.error("Send message error: {}", header, e);
 

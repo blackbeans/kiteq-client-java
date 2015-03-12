@@ -214,6 +214,9 @@ public class NettyKiteIOClient implements KiteIOClient {
             @SuppressWarnings("unchecked")
             T model = (T) response.getModel();
             return model;
+        } catch (InterruptedException ex) {
+            LOGGER.error("Ops", ex);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             LOGGER.error("get kite response error!", e);
         }

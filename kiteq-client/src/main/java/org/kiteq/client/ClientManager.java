@@ -11,6 +11,7 @@ import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.client.util.AckUtils;
 import org.kiteq.client.util.MessageUtils;
+import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.commons.util.NamedThreadFactory;
 import org.kiteq.protocol.KiteRemoting;
@@ -94,26 +95,10 @@ public class ClientManager {
         }));
     }
 
-    public KiteIOClient get(String topic) {
-        KiteIOClient client = selectClient(topic);
-        return (client == null || client.isDead()) ? get0(topic, 128) : client;
-    }
-
-    private KiteIOClient get0(String topic, long sleep) {
-        try {
-            Thread.sleep(sleep);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        KiteIOClient client = selectClient(topic);
-        return (client == null || client.isDead()) ? get0(topic, Math.min(1024, sleep * 2)) : client;
-    }
-
-    private KiteIOClient selectClient(String topic) {
+    public KiteIOClient get(String topic) throws NoKiteqServerException {
         List<String> serverUris = bindingManager.getServerList(topic);
         if (serverUris == null || serverUris.isEmpty()) {
-            LOGGER.warn("Cannot found a living client handles " + topic);
-            return null;
+            throw new NoKiteqServerException(topic);
         }
         String serverUri = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
         return connMap.get(serverUri);

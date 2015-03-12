@@ -2,6 +2,7 @@ package org.kiteq.client;
 
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.message.SendResult;
+import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 
@@ -15,9 +16,9 @@ public interface KiteClient {
     
     void setBindings(Binding[] bindings);
     
-    SendResult sendStringMessage(StringMessage message);
+    SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException;
     
-    SendResult sendBytesMessage(BytesMessage message);
+    SendResult sendBytesMessage(BytesMessage message) throws NoKiteqServerException;
     
     void start();
     

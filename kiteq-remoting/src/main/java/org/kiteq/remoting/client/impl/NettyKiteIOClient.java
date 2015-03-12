@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -61,9 +62,7 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private Set<String> acceptTopics = Collections.synchronizedSet(new HashSet<String>());
 
-    private final AtomicInteger heartbeatStopCount = new AtomicInteger(0);
-
-    private ScheduledExecutorService heartbeatExecutor;
+    private final Heartbeat heartbeat = new Heartbeat();
 
     private final AtomicReference<STATE> state = new AtomicReference<STATE>(STATE.NONE);
 
@@ -100,42 +99,7 @@ public class NettyKiteIOClient implements KiteIOClient {
 
         KiteStats.start();
 
-        startHeartbeat();
-    }
-
-    private void startHeartbeat() {
-        heartbeatExecutor = Executors.newSingleThreadScheduledExecutor(
-                new NamedThreadFactory("HeartBeat-" + serverUrl));
-        heartbeatExecutor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                if (state.get() != STATE.RUNNING) {
-                    return;
-                }
-
-                long version = System.currentTimeMillis();
-                KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
-                        .setVersion(version).build();
-                KiteRemoting.HeartBeat response = sendAndGet(Protocol.CMD_HEARTBEAT, heartBeat.toByteArray());
-                if (response != null && response.getVersion() == version) {
-                    heartbeatStopCount.set(0);
-                } else {
-                    heartbeatStopCount.incrementAndGet();
-                }
-
-                if (DEBUGGER_LOGGER.isDebugEnabled()) {
-                    DEBUGGER_LOGGER.debug("Send heartbeat: " + heartBeat + "," +
-                            " response: " + response + "," +
-                            " heartbeatStopCount: " + heartbeatStopCount.get());
-                }
-            }
-        }, 1, 2, TimeUnit.SECONDS);
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                stopHeartBeating();
-            }
-        }));
+        heartbeat.start();
     }
 
     @Override
@@ -153,7 +117,7 @@ public class NettyKiteIOClient implements KiteIOClient {
             if (state.get() == STATE.RECOVERING) {
                 channelFuture = future;
 
-                heartbeatStopCount.set(0);
+                heartbeat.reset();
 
                 String newChannel = ChannelUtils.getChannelId(channelFuture.channel());
                 for (KiteListener listener : listeners.keySet()) {
@@ -207,22 +171,16 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     @Override
     public boolean isDead() {
-        return heartbeatStopCount.get() >= 2;
+        return heartbeat.stopCount.get() >= 5;
     }
     
     @Override
     public void close() {
         workerGroup.shutdownGracefully();
 
-        stopHeartBeating();
+        heartbeat.stop();
     }
 
-    private void stopHeartBeating() {
-        if (heartbeatExecutor != null) {
-            heartbeatExecutor.shutdown();
-        }
-    }
-    
     @SuppressWarnings("unchecked")
     @Override
     public <T> T sendAndGet(byte cmdType, byte[] data) {
@@ -248,6 +206,8 @@ public class NettyKiteIOClient implements KiteIOClient {
             if (response == null) {
                 LOGGER.warn("Request timeout, null response received - request: {}", reqPacket.toString());
                 return null;
+            } else {
+                heartbeat.setNextHeartbeatTime(System.currentTimeMillis() + 2000);
             }
             @SuppressWarnings("unchecked")
             T model = (T) response.getModel();
@@ -316,10 +276,82 @@ public class NettyKiteIOClient implements KiteIOClient {
     public String toString() {
         return "NettyKiteIOClient{" +
                 "serverUrl='" + serverUrl + '\'' +
-                ", channelFuture=" + channelFuture +
                 ", acceptTopics=" + acceptTopics +
-                ", heartbeatStopCount=" + heartbeatStopCount +
+                ", heartbeatStopCount=" + heartbeat.stopCount.get() +
                 ", state=" + state +
                 '}';
+    }
+
+    private class Heartbeat {
+
+        final AtomicInteger stopCount = new AtomicInteger(0);
+
+        final AtomicLong nextHeartbeatTime = new AtomicLong();
+
+        ExecutorService heartbeatExecutor;
+
+        void start() {
+            heartbeatExecutor = Executors.newSingleThreadExecutor(
+                    new NamedThreadFactory("HeartBeat-" + serverUrl));
+            heartbeatExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        if (state.get() == STATE.RUNNING) {
+                            long now = System.currentTimeMillis();
+                            if (now > nextHeartbeatTime.get()) {
+                                KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
+                                        .setVersion(now).build();
+                                KiteRemoting.HeartBeat response = sendAndGet(
+                                        Protocol.CMD_HEARTBEAT, heartBeat.toByteArray());
+                                if (response != null && response.getVersion() == now) {
+                                    stopCount.set(0);
+                                } else {
+                                    stopCount.incrementAndGet();
+                                }
+
+                                if (DEBUGGER_LOGGER.isDebugEnabled()) {
+                                    DEBUGGER_LOGGER.debug("Send heartbeat: " + heartBeat + "," +
+                                            " response: " + response + "," +
+                                            " heartbeatStopCount: " + stopCount.get());
+                                }
+                                continue;
+                            }
+                        }
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+            });
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    stop();
+                }
+            }));
+        }
+
+        void setNextHeartbeatTime(long time) {
+            long next = nextHeartbeatTime.get();
+            if (time > next) {
+                if (!nextHeartbeatTime.compareAndSet(next, time)) {
+                    setNextHeartbeatTime(time);
+                }
+            }
+        }
+
+        void reset() {
+            stopCount.set(0);
+        }
+
+        void stop() {
+            if (heartbeatExecutor != null) {
+                heartbeatExecutor.shutdownNow();
+            }
+        }
     }
 }

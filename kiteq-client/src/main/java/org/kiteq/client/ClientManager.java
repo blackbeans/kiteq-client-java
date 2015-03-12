@@ -111,6 +111,10 @@ public class ClientManager {
 
     private KiteIOClient selectClient(String topic) {
         List<String> serverUris = bindingManager.getServerList(topic);
+        if (serverUris == null || serverUris.isEmpty()) {
+            LOGGER.warn("Cannot found a living client handles " + topic);
+            return null;
+        }
         String serverUri = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
         return connMap.get(serverUri);
     }

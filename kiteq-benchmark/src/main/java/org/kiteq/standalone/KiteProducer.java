@@ -1,12 +1,14 @@
 package org.kiteq.standalone;
 
 import com.google.protobuf.ByteString;
+
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.impl.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
+import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.JsonUtils;
 import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.KiteRemoting.Header;
@@ -63,8 +65,12 @@ public class KiteProducer {
     public void start() {
         producer.start();
         while (!Thread.currentThread().isInterrupted()) {
-            SendResult result = producer.sendBytesMessage(buildMessage());
-            logger.warn("Send result: {}", result);
+            try {
+                SendResult result = producer.sendBytesMessage(buildMessage());
+                logger.warn("Send result: {}", result);
+            } catch (NoKiteqServerException e) {
+                e.printStackTrace();
+            }
 
             try {
                 Thread.sleep(1000);

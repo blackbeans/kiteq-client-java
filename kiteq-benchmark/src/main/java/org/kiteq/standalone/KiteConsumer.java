@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KiteConsumer {
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(KiteConsumer.class);
     
     private static final String ZK_ADDR = "localhost:2181";

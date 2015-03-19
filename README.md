@@ -3,11 +3,11 @@
 
 ## Development
 
-    git clone https://github.com/blackbeans/kiteq-client-java.git kiteq
+    git clone https://github.com/blackbeans/kiteq-client-java.git
     
 ## Build
 
-    cd kiteq
+    cd kiteq-client-java
     mvn clean install -Dmaven.test.skip
     
 ## Benchmark

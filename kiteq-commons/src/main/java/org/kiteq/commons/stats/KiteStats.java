@@ -51,7 +51,9 @@ public class KiteStats {
     }
     
     public static void close() {
-        scheduledExecutorService.shutdownNow();
+        if (scheduledExecutorService != null) {
+            scheduledExecutorService.shutdownNow();
+        }
     }
 
 }

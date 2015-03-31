@@ -9,9 +9,11 @@ import org.kiteq.client.binding.BindingManager;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
+import org.kiteq.client.message.TxResponse;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
+import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.Header;
 import org.kiteq.protocol.KiteRemoting.MessageStoreAck;
@@ -127,6 +129,56 @@ public class DefaultKiteClient implements KiteClient {
     @Override
     public SendResult sendBytesMessage(BytesMessage message) throws NoKiteqServerException {
         return innerSendMessage(Protocol.CMD_BYTES_MESSAGE, message.toByteArray(), message.getHeader());
+    }
+
+    @Override
+    public SendResult sendTxMessage(StringMessage message, TxCallback txCallback) throws NoKiteqServerException {
+        SendResult result = sendStringMessage(message);
+        if (result.isSuccess()) {
+            Header header = message.getHeader();
+            handleTxCallback(txCallback, header);
+        }
+        return result;
+    }
+
+    @Override
+    public SendResult sendTxMessage(BytesMessage message, TxCallback txCallback) throws NoKiteqServerException {
+        SendResult result = sendBytesMessage(message);
+        if (result.isSuccess()) {
+            Header header = message.getHeader();
+            handleTxCallback(txCallback, header);
+        }
+        return result;
+    }
+
+    private void handleTxCallback(TxCallback txCallback, Header header) throws NoKiteqServerException {
+        TxResponse txResponse = new TxResponse();
+        try {
+            txResponse.setHeader(header);
+            txResponse.setMessageId(header.getMessageId());
+
+            txCallback.doTransaction(txResponse);
+
+            txResponse.commit();
+        } catch (Exception e) {
+            txResponse.rollback();
+            logger.warn("Rollback transaction " + header + " because of ", e);
+        }
+
+        Header.Builder _header = Header.newBuilder(header);
+        _header.setCommit(true);
+        Header committedHeader = _header.build();
+
+        KiteRemoting.TxACKPacket.Builder txAck = KiteRemoting.TxACKPacket.newBuilder();
+        txAck.setHeader(committedHeader);
+        txAck.setStatus(txResponse.getStatus());
+        txAck.setFeedback(StringUtils.defaultString(txResponse.getFeedback(), ""));
+        sendMessage(Protocol.CMD_TX_ACK, txAck.build().toByteArray(), committedHeader);
+    }
+
+    private void sendMessage(byte cmdType, byte[] data, Header header) throws NoKiteqServerException {
+        KiteIOClient client = clientManager.get(header.getTopic());
+        client.send(cmdType, data);
     }
 
     private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) throws NoKiteqServerException {

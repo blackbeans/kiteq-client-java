@@ -1,5 +1,6 @@
 package org.kiteq.client.message;
 
+import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.KiteRemoting.TxACKPacket;
 import org.kiteq.protocol.Protocol;
 
@@ -8,7 +9,9 @@ import org.kiteq.protocol.Protocol;
  * @since Feb 28, 2015
  */
 public class TxResponse {
-    
+
+    private KiteRemoting.Header header;
+
     private String messageId;
     private int status;
     private String feedback;
@@ -47,10 +50,17 @@ public class TxResponse {
     
     public static TxResponse parseFrom(TxACKPacket txAck) {
         TxResponse txResponse = new TxResponse();
-        txResponse.setMessageId(txAck.getMessageId());
+        txResponse.header = txAck.getHeader();
         txResponse.setStatus(txAck.getStatus());
         txResponse.setFeedback(txAck.getFeedback());
         return txResponse;
     }
 
+    public KiteRemoting.Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(KiteRemoting.Header header) {
+        this.header = header;
+    }
 }

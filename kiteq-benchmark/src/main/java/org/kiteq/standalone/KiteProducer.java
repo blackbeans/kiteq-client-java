@@ -93,7 +93,7 @@ public class KiteProducer {
                         producer.sendTxMessage(message, new KiteClient.TxCallback() {
                             @Override
                             public void doTransaction(TxResponse txResponse) throws Exception {
-                                String messageId = txResponse.getMessageId();
+                                String messageId = txResponse.getProperties().get("TxId");
                                 KiteRemoting.BytesMessage remove = messages.remove(messageId);
                                 if (remove != null) {
                                     logger.info("handle transaction: " + remove.toString());

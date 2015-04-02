@@ -152,9 +152,8 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     private void handleTxCallback(TxCallback txCallback, Header header) throws NoKiteqServerException {
-        TxResponse txResponse = new TxResponse();
+        TxResponse txResponse = new TxResponse(header);
         try {
-            txResponse.setHeader(header);
             txResponse.setMessageId(header.getMessageId());
 
             txCallback.doTransaction(txResponse);

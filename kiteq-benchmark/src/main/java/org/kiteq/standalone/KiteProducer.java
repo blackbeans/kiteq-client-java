@@ -13,7 +13,7 @@ import org.kiteq.protocol.KiteRemoting.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,18 +38,16 @@ public class KiteProducer {
                 new ListenerAdapter() {
                     @Override
                     public void onMessageCheck(TxResponse response) {
-                        List<KiteRemoting.Entry> entries = response.getHeader().getPropertiesList();
-                        for (KiteRemoting.Entry entry : entries) {
-                            if (entry.getKey().equals("TxId")) {
-                                String txId = entry.getValue();
-                                KiteRemoting.BytesMessage remove = messages.remove(txId);
-                                if (remove != null) {
-                                    logger.info(remove.toString());
-                                    response.commit();
-                                } else {
-                                    logger.warn("rollback " + txId);
-                                    response.rollback();
-                                }
+                        Map<String, String> properties = response.getProperties();
+                        String txId = properties.get("TxId");
+                        if (txId != null) {
+                            KiteRemoting.BytesMessage remove = messages.remove(txId);
+                            if (remove != null) {
+                                logger.info(remove.toString());
+                                response.commit();
+                            } else {
+                                logger.warn("rollback " + txId);
+                                response.rollback();
                             }
                         }
                     }

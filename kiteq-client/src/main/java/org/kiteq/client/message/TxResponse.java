@@ -4,17 +4,34 @@ import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.KiteRemoting.TxACKPacket;
 import org.kiteq.protocol.Protocol;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author gaofeihang
  * @since Feb 28, 2015
  */
 public class TxResponse {
 
-    private KiteRemoting.Header header;
-
     private String messageId;
     private int status;
     private String feedback;
+
+    private final Map<String, String> properties = new HashMap<String, String>();
+
+    public TxResponse() {
+
+    }
+
+    public TxResponse(KiteRemoting.Header header) {
+        List<KiteRemoting.Entry> propertiesList = header.getPropertiesList();
+        if (propertiesList != null) {
+            for (KiteRemoting.Entry entry : propertiesList) {
+                properties.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
     
     public String getMessageId() {
         return messageId;
@@ -50,17 +67,18 @@ public class TxResponse {
     
     public static TxResponse parseFrom(TxACKPacket txAck) {
         TxResponse txResponse = new TxResponse();
-        txResponse.header = txAck.getHeader();
+        List<KiteRemoting.Entry> propertiesList = txAck.getHeader().getPropertiesList();
+        if (propertiesList != null) {
+            for (KiteRemoting.Entry entry : propertiesList) {
+                txResponse.properties.put(entry.getKey(), entry.getValue());
+            }
+        }
         txResponse.setStatus(txAck.getStatus());
         txResponse.setFeedback(txAck.getFeedback());
         return txResponse;
     }
 
-    public KiteRemoting.Header getHeader() {
-        return header;
-    }
-
-    public void setHeader(KiteRemoting.Header header) {
-        this.header = header;
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

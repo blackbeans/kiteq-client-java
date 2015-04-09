@@ -10,7 +10,7 @@
         <module>kiteq-protocol</module>
         <module>kiteq-remoting</module>
         <module>kiteq-client</module>
-        <module>kiteq-benchmark</module>
+        <module>kiteq-example</module>
     </modules>
 
     <dependencyManagement>

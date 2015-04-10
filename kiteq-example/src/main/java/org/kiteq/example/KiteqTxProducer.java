@@ -1,18 +1,5 @@
 package org.kiteq.example;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.log4j.Logger;
-import org.kiteq.client.ClientConfigs;
-import org.kiteq.client.KiteClient;
-import org.kiteq.client.impl.DefaultKiteClient;
-import org.kiteq.client.message.ListenerAdapter;
-import org.kiteq.client.message.TxResponse;
-import org.kiteq.commons.exception.NoKiteqServerException;
-import org.kiteq.commons.util.ParamUtils;
-import org.kiteq.commons.util.ThreadUtils;
-import org.kiteq.protocol.KiteRemoting;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -20,8 +7,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.kiteq.protocol.KiteRemoting.Header;
-import static org.kiteq.protocol.KiteRemoting.StringMessage;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.log4j.Logger;
+import org.kiteq.client.ClientConfigs;
+import org.kiteq.client.KiteClient;
+import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.client.message.ListenerAdapter;
+import org.kiteq.client.message.TxCallback;
+import org.kiteq.client.message.TxResponse;
+import org.kiteq.commons.exception.NoKiteqServerException;
+import org.kiteq.commons.util.ParamUtils;
+import org.kiteq.commons.util.ThreadUtils;
+import org.kiteq.protocol.KiteRemoting;
+import org.kiteq.protocol.KiteRemoting.Header;
+import org.kiteq.protocol.KiteRemoting.StringMessage;
 
 /**
  * luofucong at 2015-04-09.
@@ -86,7 +86,7 @@ public class KiteqTxProducer {
                             try {
                                 StringMessage message =
                                         buildMessage(String.valueOf(UID.getAndIncrement()), topic, groupId, messageType);
-                                client.sendTxMessage(message, new KiteClient.TxCallback() {
+                                client.sendTxMessage(message, new TxCallback() {
                                     @Override
                                     public void doTransaction(TxResponse txResponse) throws Exception {
                                         if (LOGGER.isDebugEnabled()) {

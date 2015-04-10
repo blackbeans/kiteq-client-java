@@ -2,7 +2,7 @@ package org.kiteq.client;
 
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.message.SendResult;
-import org.kiteq.client.message.TxResponse;
+import org.kiteq.client.message.TxCallback;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
@@ -12,10 +12,6 @@ import org.kiteq.protocol.KiteRemoting.StringMessage;
  * @since Feb 25, 2015
  */
 public interface KiteClient {
-
-    interface TxCallback {
-        void doTransaction(TxResponse txResponse) throws Exception;
-    }
     
     void setPublishTopics(String[] topics);
     

@@ -1,5 +1,9 @@
 package org.kiteq.client.impl;
 
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.ClientManager;
@@ -9,6 +13,7 @@ import org.kiteq.client.binding.BindingManager;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.SendResult;
+import org.kiteq.client.message.TxCallback;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
@@ -22,10 +27,6 @@ import org.kiteq.protocol.Protocol;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * @author gaofeihang

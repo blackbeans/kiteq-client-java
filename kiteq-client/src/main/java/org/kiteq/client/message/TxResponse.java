@@ -65,6 +65,10 @@ public class TxResponse {
         this.status = Protocol.TX_ROLLBACK;
     }
     
+    public boolean isRollback() {
+        return status == Protocol.TX_ROLLBACK;
+    }
+    
     public static TxResponse parseFrom(TxACKPacket txAck) {
         TxResponse txResponse = new TxResponse();
         List<KiteRemoting.Entry> propertiesList = txAck.getHeader().getPropertiesList();

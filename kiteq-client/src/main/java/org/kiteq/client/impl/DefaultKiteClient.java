@@ -158,8 +158,12 @@ public class DefaultKiteClient implements KiteClient {
             txResponse.setMessageId(header.getMessageId());
 
             txCallback.doTransaction(txResponse);
-
-            txResponse.commit();
+            
+            if (txResponse.isRollback()) {
+                logger.warn("User rollback transaction " + header);
+            } else {
+                txResponse.commit();
+            }
         } catch (Exception e) {
             txResponse.rollback();
             logger.warn("Rollback transaction " + header + " because of ", e);

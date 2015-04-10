@@ -6,6 +6,6 @@ package org.kiteq.client.message;
  */
 public interface TxCallback {
     
-    void doTransaction(TxResponse txResponse) throws Exception;
+    void doTransaction(TxResponse tx) throws Exception;
 
 }

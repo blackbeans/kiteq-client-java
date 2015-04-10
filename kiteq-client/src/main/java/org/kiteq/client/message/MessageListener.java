@@ -9,6 +9,6 @@ public interface MessageListener {
     
     boolean onMessage(Message message);
     
-    void onMessageCheck(TxResponse response);
+    void onMessageCheck(TxResponse tx);
 
 }

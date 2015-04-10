@@ -12,8 +12,8 @@ public abstract class ListenerAdapter implements MessageListener {
     }
     
     @Override
-    public void onMessageCheck(TxResponse response) {
-        response.commit();
+    public void onMessageCheck(TxResponse tx) {
+        tx.commit();
     }
 
 }

@@ -1,6 +1,7 @@
 package org.kiteq.remoting.client.impl;
 
 import com.google.common.collect.MapMaker;
+import com.google.protobuf.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -185,8 +186,8 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T sendAndGet(byte cmdType, byte[] data) {
-        final KitePacket reqPacket = new KitePacket(cmdType, data);
+    public <T> T sendAndGet(byte cmdType, Message message) {
+        final KitePacket reqPacket = new KitePacket(cmdType, message);
         ResponseFuture future = new ResponseFuture(reqPacket.getOpaque());
 
         Channel channel = channelFuture.channel();
@@ -224,9 +225,8 @@ public class NettyKiteIOClient implements KiteIOClient {
     }
 
     @Override
-    public void send(byte cmdType, byte[] data) {
-        
-        KitePacket reqPacket = new KitePacket(cmdType, data);
+    public void send(byte cmdType, Message message) {
+        KitePacket reqPacket = new KitePacket(cmdType, message);
         
         Channel channel = channelFuture.channel();
         ChannelFuture writeFuture = channel.write(reqPacket);
@@ -269,7 +269,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                 .setSecretKey(secretKey)
                 .build();
 
-        KiteRemoting.ConnAuthAck ack = sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
+        KiteRemoting.ConnAuthAck ack = sendAndGet(Protocol.CMD_CONN_META, connMeta);
 
         boolean success = ack.getStatus();
         LOGGER.info("Client handshake - serverUrl: {}, status: {}, feedback: {}",
@@ -310,8 +310,7 @@ public class NettyKiteIOClient implements KiteIOClient {
                             if (now > nextHeartbeatTime.get()) {
                                 KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
                                         .setVersion(now).build();
-                                KiteRemoting.HeartBeat response = sendAndGet(
-                                        Protocol.CMD_HEARTBEAT, heartBeat.toByteArray());
+                                KiteRemoting.HeartBeat response = sendAndGet(Protocol.CMD_HEARTBEAT, heartBeat);
                                 if (response != null && response.getVersion() == now) {
                                     stopCount.set(0);
                                 } else {

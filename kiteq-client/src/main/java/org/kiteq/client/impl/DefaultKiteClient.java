@@ -1,20 +1,13 @@
 package org.kiteq.client.impl;
 
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
+import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.ClientManager;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.binding.BindingManager;
-import org.kiteq.client.message.ListenerAdapter;
-import org.kiteq.client.message.MessageListener;
-import org.kiteq.client.message.SendResult;
-import org.kiteq.client.message.TxCallback;
-import org.kiteq.client.message.TxResponse;
+import org.kiteq.client.message.*;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
@@ -27,6 +20,10 @@ import org.kiteq.protocol.Protocol;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @author gaofeihang
@@ -124,12 +121,12 @@ public class DefaultKiteClient implements KiteClient {
     
     @Override
     public SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException {
-        return innerSendMessage(Protocol.CMD_STRING_MESSAGE, message.toByteArray(), message.getHeader());
+        return innerSendMessage(Protocol.CMD_STRING_MESSAGE, message, message.getHeader());
     }
     
     @Override
     public SendResult sendBytesMessage(BytesMessage message) throws NoKiteqServerException {
-        return innerSendMessage(Protocol.CMD_BYTES_MESSAGE, message.toByteArray(), message.getHeader());
+        return innerSendMessage(Protocol.CMD_BYTES_MESSAGE, message, message.getHeader());
     }
 
     @Override
@@ -177,19 +174,19 @@ public class DefaultKiteClient implements KiteClient {
         txAck.setHeader(committedHeader);
         txAck.setStatus(txResponse.getStatus());
         txAck.setFeedback(StringUtils.defaultString(txResponse.getFeedback(), ""));
-        sendMessage(Protocol.CMD_TX_ACK, txAck.build().toByteArray(), committedHeader);
+        sendMessage(Protocol.CMD_TX_ACK, txAck.build(), committedHeader);
     }
 
-    private void sendMessage(byte cmdType, byte[] data, Header header) throws NoKiteqServerException {
+    private void sendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
         KiteIOClient client = clientManager.get(header.getTopic());
-        client.send(cmdType, data);
+        client.send(cmdType, message);
     }
 
-    private SendResult innerSendMessage(byte cmdType, byte[] data, Header header) throws NoKiteqServerException {
+    private SendResult innerSendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
         SendResult result = new SendResult();
         try {
             KiteIOClient kiteIOClient = clientManager.get(header.getTopic());
-            MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, data);
+            MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, message);
 
             if (ack == null) {
                 result.setSuccess(false);

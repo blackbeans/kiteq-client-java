@@ -1,5 +1,6 @@
 package org.kiteq.remoting.client;
 
+import com.google.protobuf.Message;
 import org.kiteq.remoting.listener.KiteListener;
 
 import java.util.Set;
@@ -10,9 +11,9 @@ import java.util.Set;
  */
 public interface KiteIOClient {
     
-    void send(byte cmdType, byte[] data);
-    
-    <T> T sendAndGet(byte cmdType, byte[] data);
+    void send(byte cmdType, Message message);
+
+    <T> T sendAndGet(byte cmdType, Message message);
     
     void registerListener(KiteListener listener);
     

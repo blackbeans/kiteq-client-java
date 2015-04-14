@@ -49,7 +49,7 @@ public class NettyIOClientTest {
                 .setSecretKey(SECRET_KEY)
                 .build();
                 
-        ConnAuthAck ack = kiteIOClient.sendAndGet(Protocol.CMD_CONN_META, connMeta.toByteArray());
+        ConnAuthAck ack = kiteIOClient.sendAndGet(Protocol.CMD_CONN_META, connMeta);
         
         Assert.assertEquals(true, ack.getStatus());
     }

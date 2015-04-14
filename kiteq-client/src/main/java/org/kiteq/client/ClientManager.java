@@ -201,7 +201,7 @@ public class ClientManager {
                         listener.onMessageCheck(txResponse);
                         KiteRemoting.TxACKPacket txAckSend = txAck.toBuilder()
                                 .setStatus(txResponse.getStatus()).build();
-                        kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend.toByteArray());
+                        kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend);
                     }
                 });
             }
@@ -214,7 +214,7 @@ public class ClientManager {
                     public void run() {
                         if (listener.onMessage(MessageUtils.convertMessage(message))) {
                             KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
+                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
                         }
                     }
                 });
@@ -228,7 +228,7 @@ public class ClientManager {
                     public void run() {
                         if (listener.onMessage(MessageUtils.convertMessage(message))) {
                             KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack.toByteArray());
+                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
                         }
                     }
                 });

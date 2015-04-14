@@ -1,8 +1,11 @@
 package org.kiteq.protocol.packet;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.kiteq.commons.util.ByteArrayUtils;
+import org.apache.log4j.Logger;
+import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,20 +16,23 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class KitePacket {
 
+    private static final Logger LOGGER = Logger.getLogger(KitePacket.class);
+
     private static final AtomicInteger UNIQUE_ID = new AtomicInteger(0);
 
     private int opaque;
     private byte cmdType;
-    private byte[] data;
-    
-    public KitePacket(byte cmdType, byte[] data) {
+
+    private final Message message;
+
+    public KitePacket(byte cmdType, Message message) {
         this.opaque = getPacketId();
         this.cmdType = cmdType;
-        this.data = data;
+        this.message = message;
     }
 
-    private KitePacket(int opaque, byte cmdType, byte[] data) {
-        this(cmdType, data);
+    private KitePacket(int opaque, byte cmdType, Message message) {
+        this(cmdType, message);
         this.opaque = opaque;
     }
 
@@ -46,39 +52,72 @@ public class KitePacket {
     public byte getCmdType() {
         return cmdType;
     }
-    
-    public byte[] getData() {
-        return data;
-    }
-    
-    public ByteBuf toByteBuf() {
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public ByteBuf toByteBuf() {
+        byte[] data = message.toByteArray();
         int length = Protocol.PACKET_HEAD_LEN + data.length + 2;
         ByteBuf buf = Unpooled.buffer(length);
-        
         buf.writeInt(opaque); // 4 byte
         buf.writeByte(cmdType); // 1 byte
         buf.writeInt(data.length); // 4 byte
         buf.writeBytes(data);
         buf.writeBytes(Protocol.CMD_STR_CRLF); // \r\n
-        
         return buf;
     }
     
     public static KitePacket parseFrom(ByteBuf buf) {
-        
         int opaque = buf.readInt();
         byte cmdType = buf.readByte();
-        int length = buf.readInt();
-        byte[] data = new byte[length];
-        buf.readBytes(data);
-        
-        return new KitePacket(opaque, cmdType, data);
+        buf.readInt(); // read length
+
+        Message msg = null;
+        byte[] arr;
+        int off;
+        int len = buf.readableBytes();
+        if (buf.hasArray()) {
+            arr = buf.array();
+            off = buf.readerIndex();
+        } else {
+            arr = new byte[len];
+            buf.getBytes(buf.readerIndex(), arr, 0, len);
+            off = 0;
+        }
+        try {
+            switch (cmdType) {
+                case Protocol.CMD_CONN_AUTH:
+                    msg = KiteRemoting.ConnAuthAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                case Protocol.CMD_MESSAGE_STORE_ACK:
+                    msg = KiteRemoting.MessageStoreAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                case Protocol.CMD_TX_ACK:
+                    msg = KiteRemoting.TxACKPacket.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                case Protocol.CMD_BYTES_MESSAGE:
+                    msg = KiteRemoting.BytesMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                case Protocol.CMD_STRING_MESSAGE:
+                    msg = KiteRemoting.StringMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                case Protocol.CMD_HEARTBEAT:
+                    msg = KiteRemoting.HeartBeat.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    break;
+                default:
+                    LOGGER.warn("Received unknown msg type: " + cmdType);
+                    break;
+            }
+        } catch (InvalidProtocolBufferException e) {
+            LOGGER.error("msg type: " + cmdType, e);
+        }
+        return new KitePacket(opaque, cmdType, msg);
     }
     
     @Override
     public String toString() {
-        return cmdType + ":" + ByteArrayUtils.prettyPrint(data);
+        return cmdType + ":" + message;
     }
-
 }

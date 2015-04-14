@@ -95,7 +95,7 @@ public class KiteqProducer {
                 .setDeliverLimit(100)
                 .setGroupId(groupId)
                 .setCommit(true)
-                .setFly(false).build();
+                .setFly(true).build();
         return StringMessage.newBuilder().setHeader(header).setBody(body).build();
     }
 }

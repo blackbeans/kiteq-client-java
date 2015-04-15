@@ -3,6 +3,7 @@ package org.kiteq.protocol.packet;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 import org.apache.log4j.Logger;
 import org.kiteq.protocol.KiteRemoting;
@@ -75,36 +76,26 @@ public class KitePacket {
         buf.readInt(); // read length
 
         Message msg = null;
-        byte[] arr;
-        int off;
-        int len = buf.readableBytes();
-        if (buf.hasArray()) {
-            arr = buf.array();
-            off = buf.readerIndex();
-        } else {
-            arr = new byte[len];
-            buf.getBytes(buf.readerIndex(), arr, 0, len);
-            off = 0;
-        }
+        ByteBufInputStream stream = new ByteBufInputStream(buf.slice());
         try {
             switch (cmdType) {
                 case Protocol.CMD_CONN_AUTH:
-                    msg = KiteRemoting.ConnAuthAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.ConnAuthAck.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 case Protocol.CMD_MESSAGE_STORE_ACK:
-                    msg = KiteRemoting.MessageStoreAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.MessageStoreAck.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 case Protocol.CMD_TX_ACK:
-                    msg = KiteRemoting.TxACKPacket.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.TxACKPacket.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 case Protocol.CMD_BYTES_MESSAGE:
-                    msg = KiteRemoting.BytesMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.BytesMessage.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 case Protocol.CMD_STRING_MESSAGE:
-                    msg = KiteRemoting.StringMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.StringMessage.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 case Protocol.CMD_HEARTBEAT:
-                    msg = KiteRemoting.HeartBeat.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
+                    msg = KiteRemoting.HeartBeat.getDefaultInstance().getParserForType().parseFrom(stream);
                     break;
                 default:
                     LOGGER.warn("Received unknown msg type: " + cmdType);

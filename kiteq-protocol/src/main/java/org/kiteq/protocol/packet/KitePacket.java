@@ -3,8 +3,8 @@ package org.kiteq.protocol.packet;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
 import org.apache.log4j.Logger;
 import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
@@ -58,10 +58,10 @@ public class KitePacket {
         return message;
     }
 
-    public ByteBuf toByteBuf() {
+    public ByteBuf toByteBuf(ByteBufAllocator allocator) {
         byte[] data = message.toByteArray();
         int length = Protocol.PACKET_HEAD_LEN + data.length + 2;
-        ByteBuf buf = Unpooled.buffer(length);
+        ByteBuf buf = allocator.directBuffer(length);
         buf.writeInt(opaque); // 4 byte
         buf.writeByte(cmdType); // 1 byte
         buf.writeInt(data.length); // 4 byte

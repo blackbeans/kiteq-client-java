@@ -309,7 +309,8 @@ public class NettyKiteIOClient implements KiteIOClient {
                     while (!Thread.currentThread().isInterrupted()) {
                         if (state.get() == STATE.RUNNING) {
                             long now = System.currentTimeMillis();
-                            if (now > nextHeartbeatTime.get()) {
+                            long _nextHeartBeatTime = nextHeartbeatTime.get();
+                            if (now > _nextHeartBeatTime) {
                                 KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
                                         .setVersion(now).build();
                                 KiteRemoting.HeartBeat response = sendAndGet(Protocol.CMD_HEARTBEAT, heartBeat);
@@ -324,14 +325,19 @@ public class NettyKiteIOClient implements KiteIOClient {
                                             " response: " + response + "," +
                                             " heartbeatStopCount: " + stopCount.get());
                                 }
-                                continue;
+                            } else {
+                                try {
+                                    Thread.sleep(_nextHeartBeatTime - now);
+                                } catch (InterruptedException e) {
+                                    return;
+                                }
                             }
+                            continue;
                         }
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            Thread.currentThread().interrupt();
+                            return;
                         }
                     }
                 }

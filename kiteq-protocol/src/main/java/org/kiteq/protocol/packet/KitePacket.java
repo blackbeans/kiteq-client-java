@@ -4,11 +4,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufInputStream;
 import org.apache.log4j.Logger;
 import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -20,6 +20,14 @@ public class KitePacket {
     private static final Logger LOGGER = Logger.getLogger(KitePacket.class);
 
     private static final AtomicInteger UNIQUE_ID = new AtomicInteger(0);
+
+    private static ThreadLocal<WeakReference<byte[]>> buffer =
+            new ThreadLocal<WeakReference<byte[]>>() {
+                @Override
+                protected WeakReference<byte[]> initialValue() {
+                    return new WeakReference<byte[]>(new byte[4096]);
+                }
+            };
 
     private int opaque;
     private byte cmdType;
@@ -76,26 +84,45 @@ public class KitePacket {
         buf.readInt(); // read length
 
         Message msg = null;
-        ByteBufInputStream stream = new ByteBufInputStream(buf.slice());
+        byte[] arr;
+        int off;
+        int len = buf.readableBytes();
+        if (buf.hasArray()) {
+            arr = buf.array();
+            off = buf.readerIndex();
+        } else {
+            byte[] bytes = buffer.get().get();
+            if (bytes == null) {
+                bytes = new byte[4096];
+                buffer.set(new WeakReference<byte[]>(bytes));
+            }
+            if (bytes.length < len) {
+                bytes = new byte[len];
+                buffer.set(new WeakReference<byte[]>(bytes));
+            }
+            arr = bytes;
+            buf.getBytes(buf.readerIndex(), arr, 0, len);
+            off = 0;
+        }
         try {
             switch (cmdType) {
                 case Protocol.CMD_CONN_AUTH:
-                    msg = KiteRemoting.ConnAuthAck.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.ConnAuthAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 case Protocol.CMD_MESSAGE_STORE_ACK:
-                    msg = KiteRemoting.MessageStoreAck.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.MessageStoreAck.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 case Protocol.CMD_TX_ACK:
-                    msg = KiteRemoting.TxACKPacket.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.TxACKPacket.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 case Protocol.CMD_BYTES_MESSAGE:
-                    msg = KiteRemoting.BytesMessage.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.BytesMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 case Protocol.CMD_STRING_MESSAGE:
-                    msg = KiteRemoting.StringMessage.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.StringMessage.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 case Protocol.CMD_HEARTBEAT:
-                    msg = KiteRemoting.HeartBeat.getDefaultInstance().getParserForType().parseFrom(stream);
+                    msg = KiteRemoting.HeartBeat.getDefaultInstance().getParserForType().parseFrom(arr, off, len);
                     break;
                 default:
                     LOGGER.warn("Received unknown msg type: " + cmdType);

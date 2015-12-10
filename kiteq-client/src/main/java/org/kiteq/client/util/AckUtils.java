@@ -9,13 +9,13 @@ import org.kiteq.protocol.KiteRemoting.Header;
  */
 public class AckUtils {
     
-    public static DeliverAck buildDeliverAck(Header header) {
+    public static DeliverAck buildDeliverAck(Header header,boolean succ) {
         DeliverAck ack = DeliverAck.newBuilder()
                 .setGroupId(header.getGroupId())
                 .setMessageId(header.getMessageId())
                 .setMessageType(header.getMessageType())
                 .setTopic(header.getTopic())
-                .setStatus(true)
+                .setStatus(succ)
                 .build();
         return ack;
     }

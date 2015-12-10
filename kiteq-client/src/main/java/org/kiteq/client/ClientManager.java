@@ -7,6 +7,7 @@ import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.kiteq.client.binding.BindingManager;
+import org.kiteq.client.message.Message;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.client.util.AckUtils;
@@ -206,17 +207,26 @@ public class ClientManager {
                 });
             }
 
+            private void innerReceived(Message message) {
+                boolean succ = false;
+                try {
+                    succ =listener.onMessage(message);
+                } catch (Exception e) {
+                    DEBUGGER_LOGGER.error("bytesMessageReceived|FAIL|",e);
+                    succ = false;
+                }
+                KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(),succ);
+                kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
+            }
             // handle bytes message
             @Override
             public void bytesMessageReceived(final KiteRemoting.BytesMessage message) {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
-                            KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
-                        }
+                        innerReceived(MessageUtils.convertMessage(message));
                     }
+
                 });
             }
 
@@ -226,10 +236,7 @@ public class ClientManager {
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (listener.onMessage(MessageUtils.convertMessage(message))) {
-                            KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader());
-                            kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
-                        }
+                        innerReceived(MessageUtils.convertMessage(message));
                     }
                 });
             }

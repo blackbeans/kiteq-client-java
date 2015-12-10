@@ -81,6 +81,8 @@ public class NettyKiteIOClient implements KiteIOClient {
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class);
+        bootstrap.option(ChannelOption.SO_TIMEOUT,1);
+        bootstrap.option(ChannelOption.TCP_NODELAY,true);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
@@ -231,7 +233,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         KitePacket reqPacket = new KitePacket(cmdType, message);
         
         Channel channel = channelFuture.channel();
-        ChannelFuture writeFuture = channel.write(reqPacket);
+        ChannelFuture writeFuture = channel.writeAndFlush(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
             
             @Override
@@ -243,7 +245,6 @@ public class NettyKiteIOClient implements KiteIOClient {
                 }
             }
         });
-        channel.flush();
     }
     
     @Override

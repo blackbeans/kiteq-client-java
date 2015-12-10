@@ -40,7 +40,7 @@ public class KitePacket {
         this.message = message;
     }
 
-    private KitePacket(int opaque, byte cmdType, Message message) {
+    public KitePacket(int opaque, byte cmdType, Message message) {
         this(cmdType, message);
         this.opaque = opaque;
     }

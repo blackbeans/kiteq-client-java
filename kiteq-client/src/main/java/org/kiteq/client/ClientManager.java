@@ -17,6 +17,7 @@ import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.commons.util.NamedThreadFactory;
 import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
+import org.kiteq.protocol.packet.KitePacket;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
 import org.kiteq.remoting.listener.KiteListener;
@@ -191,23 +192,55 @@ public class ClientManager {
         kiteIOClient.start();
 
         kiteIOClient.registerListener(new KiteListener() {
-            // handle transaction response
+
             @Override
-            public void txAckReceived(final KiteRemoting.TxACKPacket txAck) {
+            public void txAckReceived(final KitePacket packet) {
+                final KiteRemoting.TxACKPacket txAck = (KiteRemoting.TxACKPacket)packet.getMessage();
                 final TxResponse txResponse = TxResponse.parseFrom(txAck);
 
                 ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onMessageCheck(txResponse);
-                        KiteRemoting.TxACKPacket txAckSend = txAck.toBuilder()
-                                .setStatus(txResponse.getStatus()).build();
-                        kiteIOClient.send(Protocol.CMD_TX_ACK, txAckSend);
+                        KiteRemoting.TxACKPacket.Builder builder = txAck.toBuilder();
+                        try {
+                            listener.onMessageCheck(txResponse);
+                            builder.setStatus(txResponse.getStatus());
+                        } catch (Exception e) {
+                            //设置为回滚
+                            builder.setStatus(2);
+                            builder.setFeedback(e.getMessage());
+                        }
+
+                        KitePacket response = new KitePacket(packet.getOpaque(),Protocol.CMD_TX_ACK, builder.build());
+                        kiteIOClient.sendResponse(response);
                     }
                 });
             }
 
-            private void innerReceived(Message message) {
+            @Override
+            public void bytesMessageReceived(final KitePacket packet) {
+                final KiteRemoting.BytesMessage message = (KiteRemoting.BytesMessage)packet.getMessage();
+                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        innerReceived(packet,MessageUtils.convertMessage(message));
+                    }
+
+                });
+            }
+
+            @Override
+            public void stringMessageReceived(final KitePacket packet) {
+                final KiteRemoting.StringMessage message = (KiteRemoting.StringMessage)packet.getMessage();
+                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        innerReceived(packet,MessageUtils.convertMessage(message));
+                    }
+                });
+            }
+
+            private void innerReceived(KitePacket packet,Message message) {
                 boolean succ = false;
                 try {
                     succ =listener.onMessage(message);
@@ -216,30 +249,10 @@ public class ClientManager {
                     succ = false;
                 }
                 KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(),succ);
-                kiteIOClient.send(Protocol.CMD_DELIVER_ACK, ack);
-            }
-            // handle bytes message
-            @Override
-            public void bytesMessageReceived(final KiteRemoting.BytesMessage message) {
-                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        innerReceived(MessageUtils.convertMessage(message));
-                    }
-
-                });
+                KitePacket response = new KitePacket(packet.getOpaque(),Protocol.CMD_DELIVER_ACK,ack);
+                kiteIOClient.sendResponse(response);
             }
 
-            // handle string message
-            @Override
-            public void stringMessageReceived(final KiteRemoting.StringMessage message) {
-                ThreadPoolManager.getWorkerExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        innerReceived(MessageUtils.convertMessage(message));
-                    }
-                });
-            }
         });
         return kiteIOClient;
     }

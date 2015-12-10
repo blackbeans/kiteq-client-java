@@ -37,11 +37,11 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
             } else {
                 KiteListener listener = ListenerManager.getListener(ChannelUtils.getChannelId(ctx.channel()));
                 if (cmdType == Protocol.CMD_TX_ACK) {
-                    listener.txAckReceived((KiteRemoting.TxACKPacket) packet.getMessage());
+                    listener.txAckReceived(packet);
                 } else if (cmdType == Protocol.CMD_BYTES_MESSAGE) {
-                    listener.bytesMessageReceived((KiteRemoting.BytesMessage) packet.getMessage());
+                    listener.bytesMessageReceived( packet);
                 } else if (cmdType == Protocol.CMD_STRING_MESSAGE) {
-                    listener.stringMessageReceived((KiteRemoting.StringMessage) packet.getMessage());
+                    listener.stringMessageReceived(packet);
                 } else {
                     logger.error("Received unknown package: " + packet);
                 }

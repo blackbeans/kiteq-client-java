@@ -233,7 +233,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         KitePacket reqPacket = new KitePacket(cmdType, message);
         
         Channel channel = channelFuture.channel();
-        ChannelFuture writeFuture = channel.writeAndFlush(reqPacket);
+        ChannelFuture writeFuture = channel.write(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
             
             @Override
@@ -245,6 +245,26 @@ public class NettyKiteIOClient implements KiteIOClient {
                 }
             }
         });
+        channel.flush();
+    }
+
+    @Override
+    public void sendResponse(KitePacket packet) {
+
+        Channel channel = channelFuture.channel();
+        ChannelFuture writeFuture = channel.writeAndFlush(packet);
+        writeFuture.addListener(new ChannelFutureListener() {
+
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()) {
+                    KiteStats.recordWrite();
+                } else {
+                    LOGGER.error("write message fail!", future.cause());
+                }
+            }
+        });
+        channel.flush();
     }
     
     @Override

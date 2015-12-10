@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 import org.kiteq.protocol.KiteRemoting.TxACKPacket;
+import org.kiteq.protocol.packet.KitePacket;
 
 /**
  * @author gaofeihang
@@ -29,17 +30,20 @@ public class ListenerManager {
     }
 
     private static KiteListener defaultListener = new KiteListener() {
-        
+
         @Override
-        public void txAckReceived(TxACKPacket txAck) {
+        public void txAckReceived(KitePacket packet) {
+
         }
-        
+
         @Override
-        public void stringMessageReceived(StringMessage message) {
+        public void bytesMessageReceived(KitePacket packet) {
+
         }
-        
+
         @Override
-        public void bytesMessageReceived(BytesMessage message) {
+        public void stringMessageReceived(KitePacket packet) {
+
         }
     };
 }

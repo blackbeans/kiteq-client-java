@@ -8,6 +8,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.commons.util.NamedThreadFactory;
@@ -89,9 +90,10 @@ public class NettyKiteIOClient implements KiteIOClient {
 
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new KiteEncoder());
-                ch.pipeline().addLast(new KiteDecoder());
-                ch.pipeline().addLast(new KiteClientHandler());
+                ch.pipeline().addLast("frame",new LengthFieldBasedFrameDecoder(32 * 1024,0,4,0,4));
+                ch.pipeline().addLast("encoder",new KiteEncoder());
+                ch.pipeline().addLast("decoder",new KiteDecoder());
+                ch.pipeline().addLast("kiteq-handler",new KiteClientHandler());
             }
         });
     }

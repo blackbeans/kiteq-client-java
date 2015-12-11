@@ -29,11 +29,11 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
             KiteStats.recordRead();
 
             KitePacket packet = (KitePacket) msg;
-            byte cmdType = packet.getCmdType();
+            byte cmdType = packet.getHeader().getCmdType();
             if (cmdType == Protocol.CMD_CONN_AUTH ||
                     cmdType == Protocol.CMD_MESSAGE_STORE_ACK ||
                     cmdType == Protocol.CMD_HEARTBEAT) {
-                ResponseFuture.receiveResponse(new KiteResponse(packet.getOpaque(), packet.getMessage()));
+                ResponseFuture.receiveResponse(new KiteResponse(packet.getHeader().getOpaque(), packet.getMessage()));
             } else {
                 KiteListener listener = ListenerManager.getListener(ChannelUtils.getChannelId(ctx.channel()));
                 if (cmdType == Protocol.CMD_TX_ACK) {

@@ -211,7 +211,7 @@ public class ClientManager {
                             builder.setFeedback(e.getMessage());
                         }
 
-                        KitePacket response = new KitePacket(packet.getOpaque(),Protocol.CMD_TX_ACK, builder.build());
+                        KitePacket response = new KitePacket(packet.getHeader().getOpaque(),Protocol.CMD_TX_ACK, builder.build());
                         kiteIOClient.sendResponse(response);
                     }
                 });
@@ -249,7 +249,7 @@ public class ClientManager {
                     succ = false;
                 }
                 KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(),succ);
-                KitePacket response = new KitePacket(packet.getOpaque(),Protocol.CMD_DELIVER_ACK,ack);
+                KitePacket response = new KitePacket(packet.getHeader().getOpaque(),Protocol.CMD_DELIVER_ACK,ack);
                 kiteIOClient.sendResponse(response);
             }
 

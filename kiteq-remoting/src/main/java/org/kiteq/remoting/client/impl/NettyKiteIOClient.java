@@ -82,22 +82,22 @@ public class NettyKiteIOClient implements KiteIOClient {
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
         bootstrap.channel(NioSocketChannel.class);
-        bootstrap.option(ChannelOption.SO_TIMEOUT,1);
-        bootstrap.option(ChannelOption.TCP_NODELAY,true);
+        bootstrap.option(ChannelOption.SO_TIMEOUT, 1);
+        bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast("frame",new LengthFieldBasedFrameDecoder(32 * 1024,0,4,0,4));
-                ch.pipeline().addLast("encoder",new KiteEncoder());
-                ch.pipeline().addLast("decoder",new KiteDecoder());
-                ch.pipeline().addLast("kiteq-handler",new KiteClientHandler());
+               // ch.pipeline().addLast("frame", new LengthFieldBasedFrameDecoder(32 * 1024, 0, 4));
+                ch.pipeline().addLast("encoder", new KiteEncoder());
+                ch.pipeline().addLast("decoder", new KiteDecoder());
+                ch.pipeline().addLast("kiteq-handler", new KiteClientHandler());
             }
         });
     }
-    
+
     @Override
     public void start() throws Exception {
         if (!state.compareAndSet(STATE.NONE, STATE.PREPARE)) {
@@ -182,7 +182,7 @@ public class NettyKiteIOClient implements KiteIOClient {
     public boolean isDead() {
         return heartbeat.stopCount.get() >= 5;
     }
-    
+
     @Override
     public void close() {
         workerGroup.shutdownGracefully();
@@ -194,7 +194,7 @@ public class NettyKiteIOClient implements KiteIOClient {
     @Override
     public <T> T sendAndGet(byte cmdType, Message message) {
         final KitePacket reqPacket = new KitePacket(cmdType, message);
-        ResponseFuture future = new ResponseFuture(reqPacket.getOpaque());
+        ResponseFuture future = new ResponseFuture(reqPacket.getHeader().getOpaque());
 
         Channel channel = channelFuture.channel();
         ChannelFuture writeFuture = channel.write(reqPacket);
@@ -233,11 +233,11 @@ public class NettyKiteIOClient implements KiteIOClient {
     @Override
     public void send(byte cmdType, Message message) {
         KitePacket reqPacket = new KitePacket(cmdType, message);
-        
+
         Channel channel = channelFuture.channel();
         ChannelFuture writeFuture = channel.write(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
-            
+
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
@@ -268,7 +268,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         });
         channel.flush();
     }
-    
+
     @Override
     public void registerListener(KiteListener listener) {
         listeners.putIfAbsent(listener, true);

@@ -9,7 +9,6 @@ import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author gaofeihang
@@ -19,8 +18,6 @@ public class KitePacket {
 
     private static final Logger LOGGER = Logger.getLogger(KitePacket.class);
 
-    private static final AtomicInteger UNIQUE_ID = new AtomicInteger(0);
-
     private static ThreadLocal<WeakReference<byte[]>> buffer =
             new ThreadLocal<WeakReference<byte[]>>() {
                 @Override
@@ -29,37 +26,31 @@ public class KitePacket {
                 }
             };
 
-    private int opaque;
-    private byte cmdType;
+    private KitePacketHeader header;
 
     private final Message message;
 
     public KitePacket(byte cmdType, Message message) {
-        this.opaque = getPacketId();
-        this.cmdType = cmdType;
+        this.header = new KitePacketHeader(cmdType);
         this.message = message;
     }
 
     public KitePacket(int opaque, byte cmdType, Message message) {
-        this(cmdType, message);
-        this.opaque = opaque;
+        this.header = new KitePacketHeader(opaque, cmdType);
+        this.message = message;
     }
 
-    private int getPacketId() {
-        int id = UNIQUE_ID.getAndIncrement();
-        if (id == Integer.MAX_VALUE) {
-            UNIQUE_ID.compareAndSet(Integer.MAX_VALUE, 0);
-            return UNIQUE_ID.getAndIncrement();
-        }
-        return id;
+    public KitePacket(int opaque, byte cmdType, short version, long extension, Message message) {
+        this.header = new KitePacketHeader(opaque, cmdType, version, extension);
+        this.message = message;
     }
-    
-    public int getOpaque() {
-        return opaque;
+
+    public KitePacketHeader getHeader() {
+        return header;
     }
-    
-    public byte getCmdType() {
-        return cmdType;
+
+    public void setHeader(KitePacketHeader header) {
+        this.header = header;
     }
 
     public Message getMessage() {
@@ -68,21 +59,29 @@ public class KitePacket {
 
     public ByteBuf toByteBuf(ByteBufAllocator allocator) {
         byte[] data = message.toByteArray();
-        int length = Protocol.PACKET_HEAD_LEN + data.length + 2;
+        int length = 4 + Protocol.PACKET_HEAD_LEN + 4 + data.length;
         ByteBuf buf = allocator.directBuffer(length);
-        buf.writeInt(opaque); // 4 byte
-        buf.writeByte(cmdType); // 1 byte
-        buf.writeInt(data.length); // 4 byte
+        buf.writeInt(length); // 总长度
+        buf.writeInt(header.getOpaque()); // 4 byte
+        buf.writeByte(header.getCmdType()); // 1 byte
+        buf.writeShort(header.getVersion());    // 2 byte
+        buf.writeLong(header.getExtension());   // 8 byte
+        buf.writeInt(data.length); // 4 byte body长度
         buf.writeBytes(data);
-        buf.writeBytes(Protocol.CMD_STR_CRLF); // \r\n
         return buf;
     }
-    
-    public static KitePacket parseFrom(ByteBuf buf) {
+
+    public static KitePacket parseFrom(ByteBuf buf) throws Exception {
+        buf.readInt(); // 总长度
         int opaque = buf.readInt();
         byte cmdType = buf.readByte();
-        buf.readInt(); // read length
+        short version = buf.readShort(); // version 2 byte
+        long extension = buf.readLong();    // extension 8 byte
 
+        int bodyLength = buf.readInt(); // read body length
+        if (buf.readableBytes() < bodyLength) {
+            throw new Exception("Kiteq client decode error: incorrect data length!");
+        }
         Message msg = null;
         byte[] arr;
         int off;
@@ -93,7 +92,7 @@ public class KitePacket {
         } else {
             byte[] bytes = buffer.get().get();
             if (bytes == null) {
-                bytes = new byte[4096];
+                bytes = new byte[32 * 1024];
                 buffer.set(new WeakReference<byte[]>(bytes));
             }
             if (bytes.length < len) {
@@ -131,11 +130,14 @@ public class KitePacket {
         } catch (InvalidProtocolBufferException e) {
             LOGGER.error("msg type: " + cmdType, e);
         }
-        return new KitePacket(opaque, cmdType, msg);
+        return new KitePacket(opaque, cmdType, version, extension, msg);
     }
-    
+
     @Override
     public String toString() {
-        return cmdType + ":" + message;
+        return "KitePacket{" +
+                "header=" + header +
+                ", message=" + message +
+                '}';
     }
 }

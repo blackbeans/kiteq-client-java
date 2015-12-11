@@ -90,7 +90,6 @@ public class NettyKiteIOClient implements KiteIOClient {
 
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-               // ch.pipeline().addLast("frame", new LengthFieldBasedFrameDecoder(32 * 1024, 0, 4));
                 ch.pipeline().addLast("encoder", new KiteEncoder());
                 ch.pipeline().addLast("decoder", new KiteDecoder());
                 ch.pipeline().addLast("kiteq-handler", new KiteClientHandler());

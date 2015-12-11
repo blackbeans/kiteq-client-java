@@ -59,9 +59,9 @@ public class KitePacket {
 
     public ByteBuf toByteBuf(ByteBufAllocator allocator) {
         byte[] data = message.toByteArray();
-        int length = 4 + Protocol.PACKET_HEAD_LEN + 4 + data.length;
+        int length = 4 + Protocol.PACKET_HEAD_LEN + data.length;
         ByteBuf buf = allocator.directBuffer(length);
-        buf.writeInt(length); // 总长度
+        buf.writeInt(Protocol.PACKET_HEAD_LEN + data.length); // 总长度
         buf.writeInt(header.getOpaque()); // 4 byte
         buf.writeByte(header.getCmdType()); // 1 byte
         buf.writeShort(header.getVersion());    // 2 byte
@@ -72,7 +72,6 @@ public class KitePacket {
     }
 
     public static KitePacket parseFrom(ByteBuf buf) throws Exception {
-        buf.readInt(); // 总长度
         int opaque = buf.readInt();
         byte cmdType = buf.readByte();
         short version = buf.readShort(); // version 2 byte

@@ -19,7 +19,7 @@ public class Protocol {
 
     public static final byte[] CMD_STR_CRLF = new byte[]{'\r', '\n'};
 
-    public static final int PACKET_HEAD_LEN = 4 + 1 + 2 + 8 ;
+    public static final int PACKET_HEAD_LEN = 4 + 1 + 2 + 8 + 4 ;
 
     public static final int TX_UNKNOWN = 0;
     public static final int TX_COMMIT = 1;

@@ -17,8 +17,6 @@ public class KiteDecoder extends LengthFieldBasedFrameDecoder {
 
     private static final Logger logger = LoggerFactory.getLogger(KiteDecoder.class);
 
-    private static final int MAX_LENGTH = Integer.MAX_VALUE;
-
     public KiteDecoder() {
         super(32 * 1024, 0, 4, 0, 4);
     }
@@ -44,19 +42,5 @@ public class KiteDecoder extends LengthFieldBasedFrameDecoder {
         }
     }
 
-    private void skipCLRF(ByteBuf buffer) {
-
-        if (buffer.readableBytes() < 2) {
-            return;
-        }
-
-        buffer.markReaderIndex();
-        byte[] skipBytes = new byte[2];
-        buffer.readBytes(skipBytes);
-
-        if (skipBytes[0] != '\r' || skipBytes[1] != '\n') {
-            buffer.resetReaderIndex();
-        }
-    }
 
 }

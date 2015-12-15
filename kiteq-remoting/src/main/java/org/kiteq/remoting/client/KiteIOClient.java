@@ -19,6 +19,15 @@ public interface KiteIOClient {
     
     void start() throws Exception;
 
+
+    long nextHeartbeatSec();
+
+    /**
+     * 下一次重连时间秒数
+     * @return
+     */
+    long getReconnectCount();
+
     boolean reconnect();
 
     boolean isDead();
@@ -27,7 +36,6 @@ public interface KiteIOClient {
     
     String getHostPort();
 
-    Set<String> getAcceptedTopics();
 
     boolean handshake();
 }

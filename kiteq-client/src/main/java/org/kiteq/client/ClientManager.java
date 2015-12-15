@@ -23,21 +23,73 @@ public class ClientManager extends AbstractChangeWatcher {
 
     private final ConcurrentMap<String, List<KiteIOClient>> topic2Servers = new ConcurrentHashMap<String, List<KiteIOClient>>();
 
-    private final ConcurrentMap<String/*hostport*/,FutureTask<KiteIOClient>> hostport2Server
+    //hostport对应的服务器列表地址
+    private final ConcurrentMap<String/*hostport*/, FutureTask<KiteIOClient>> hostport2Server
             = new ConcurrentHashMap<String, FutureTask<KiteIOClient>>();
+
+    //hostport对应的topic列表
+    private final ConcurrentMap<String/*hostport*/, Set<String>> hostport2Topics =
+            new ConcurrentHashMap<String, Set<String>>();
 
     //当前支持的所有的topic列表
     private Set<String> topics = Collections.emptySet();
 
     private final QServerManager qserverManager;
 
+    //重连任务
+    private ReconnectManager reconnectManager;
+
     private final ClientConfigs clientConfigs;
 
     private final QRemotingListener listener;
 
+    //最大重连次数
+    private final int maxReconTimes = 30;
+
     public void setTopics(Set<String> topics) {
         this.topics = topics;
     }
+
+    private ReconnectManager.IReconnectCallback callback = new ReconnectManager.IReconnectCallback() {
+        @Override
+        public void callback(boolean succ, KiteIOClient client) {
+            if (succ) {
+                //如果成功需要恢复所有topic中该client
+                ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+                Set<String> topics = tmp.get(client.getHostPort());
+                for (String topic : topics) {
+                    List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
+                    if (null == clients) {
+                        clients = new ArrayList<KiteIOClient>();
+                        List<KiteIOClient> exist = ClientManager.this.topic2Servers.putIfAbsent(topic, clients);
+                        if (null != exist) {
+                            clients = exist;
+                        }
+                    }
+
+                    for(KiteIOClient c :clients) {
+                        //如果已经存在则放弃
+                        if(c.getHostPort().equalsIgnoreCase(client.getHostPort())){
+                            break;
+                        }
+                        //添加该client
+                        clients.add(client);
+                    }
+                }
+            } else {
+                //在直接删除
+                //如果成功需要恢复所有topic中该client
+                ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+                Set<String> topics = tmp.get(client.getHostPort());
+                for (String topic : topics) {
+                    List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
+                    if (null != clients) {
+                        clients.remove(client);
+                    }
+                }
+            }
+        }
+    };
 
     public ClientManager(QServerManager qServerManager, ClientConfigs clientConfigs, MessageListener listener) {
         this.qserverManager = qServerManager;
@@ -50,15 +102,17 @@ public class ClientManager extends AbstractChangeWatcher {
         super.zkClient = this.qserverManager.getZkClient();
         //设置所有的topic列表
         Set<String> serverList = new HashSet<String>();
-        Map<String, List<String>> topic2Server = new HashMap<String, List<String>>();
+        Map<String, Set<String>> topic2Server = new HashMap<String, Set<String>>();
         for (String topic : topics) {
             //获取对应的kiteq的server
             List<String> kiteq = this.qserverManager.pullAndWatchQServer(topic, this);
             if (null != kiteq && !kiteq.isEmpty()) {
-                topic2Server.put(topic, kiteq);
+                topic2Server.put(topic, new ConcurrentSkipListSet<String>(kiteq));
                 serverList.addAll(kiteq);
             }
+
         }
+
 
         LOGGER.info("ALL KITEQ SERVER|" + topic2Servers + " ...");
         //创建所有可以使用的kiteqServer的连接
@@ -66,17 +120,16 @@ public class ClientManager extends AbstractChangeWatcher {
             FutureTask<KiteIOClient> future = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
                 @Override
                 public KiteIOClient call() throws Exception {
-                   return ClientManager.this.createKiteIOClient(server);
+                    return ClientManager.this.createKiteIOClient(server);
                 }
             });
             future.run();
-            KiteIOClient client = this.createKiteIOClient(server);
             this.hostport2Server.put(server, future);
             LOGGER.info("createKiteIOClient|" + server + "|SUCC ...");
         }
 
         //根据下来的kiteQclient创建连接
-        for (Map.Entry<String, List<String>> entry : topic2Server.entrySet()) {
+        for (Map.Entry<String, Set<String>> entry : topic2Server.entrySet()) {
             List<KiteIOClient> list = this.topic2Servers.get(entry.getKey());
             if (null == list) {
                 list = new CopyOnWriteArrayList<KiteIOClient>();
@@ -85,10 +138,24 @@ public class ClientManager extends AbstractChangeWatcher {
 
             //将真正的连接放入
             for (String addr : entry.getValue()) {
-                list.add(this.hostport2Server.get(addr).get(10,TimeUnit.SECONDS));
+                list.add(this.hostport2Server.get(addr).get(10, TimeUnit.SECONDS));
+                //填写对应关系
+                Set<String> topics = this.hostport2Topics.get(addr);
+                if (null == topics) {
+                    topics = new ConcurrentSkipListSet<String>();
+                    this.hostport2Topics.put(addr, topics);
+                }
+
+                //添加topic
+                topics.add(entry.getKey());
             }
         }
 
+        //启动重连任务
+        this.reconnectManager = new ReconnectManager();
+
+        this.reconnectManager.setMaxReconTimes(maxReconTimes);
+        this.reconnectManager.start();
         LOGGER.info("ClientManager|SUCC...");
     }
 
@@ -105,20 +172,34 @@ public class ClientManager extends AbstractChangeWatcher {
         if (serverUris == null || serverUris.isEmpty()) {
             throw new NoKiteqServerException(topic);
         }
-        KiteIOClient client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
+
+        KiteIOClient client = null;
+        int i = 0;
+        do {
+            client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
+            //如果是dead则丢给重连任务
+            if (client.isDead()) {
+                this.reconnectManager.submitReconnect(client, this.callback);
+                //移除掉
+                serverUris.remove(client);
+            } else {
+                break;
+            }
+
+        } while ((i++) < 3);
         return client;
     }
 
 
     public void close() {
-        for (Map.Entry<String,FutureTask< KiteIOClient>> entry : hostport2Server.entrySet()) {
+        for (Map.Entry<String, FutureTask<KiteIOClient>> entry : hostport2Server.entrySet()) {
             try {
                 KiteIOClient c = entry.getValue().get();
                 if (null != c) {
                     c.close();
                 }
-            } catch (Exception e){
-                LOGGER.error("qServerNodeChange|CLOSE|KITE CLIENT|ERROR|" +entry.getKey() ,e);
+            } catch (Exception e) {
+                LOGGER.error("qServerNodeChange|CLOSE|KITE CLIENT|ERROR|" + entry.getKey(), e);
             }
         }
     }
@@ -147,9 +228,9 @@ public class ClientManager extends AbstractChangeWatcher {
                     }
                 }
             });
-            FutureTask<KiteIOClient> exist = this.hostport2Server.putIfAbsent(addr,future);
+            FutureTask<KiteIOClient> exist = this.hostport2Server.putIfAbsent(addr, future);
 
-            if (null == exist){
+            if (null == exist) {
                 future.run();
             }
         }
@@ -158,32 +239,54 @@ public class ClientManager extends AbstractChangeWatcher {
         for (String addr : address) {
             KiteIOClient client = null;
             try {
-                client = this.hostport2Server.get(addr).get(10 ,TimeUnit.SECONDS);
+                client = this.hostport2Server.get(addr).get(10, TimeUnit.SECONDS);
             } catch (Exception e) {
-                LOGGER.error("qServerNodeChange|KITE CLIENT|ERROR|" + addr,e);
+                LOGGER.error("qServerNodeChange|KITE CLIENT|ERROR|" + addr, e);
             }
             if (null == client) {
                 LOGGER.warn("qServerNodeChange|NO KITE CLIENT|" + addr);
             } else {
                 kiteIOClients.add(client);
             }
+
+            //填写对应关系
+            Set<String> topics = this.hostport2Topics.get(addr);
+            //如果当前地址addr包含本topic则忽略
+            if (null == topics) {
+                //如果地址不存在topic
+                topics = new ConcurrentSkipListSet<String>();
+                this.hostport2Topics.put(addr, topics);
+            }
+            topics.add(topic);
+        }
+
+        //清理掉不包含在新地址中的对应关系
+        for (Map.Entry<String, Set<String>> entry : this.hostport2Topics.entrySet()) {
+            for (String t : entry.getValue()) {
+                if (t.equalsIgnoreCase(topic) && !address.contains(entry.getKey())) {
+                    //从地址中清理掉旧的对应关系
+                    entry.getValue().remove(topic);
+                    break;
+                }
+            }
         }
 
         //topic对应的地址列表更新
         this.topic2Servers.replace(topic, kiteIOClients);
-        LOGGER.info("qServerNodeChange|ReInit IOClients|SUCC|" + topic + "|" + address);
+        LOGGER.info("qServerNodeChange|ReInit IOClients|SUCC|" + topic + "|" + address + "|" + this.hostport2Topics);
     }
 
 
     /**
      * 创建物理连接
+     *
      * @param hostport
      * @return
      * @throws Exception
      */
     private KiteIOClient createKiteIOClient(String hostport) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(clientConfigs.groupId, clientConfigs.secretKey, hostport,this.listener);
+                new NettyKiteIOClient(clientConfigs.groupId, clientConfigs.secretKey, hostport, this.listener);
         kiteIOClient.start();
         return kiteIOClient;
     }

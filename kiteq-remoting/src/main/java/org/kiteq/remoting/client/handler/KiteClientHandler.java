@@ -26,6 +26,8 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
         this.remotingListener = remotingListener;
     }
 
+
+
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
 
@@ -63,5 +65,10 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         });
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
     }
 }

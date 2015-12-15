@@ -6,7 +6,7 @@ import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.ClientManager;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.binding.Binding;
-import org.kiteq.client.binding.BindingManager;
+import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.*;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * @author gaofeihang
@@ -33,68 +34,89 @@ public class DefaultKiteClient implements KiteClient {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
-    private String[] publishTopics;
-    private Binding[] bindings;
+    private List<String> publishTopics;
+    private List<Binding> bindings;
+    private String groupId;
     
-    private BindingManager bindingManager;
+    private QServerManager qserverManager;
 
-    private final ClientManager clientManager;
+    private  ClientManager clientManager;
 
-    private final ClientConfigs clientConfigs;
+    private  ClientConfigs clientConfigs;
 
-    public DefaultKiteClient(String zkAddr, ClientConfigs clientConfigs) {
-        this(zkAddr, clientConfigs, new ListenerAdapter() {
+    private MessageListener listener;
 
-        });
+    private String zkHosts;
+
+    public void setListener(MessageListener listener) {
+        this.listener = listener;
     }
 
-    public DefaultKiteClient(String zkAddr, ClientConfigs clientConfigs, MessageListener listener) {
-        this.bindingManager = BindingManager.getInstance(zkAddr);
+    public void setClientConfigs(ClientConfigs clientConfigs) {
         this.clientConfigs = clientConfigs;
-
-        clientManager = new ClientManager(bindingManager, clientConfigs, listener);
     }
-    
+
+    public void setZkHosts(String zkHosts) {
+        this.zkHosts = zkHosts;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
     @Override
-    public void setPublishTopics(String[] topics) {
+    public void setPublishTopics(List<String> topics) {
         this.publishTopics = topics;
     }
     
     @Override
-    public void setBindings(Binding[] bindings) {
+    public void setBindings( List<Binding> bindings) {
         this.bindings = bindings;
     }
 
     @Override
-    public void start() {
-        if (publishTopics != null) {
-            for (String topic : publishTopics) {
-                clientManager.refreshServers(topic, bindingManager.getServerList(topic));
-            }
+    public void init() throws Exception {
 
-            String producerName = getProducerName();
-            for (String topic : publishTopics) {
-                bindingManager.registerProducer(topic, clientConfigs.groupId, producerName);
+        //启动Qserver
+        this.qserverManager = new QServerManager();
+        this.qserverManager.setZkAddr(this.zkHosts);
+        this.qserverManager.init();
 
-                bindingManager.registerClientManager(topic, clientManager);
-            }
+        //创建client的管理者
+        this.clientManager = new ClientManager(qserverManager, clientConfigs, this.listener);
+
+        //收集所有的topic
+        Set<String> topics = new HashSet<String>();
+        if(null == publishTopics && !publishTopics.isEmpty()) {
+            //发送方这个分组信息
+            this.qserverManager.publishTopics(this.groupId, getProducerName(), this.publishTopics);
+            topics.addAll(this.publishTopics);
         }
-        
+
         if (bindings != null) {
             for (Binding binding : bindings) {
                 String topic = binding.getTopic();
-                clientManager.refreshServers(topic, bindingManager.getServerList(topic));
+                topics.add(topic);
             }
-
-            for (Binding binding : bindings) {
-                bindingManager.registerClientManager(binding.getTopic(), clientManager);
-            }
-
-            bindingManager.registerConsumer(bindings);
         }
+
+        //初始化kiteq的客户端管理
+        this.clientManager.setTopics(topics);
+        this.clientManager.init();
+
+
+        //推送本地的订阅关系
+        qserverManager.subscribeTopics(this.groupId,bindings);
+
+        logger.info("DefaultKiteClient|Init|SUCC|...");
+
     }
 
-    private String getProducerName() {
+    private static String getProducerName() {
         String producerName;
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         if (StringUtils.isEmpty(jvmName)) {
@@ -115,7 +137,7 @@ public class DefaultKiteClient implements KiteClient {
     public void close() {
         ThreadPoolManager.shutdown();
         KiteStats.close();
-        bindingManager.close();
+        qserverManager.destroy();
         clientManager.close();
     }
     
@@ -178,14 +200,14 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     private void sendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
-        KiteIOClient client = clientManager.get(header.getTopic());
+        KiteIOClient client = clientManager.findClient(header.getTopic());
         client.send(cmdType, message);
     }
 
     private SendResult innerSendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
         SendResult result = new SendResult();
         try {
-            KiteIOClient kiteIOClient = clientManager.get(header.getTopic());
+            KiteIOClient kiteIOClient = clientManager.findClient(header.getTopic());
             MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, message);
 
             if (ack == null) {

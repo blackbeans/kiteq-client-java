@@ -5,11 +5,17 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.kiteq.client.ClientConfigs;
 import org.kiteq.client.KiteClient;
+import org.kiteq.client.binding.Binding;
 import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.client.message.Message;
+import org.kiteq.client.message.MessageListener;
+import org.kiteq.client.message.TxResponse;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.ParamUtils;
 import org.kiteq.commons.util.ThreadUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -51,11 +57,30 @@ public class KiteqProducer {
         LOGGER.info("workerNum=" + workerNum);
 
         ClientConfigs clientConfigs = new ClientConfigs(groupId, secretKey);
-        KiteClient[] clients = new KiteClient[clientNum];
+        DefaultKiteClient[] clients = new DefaultKiteClient[clientNum];
         for (int i = 0; i < clientNum; i++) {
-            clients[i] = new DefaultKiteClient(zkAddr, clientConfigs);
-            clients[i].setPublishTopics(new String[]{topic});
-            clients[i].start();
+            clients[i] = new DefaultKiteClient();
+            List<String> binds = new ArrayList<String>();
+            binds.add(topic);
+            clients[i].setPublishTopics(binds);
+            clients[i].setZkHosts(zkAddr);
+            clients[i].setListener(new MessageListener() {
+                @Override
+                public boolean onMessage(Message message) {
+                    return false;
+                }
+
+                @Override
+                public void onMessageCheck(TxResponse tx) {
+
+                }
+            });
+            clients[i].setClientConfigs(clientConfigs);
+            try {
+                clients[i].init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         ExecutorService executor = Executors.newCachedThreadPool();

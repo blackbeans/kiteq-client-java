@@ -1,6 +1,5 @@
 package org.kiteq.remoting.client.impl;
 
-import com.google.common.collect.MapMaker;
 import com.google.protobuf.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -8,7 +7,6 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.commons.util.NamedThreadFactory;
@@ -19,11 +17,9 @@ import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.handler.KiteClientHandler;
 import org.kiteq.remoting.codec.KiteDecoder;
 import org.kiteq.remoting.codec.KiteEncoder;
-import org.kiteq.remoting.listener.KiteListener;
-import org.kiteq.remoting.listener.ListenerManager;
+import org.kiteq.remoting.listener.RemotingListener;
 import org.kiteq.remoting.response.KiteResponse;
 import org.kiteq.remoting.response.ResponseFuture;
-import org.kiteq.remoting.utils.ChannelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +67,9 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private final AtomicReference<STATE> state = new AtomicReference<STATE>(STATE.NONE);
 
-    private final ConcurrentMap<KiteListener, Boolean> listeners = new MapMaker().weakKeys().makeMap();
+    private RemotingListener listener;
 
-    public NettyKiteIOClient(String groupId, String secretKey, String serverUrl) {
+    public NettyKiteIOClient(String groupId, String secretKey, String serverUrl,final RemotingListener listener) {
         this.groupId = groupId;
         this.secretKey = secretKey;
         this.serverUrl = serverUrl;
@@ -92,7 +88,7 @@ public class NettyKiteIOClient implements KiteIOClient {
             public void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast("encoder", new KiteEncoder());
                 ch.pipeline().addLast("decoder", new KiteDecoder());
-                ch.pipeline().addLast("kiteq-handler", new KiteClientHandler());
+                ch.pipeline().addLast("kiteq-handler", new KiteClientHandler(listener));
             }
         });
     }
@@ -116,7 +112,6 @@ public class NettyKiteIOClient implements KiteIOClient {
             return false;
         }
 
-        String oldChannel = ChannelUtils.getChannelId(channelFuture.channel());
 
         int retryCount = 1;
         while (!Thread.currentThread().isInterrupted()) {
@@ -126,12 +121,6 @@ public class NettyKiteIOClient implements KiteIOClient {
                 channelFuture = future;
 
                 heartbeat.reset();
-
-                String newChannel = ChannelUtils.getChannelId(channelFuture.channel());
-                for (KiteListener listener : listeners.keySet()) {
-                    ListenerManager.register(newChannel, listener);
-                }
-                ListenerManager.unregister(oldChannel);
 
                 if (handshake()) {
                     state.set(STATE.RUNNING);
@@ -268,16 +257,9 @@ public class NettyKiteIOClient implements KiteIOClient {
         channel.flush();
     }
 
-    @Override
-    public void registerListener(KiteListener listener) {
-        listeners.putIfAbsent(listener, true);
-
-        Channel channel = channelFuture.channel();
-        ListenerManager.register(ChannelUtils.getChannelId(channel), listener);
-    }
 
     @Override
-    public String getServerUrl() {
+    public String getHostPort() {
         return serverUrl;
     }
 

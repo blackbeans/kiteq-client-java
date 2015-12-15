@@ -2,7 +2,6 @@ package org.kiteq.remoting.client;
 
 import com.google.protobuf.Message;
 import org.kiteq.protocol.packet.KitePacket;
-import org.kiteq.remoting.listener.KiteListener;
 
 import java.util.Set;
 
@@ -17,8 +16,6 @@ public interface KiteIOClient {
     <T> T sendAndGet(byte cmdType, Message message);
 
     public void sendResponse(KitePacket packet);
-
-    void registerListener(KiteListener listener);
     
     void start() throws Exception;
 
@@ -28,7 +25,7 @@ public interface KiteIOClient {
 
     void close();
     
-    String getServerUrl();
+    String getHostPort();
 
     Set<String> getAcceptedTopics();
 

@@ -11,6 +11,8 @@ import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.Message;
 import org.kiteq.commons.util.ParamUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -48,11 +50,20 @@ public class KiteqConsumer {
                 return true;
             }
         };
-        KiteClient[] clients = new KiteClient[clientNum];
+        DefaultKiteClient[] clients = new DefaultKiteClient[clientNum];
         for (int i = 0; i < clientNum; i++) {
-            clients[i] = new DefaultKiteClient(zkAddr, clientConfigs, listener);
-            clients[i].setBindings(new Binding[]{Binding.bindDirect(groupId, topic, messageType, 1000, true)});
-            clients[i].start();
+            clients[i] = new DefaultKiteClient();
+            List<Binding> binds = new ArrayList<Binding>();
+            binds.add(Binding.bindDirect(groupId, topic, messageType, 1000, true));
+            clients[i].setBindings(binds);
+            clients[i].setZkHosts(zkAddr);
+            clients[i].setListener(listener);
+            clients[i].setClientConfigs(clientConfigs);
+            try {
+                clients[i].init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         TimeUnit.HOURS.sleep(1);

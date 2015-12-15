@@ -19,9 +19,6 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
 
     protected CuratorFramework zkClient;
 
-    public void setZkClient(CuratorFramework zkClient) {
-        this.zkClient = zkClient;
-    }
 
     @Override
     public void process(WatchedEvent watchedEvent) throws Exception {

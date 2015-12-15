@@ -75,7 +75,7 @@ public class QServerManager {
      */
     public void publishTopics(String group, String publisherTag, List<String> topics) throws Exception {
         for (String topic : topics) {
-            String path = PATH_PRODUCER + "/" + topic + "/" + publisherTag;
+            String path = PATH_PRODUCER + "/" + topic +"/"+group +"/" + publisherTag;
             String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
             logger.info("publishTopics|SUCC|" + eppath);
         }

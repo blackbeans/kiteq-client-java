@@ -45,8 +45,6 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyKiteIOClient.class);
 
-    private static final Logger DEBUGGER_LOGGER = LoggerFactory.getLogger("debugger");
-
     private final String groupId;
 
     private final String secretKey;
@@ -140,8 +138,8 @@ public class NettyKiteIOClient implements KiteIOClient {
     }
 
     private ChannelFuture reconnect0(final int retryCount) {
-        if (DEBUGGER_LOGGER.isDebugEnabled()) {
-            DEBUGGER_LOGGER.debug(this + " reconnecting retry count " + retryCount);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(this + " reconnecting retry count " + retryCount);
         }
         ChannelFuture future = null;
         try {
@@ -324,8 +322,8 @@ public class NettyKiteIOClient implements KiteIOClient {
                                     stopCount.incrementAndGet();
                                 }
 
-                                if (DEBUGGER_LOGGER.isDebugEnabled()) {
-                                    DEBUGGER_LOGGER.debug("Send heartbeat: " + heartBeat + "," +
+                                if (LOGGER.isDebugEnabled()) {
+                                    LOGGER.debug("Send heartbeat: " + heartBeat + "," +
                                             " response: " + response + "," +
                                             " heartbeatStopCount: " + stopCount.get());
                                 }

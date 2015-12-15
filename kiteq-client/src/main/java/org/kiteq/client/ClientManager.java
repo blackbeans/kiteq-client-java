@@ -23,7 +23,8 @@ public class ClientManager extends AbstractChangeWatcher {
 
     private final ConcurrentMap<String, List<KiteIOClient>> topic2Servers = new ConcurrentHashMap<String, List<KiteIOClient>>();
 
-    private final ConcurrentMap<String/*hostport*/, KiteIOClient> hostport2Server = new ConcurrentHashMap<String, KiteIOClient>();
+    private final ConcurrentMap<String/*hostport*/,FutureTask<KiteIOClient>> hostport2Server
+            = new ConcurrentHashMap<String, FutureTask<KiteIOClient>>();
 
     //当前支持的所有的topic列表
     private Set<String> topics = Collections.emptySet();
@@ -61,9 +62,16 @@ public class ClientManager extends AbstractChangeWatcher {
 
         LOGGER.info("ALL KITEQ SERVER|" + topic2Servers + " ...");
         //创建所有可以使用的kiteqServer的连接
-        for (String server : serverList) {
+        for (final String server : serverList) {
+            FutureTask<KiteIOClient> future = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
+                @Override
+                public KiteIOClient call() throws Exception {
+                   return ClientManager.this.createKiteIOClient(server);
+                }
+            });
+            future.run();
             KiteIOClient client = this.createKiteIOClient(server);
-            this.hostport2Server.put(server, client);
+            this.hostport2Server.put(server, future);
             LOGGER.info("createKiteIOClient|" + server + "|SUCC ...");
         }
 
@@ -77,7 +85,7 @@ public class ClientManager extends AbstractChangeWatcher {
 
             //将真正的连接放入
             for (String addr : entry.getValue()) {
-                list.add(this.hostport2Server.get(addr));
+                list.add(this.hostport2Server.get(addr).get(10,TimeUnit.SECONDS));
             }
         }
 
@@ -103,8 +111,15 @@ public class ClientManager extends AbstractChangeWatcher {
 
 
     public void close() {
-        for (KiteIOClient client : hostport2Server.values()) {
-            client.close();
+        for (Map.Entry<String,FutureTask< KiteIOClient>> entry : hostport2Server.entrySet()) {
+            try {
+                KiteIOClient c = entry.getValue().get();
+                if (null != c) {
+                    c.close();
+                }
+            } catch (Exception e){
+                LOGGER.error("qServerNodeChange|CLOSE|KITE CLIENT|ERROR|" +entry.getKey() ,e);
+            }
         }
     }
 
@@ -117,23 +132,36 @@ public class ClientManager extends AbstractChangeWatcher {
             return;
         }
 
-        for (String addr : address) {
-            //不存在该连接则新增
-            if (!this.hostport2Server.containsKey(addr)) {
-                //创建该连接
-                try {
-                    KiteIOClient client = this.createKiteIOClient(addr);
-                    this.hostport2Server.put(addr, client);
-                } catch (Exception e) {
-                    LOGGER.error("qServerNodeChange|createKiteIOClient|FAIL" + addr, e);
-                }
+        for (final String addr : address) {
 
+            FutureTask<KiteIOClient> future = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
+                @Override
+                public KiteIOClient call() throws Exception {
+                    //创建该连接
+                    try {
+                        return ClientManager.this.createKiteIOClient(addr);
+
+                    } catch (Exception e) {
+                        LOGGER.error("qServerNodeChange|createKiteIOClient|FAIL" + addr, e);
+                        throw e;
+                    }
+                }
+            });
+            FutureTask<KiteIOClient> exist = this.hostport2Server.putIfAbsent(addr,future);
+
+            if (null == exist){
+                future.run();
             }
         }
 
         List<KiteIOClient> kiteIOClients = new CopyOnWriteArrayList<KiteIOClient>();
         for (String addr : address) {
-            KiteIOClient client = this.hostport2Server.get(addr);
+            KiteIOClient client = null;
+            try {
+                client = this.hostport2Server.get(addr).get(10 ,TimeUnit.SECONDS);
+            } catch (Exception e) {
+                LOGGER.error("qServerNodeChange|KITE CLIENT|ERROR|" + addr,e);
+            }
             if (null == client) {
                 LOGGER.warn("qServerNodeChange|NO KITE CLIENT|" + addr);
             } else {

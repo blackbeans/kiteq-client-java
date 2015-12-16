@@ -54,8 +54,6 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private volatile AtomicBoolean alive = new AtomicBoolean(false);
 
-    private final AtomicLong nextHeartbeatSec = new AtomicLong();
-
     private RemotingListener listener;
 
     //重连次数
@@ -169,10 +167,8 @@ public class NettyKiteIOClient implements KiteIOClient {
             if (response == null) {
                 LOGGER.warn("Request timeout, null response received - request: {}", reqPacket.toString());
                 return null;
-            } else {
-                //30s才发起心跳
-                nextHeartbeatSec.set(System.currentTimeMillis() / 1000 + 30);
             }
+
             @SuppressWarnings("unchecked")
             T model = (T) response.getModel();
             return model;
@@ -252,11 +248,6 @@ public class NettyKiteIOClient implements KiteIOClient {
         return "NettyKiteIOClient{" +
                 "serverUrl='" + serverUrl + '\'' +
                 '}';
-    }
-
-    @Override
-    public long nextHeartbeatSec() {
-        return this.nextHeartbeatSec.get();
     }
 
     @Override

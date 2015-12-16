@@ -19,9 +19,6 @@ public interface KiteIOClient {
     
     void start() throws Exception;
 
-
-    long nextHeartbeatSec();
-
     /**
      * 下一次重连时间秒数
      * @return

@@ -44,7 +44,7 @@ public class KiteqConsumer {
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
             public boolean onMessage(Message message) {
-                    LOGGER.debug(message);
+                    LOGGER.warn(message);
                 return true;
             }
         };

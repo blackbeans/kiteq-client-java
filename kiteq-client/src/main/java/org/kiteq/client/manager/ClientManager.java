@@ -7,6 +7,7 @@ import org.kiteq.client.message.MessageListener;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
+import org.kiteq.remoting.listener.RemotingListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public class ClientManager extends AbstractChangeWatcher {
         this.topics = topics;
     }
 
+    //重连回调方法
     private ReconnectManager.IReconnectCallback callback = new ReconnectManager.IReconnectCallback() {
         @Override
         public void callback(boolean succ, KiteIOClient client) {
@@ -74,11 +76,15 @@ public class ClientManager extends AbstractChangeWatcher {
                         }
                         //添加该client
                         clients.add(client);
+                        //推送当前的发送方该分组IP
                     }
                 }
             } else {
-                //在直接删除
-                //如果成功需要恢复所有topic中该client
+
+                ClientManager.this.hostport2Server.remove(client.getHostPort());
+                ClientManager.this.hostport2Topics.remove(client.getHostPort());
+
+                //直接删除对应这个连接下的的所有topic的对应关系
                 ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
                 Set<String> topics = tmp.get(client.getHostPort());
                 for (String topic : topics) {
@@ -87,6 +93,7 @@ public class ClientManager extends AbstractChangeWatcher {
                         clients.remove(client);
                     }
                 }
+
             }
         }
     };
@@ -158,6 +165,19 @@ public class ClientManager extends AbstractChangeWatcher {
         LOGGER.info("ClientManager|SUCC|"+this.topic2Servers+"...");
     }
 
+    /**
+     * only for test
+     * @param topic
+     * @return
+     * @throws NoKiteqServerException
+     */
+   List<KiteIOClient> getClient(String topic)throws NoKiteqServerException {
+       List<KiteIOClient> serverUris = this.topic2Servers.get(topic);
+       if (serverUris == null || serverUris.isEmpty()) {
+           throw new NoKiteqServerException(topic);
+       }
+       return serverUris;
+    }
 
     /**
      * 获取随机策略的client
@@ -287,7 +307,6 @@ public class ClientManager extends AbstractChangeWatcher {
                 this.hostport2Topics);
     }
 
-
     /**
      * 创建物理连接
      *
@@ -296,8 +315,20 @@ public class ClientManager extends AbstractChangeWatcher {
      * @throws Exception
      */
     private KiteIOClient createKiteIOClient(String hostport) throws Exception {
+        return  this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
+    }
+
+    /**
+     * 创建物理连接
+     *
+     * @param hostport
+     * @return
+     * @throws Exception
+     */
+    protected  KiteIOClient createKiteIOClient(String hostport, String groupId,
+                                              String secretKey, RemotingListener listener) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(clientConfigs.groupId, clientConfigs.secretKey, hostport, this.listener);
+                new NettyKiteIOClient(groupId,secretKey, hostport,listener);
         kiteIOClient.start();
         return kiteIOClient;
     }

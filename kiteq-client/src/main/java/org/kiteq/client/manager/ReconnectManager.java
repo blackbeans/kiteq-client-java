@@ -3,6 +3,7 @@ package org.kiteq.client.manager;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import org.apache.log4j.Logger;
 import org.kiteq.commons.util.NamedThreadFactory;
 import org.kiteq.remoting.client.KiteIOClient;
 
@@ -15,6 +16,8 @@ import java.util.concurrent.TimeUnit;
  * Created by blackbeans on 12/15/15.
  */
 public class ReconnectManager {
+
+    private static final Logger LOGGER = Logger.getLogger(ReconnectManager.class);
 
     //需要重连的连接
     private ConcurrentMap<String, KiteIOClient> reconnectors = new ConcurrentHashMap<String, KiteIOClient>();
@@ -50,24 +53,28 @@ public class ReconnectManager {
             this.timer.newTimeout(new TimerTask() {
                 @Override
                 public void run(Timeout timeout) throws Exception {
+
+                    LOGGER.warn("ReconnectManager|Reconnecting|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
                     //开启重连
                     boolean succ = kiteIOClient.reconnect();
                     if (succ) {
                         //如果成功则
                         callback.callback(succ,kiteIOClient);
+                        LOGGER.warn("ReconnectManager|Reconnecting|SUCC|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
                         return;
                     }
 
                     if (kiteIOClient.getReconnectCount() < ReconnectManager.this.maxReconTimes) {
                         //小于20次则进行重连
                         ReconnectManager.this.timer.newTimeout(this,
-                                (long) (Math.pow(2, kiteIOClient.getReconnectCount())) * 1 * 1000, TimeUnit.SECONDS);
+                                (long) (Math.pow(2, kiteIOClient.getReconnectCount())), TimeUnit.SECONDS);
                         return ;
                     }
                     callback.callback(false,kiteIOClient);
+                    LOGGER.warn("ReconnectManager|Reconnecting|FAIL|Give UP|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
 
                 }
-            }, (long) (Math.pow(2, kiteIOClient.getReconnectCount())) * 1 * 1000, TimeUnit.SECONDS);
+            }, (long) (Math.pow(2, kiteIOClient.getReconnectCount())) , TimeUnit.SECONDS);
         }
 
     }

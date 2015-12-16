@@ -23,7 +23,7 @@ public interface KiteIOClient {
      * 下一次重连时间秒数
      * @return
      */
-    long getReconnectCount();
+    int getReconnectCount();
 
     boolean reconnect();
 

@@ -97,7 +97,7 @@ public class KiteqProducer {
                                         buildMessage(topic, groupId, messageType, String.valueOf(UID.getAndIncrement()));
                                 client.sendStringMessage(message);
                             } catch (NoKiteqServerException e) {
-                                break;
+
                             }
 
                             if (sendInterval > 0) {

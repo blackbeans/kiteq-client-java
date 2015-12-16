@@ -65,7 +65,7 @@ public class QServerManager {
 
 
     /**
-     * //    KITEQ_PUB  = KITEQ + "/pub"    // 临时节点 # /kiteq/pub/${topic}/${groupId}/ip:port
+     * //    KITEQ_PUB  = KITEQ + "/pub"    //# /kiteq/pub/${topic}/${groupId}/ip:port
      * 发布本地的发送者发送的消息类型
      *
      * @param group
@@ -80,7 +80,7 @@ public class QServerManager {
                 //先删除再推送临时节点
                 this.zkClient.delete().forPath(path);
             }
-            String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
+            String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
             logger.info("publishTopics|SUCC|" + eppath);
         }
     }
@@ -115,7 +115,6 @@ public class QServerManager {
             if(null == stat){
                 this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
             }
-
             this.zkClient.setData().forPath(path, JsonUtils.toJSON(entry.getValue()).getBytes("UTF-8"));
             logger.info("subscribeTopics|Subscribe|SUCC|" + path + "|" + JsonUtils.toJSON(entry.getValue()));
         }

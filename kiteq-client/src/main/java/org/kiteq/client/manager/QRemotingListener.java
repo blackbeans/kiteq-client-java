@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * remoting层回调listener
  * Created by blackbeans on 12/15/15.
  */
 public class QRemotingListener implements RemotingListener {

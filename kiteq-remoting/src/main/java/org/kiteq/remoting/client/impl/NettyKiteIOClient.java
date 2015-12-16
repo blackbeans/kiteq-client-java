@@ -31,8 +31,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author gaofeihang
- * @since Feb 11, 2015
+ *
+ * ioclient的管理
+ * Created by blackbeans on 12/15/15.
  */
 public class NettyKiteIOClient implements KiteIOClient {
 
@@ -64,13 +65,14 @@ public class NettyKiteIOClient implements KiteIOClient {
         this.secretKey = secretKey;
         this.serverUrl = serverUrl;
         this.listener = listener;
+        this.hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
 
     }
 
     @Override
     public void start() throws Exception {
 
-        this.hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
+
         this.workerGroup = new NioEventLoopGroup();
         this.bootstrap = new Bootstrap();
         this.bootstrap.group(workerGroup);
@@ -108,7 +110,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         ChannelFuture future = null;
         try {
             future = bootstrap.connect(hostPort.getHost(), hostPort.getPort()).sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             LOGGER.error("reconnect|" + this.hostPort + "|FAIL", e);
         }
         if (null != future && future.isSuccess()) {
@@ -117,15 +119,14 @@ public class NettyKiteIOClient implements KiteIOClient {
             if (handshake()) {
                 this.alive.compareAndSet(false,true);
                 this.retryCount=0;
-                LOGGER.info("{}|reconnecting succ...", this.hostPort);
+                LOGGER.info(this.hostPort+"|reconnecting succ..." );
                 return true;
             } else {
                 //如果握手失败则关掉了解
                 future.channel().close();
             }
         }
-
-        LOGGER.info("{}|reconnecting fail|{}|wait for next ...", this.hostPort, retryCount);
+        LOGGER.info(this.hostPort+"|reconnecting fail|wait for next ...|"+retryCount);
         this.retryCount++;
         return false;
     }
@@ -246,12 +247,17 @@ public class NettyKiteIOClient implements KiteIOClient {
     @Override
     public String toString() {
         return "NettyKiteIOClient{" +
-                "serverUrl='" + serverUrl + '\'' +
+                "groupId='" + groupId + '\'' +
+                ", secretKey='" + secretKey + '\'' +
+                ", serverUrl='" + serverUrl + '\'' +
+                ", hostPort=" + hostPort +
+                ", alive=" + alive +
+                ", retryCount=" + retryCount +
                 '}';
     }
 
     @Override
-    public long getReconnectCount() {
+    public int getReconnectCount() {
         return this.retryCount;
     }
 

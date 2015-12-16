@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.util.HostPort;
 import org.kiteq.protocol.KiteRemoting;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -50,7 +52,7 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private volatile ChannelFuture channelFuture;
 
-    private volatile boolean alive = false;
+    private volatile AtomicBoolean alive = new AtomicBoolean(false);
 
     private final AtomicLong nextHeartbeatSec = new AtomicLong();
 
@@ -84,9 +86,10 @@ public class NettyKiteIOClient implements KiteIOClient {
 
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast("heartbeat",new IdleStateHandler(30,30,30, TimeUnit.SECONDS));
                 ch.pipeline().addLast("encoder", new KiteEncoder());
                 ch.pipeline().addLast("decoder", new KiteDecoder());
-                ch.pipeline().addLast("kiteq-handler", new KiteClientHandler(listener));
+                ch.pipeline().addLast("kiteq-handler", new KiteClientHandler(listener,alive));
             }
         });
 
@@ -94,7 +97,7 @@ public class NettyKiteIOClient implements KiteIOClient {
 
         //握手
         if (this.handshake()) {
-            this.alive = true;
+            this.alive.compareAndSet(false,true);
         }
 
         KiteStats.start();
@@ -114,7 +117,7 @@ public class NettyKiteIOClient implements KiteIOClient {
             this.channelFuture = future;
             //尝试建立握手
             if (handshake()) {
-                this.alive = true;
+                this.alive.compareAndSet(false,true);
                 this.retryCount=0;
                 LOGGER.info("{}|reconnecting succ...", this.hostPort);
                 return true;
@@ -131,12 +134,12 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     @Override
     public boolean isDead() {
-        return !this.alive;
+        return !this.alive.get();
     }
 
     @Override
     public void close() {
-        this.alive = false;
+        this.alive.compareAndSet(true,false);
         this.channelFuture.channel().close();
         workerGroup.shutdownGracefully();
     }
@@ -148,9 +151,6 @@ public class NettyKiteIOClient implements KiteIOClient {
         ResponseFuture future = new ResponseFuture(reqPacket.getHeader().getOpaque());
 
         Channel channel = channelFuture.channel();
-        if (!channel.isActive()) {
-            this.alive = false;
-        }
         ChannelFuture writeFuture = channel.write(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
             @Override
@@ -191,9 +191,6 @@ public class NettyKiteIOClient implements KiteIOClient {
         KitePacket reqPacket = new KitePacket(cmdType, message);
 
         Channel channel = channelFuture.channel();
-        if (!channel.isActive()) {
-            this.alive = false;
-        }
         ChannelFuture writeFuture = channel.write(reqPacket);
         writeFuture.addListener(new ChannelFutureListener() {
 

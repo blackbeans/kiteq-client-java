@@ -153,7 +153,6 @@ public class ClientManager extends AbstractChangeWatcher {
 
         //启动重连任务
         this.reconnectManager = new ReconnectManager();
-
         this.reconnectManager.setMaxReconTimes(maxReconTimes);
         this.reconnectManager.start();
         LOGGER.info("ClientManager|SUCC...");

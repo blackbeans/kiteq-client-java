@@ -32,7 +32,7 @@
     import java.util.UUID;
     
     import org.kiteq.client.KiteClient;
-    import org.kiteq.client.impl.DefaultKiteClient;
+    import org.kiteq.client.DefaultKiteClient;
     import org.kiteq.client.message.ListenerAdapter;
     import org.kiteq.client.message.SendResult;
     import org.kiteq.client.message.TxResponse;
@@ -97,7 +97,7 @@
 
     import org.kiteq.binding.Binding;
     import org.kiteq.client.KiteClient;
-    import org.kiteq.client.impl.DefaultKiteClient;
+    import org.kiteq.client.DefaultKiteClient;
     import org.kiteq.client.message.ListenerAdapter;
     import org.kiteq.client.message.Message;
     import org.kiteq.commons.stats.KiteStats;

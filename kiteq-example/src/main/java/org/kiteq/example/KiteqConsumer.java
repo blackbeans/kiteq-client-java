@@ -3,9 +3,9 @@ package org.kiteq.example;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.kiteq.client.ClientConfigs;
+import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.binding.Binding;
-import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.Message;
 import org.kiteq.commons.util.ParamUtils;
@@ -36,16 +36,15 @@ public class KiteqConsumer {
         LOGGER.info("topic=" + topic);
         final String messageType = StringUtils.defaultString(params.get("-messageType"), "pay-succ");
         LOGGER.info("messageType=" + messageType);
-        int clientNum = NumberUtils.toInt(params.get("-clients"), Runtime.getRuntime().availableProcessors() * 2);
+//        int clientNum = NumberUtils.toInt(params.get("-clients"), Runtime.getRuntime().availableProcessors() * 2);
+        int clientNum = 1;
         LOGGER.info("clientNum=" + clientNum);
 
-        ClientConfigs clientConfigs = new ClientConfigs(groupId, secretKey);
+
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
             public boolean onMessage(Message message) {
-                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(message);
-                }
                 return true;
             }
         };
@@ -57,7 +56,8 @@ public class KiteqConsumer {
             clients[i].setBindings(binds);
             clients[i].setZkHosts(zkAddr);
             clients[i].setListener(listener);
-            clients[i].setClientConfigs(clientConfigs);
+            clients[i].setGroupId(groupId);
+            clients[i].setSecretKey( secretKey);
             try {
                 clients[i].init();
             } catch (Exception e) {

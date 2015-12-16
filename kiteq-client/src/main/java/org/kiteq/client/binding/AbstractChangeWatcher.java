@@ -22,12 +22,16 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
 
     @Override
     public void process(WatchedEvent watchedEvent) throws Exception {
+
+
+
         switch (watchedEvent.getType()){
             case NodeChildrenChanged:
-                List<String> nodes =this.zkClient.getChildren().forPath(watchedEvent.getPath());
+
+                List<String> nodes =this.zkClient.getChildren().usingWatcher(this).forPath(watchedEvent.getPath());
                 String topic = watchedEvent.getPath().substring(watchedEvent.getPath().lastIndexOf("/") + 1);
                 this.qServerNodeChange(topic,nodes);
-                logger.info("NodeChildrenChanged|"+watchedEvent.getPath(),nodes);
+                logger.info("NodeChildrenChanged|"+watchedEvent.getPath()+"|"+nodes);
                 break;
             case NodeDeleted:
                 //ignored
@@ -40,8 +44,7 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
             //ignore
         }
 
-        //add watcher
-      this.zkClient.checkExists().usingWatcher(this);
+
     }
 
 

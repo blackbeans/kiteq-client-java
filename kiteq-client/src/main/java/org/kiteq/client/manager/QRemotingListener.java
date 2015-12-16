@@ -1,4 +1,4 @@
-package org.kiteq.client;
+package org.kiteq.client.manager;
 
 import org.kiteq.client.message.Message;
 import org.kiteq.client.message.MessageListener;

@@ -15,6 +15,7 @@ import org.kiteq.remoting.response.ResponseFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -94,6 +95,8 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
                         .setVersion(System.currentTimeMillis()).build();
                 KitePacket reqPacket = new KitePacket(Protocol.CMD_HEARTBEAT, heartBeat);
                 ctx.writeAndFlush(reqPacket);
+                InetSocketAddress addr = (InetSocketAddress) ctx.channel().remoteAddress();
+                logger.info("KiteClientHandler|"+addr.getHostString()+":"+addr.getPort()+"|Heartbeat...");
             }
         }
     }

@@ -3,9 +3,9 @@ package org.kiteq.example;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.kiteq.client.ClientConfigs;
+import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.KiteClient;
-import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.Message;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.client.message.TxResponse;
@@ -50,12 +50,12 @@ public class KiteqProducer {
         LOGGER.info("messageType=" + messageType);
         final long sendInterval = NumberUtils.toLong(params.get("-sendInterval"), 1000);
         LOGGER.info("sendInterval=" + sendInterval);
-        int clientNum = NumberUtils.toInt(params.get("-clients"), Runtime.getRuntime().availableProcessors() * 2);
+//        int clientNum = NumberUtils.toInt(params.get("-clients"), Runtime.getRuntime().availableProcessors() * 2);
+        int clientNum = 1;
         LOGGER.info("clientNum=" + clientNum);
         int workerNum = NumberUtils.toInt(params.get("-workers"), 10);
         LOGGER.info("workerNum=" + workerNum);
 
-        ClientConfigs clientConfigs = new ClientConfigs(groupId, secretKey);
         DefaultKiteClient[] clients = new DefaultKiteClient[clientNum];
         for (int i = 0; i < clientNum; i++) {
             clients[i] = new DefaultKiteClient();
@@ -63,6 +63,9 @@ public class KiteqProducer {
             binds.add(topic);
             clients[i].setPublishTopics(binds);
             clients[i].setZkHosts(zkAddr);
+            clients[i].setZkHosts(zkAddr);
+            clients[i].setGroupId(groupId);
+            clients[i].setSecretKey( secretKey);
             clients[i].setListener(new MessageListener() {
                 @Override
                 public boolean onMessage(Message message) {
@@ -74,7 +77,6 @@ public class KiteqProducer {
 
                 }
             });
-            clients[i].setClientConfigs(clientConfigs);
             try {
                 clients[i].init();
             } catch (Exception e) {

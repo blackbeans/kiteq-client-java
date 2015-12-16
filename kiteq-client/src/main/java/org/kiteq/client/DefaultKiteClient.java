@@ -1,10 +1,9 @@
-package org.kiteq.client.impl;
+package org.kiteq.client;
 
 import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
-import org.kiteq.client.ClientConfigs;
-import org.kiteq.client.ClientManager;
-import org.kiteq.client.KiteClient;
+import org.kiteq.client.manager.ClientConfigs;
+import org.kiteq.client.manager.ClientManager;
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.*;
@@ -34,15 +33,14 @@ public class DefaultKiteClient implements KiteClient {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultKiteClient.class);
 
-    private List<String> publishTopics;
-    private List<Binding> bindings;
-    private String groupId;
-    
+    private List<String> publishTopics = Collections.emptyList();
+    private List<Binding> bindings = Collections.emptyList();
+
     private QServerManager qserverManager;
 
-    private  ClientManager clientManager;
+    private ClientManager clientManager;
 
-    private  ClientConfigs clientConfigs;
+    private ClientConfigs clientConfigs = new ClientConfigs();
 
     private MessageListener listener;
 
@@ -52,29 +50,29 @@ public class DefaultKiteClient implements KiteClient {
         this.listener = listener;
     }
 
-    public void setClientConfigs(ClientConfigs clientConfigs) {
-        this.clientConfigs = clientConfigs;
-    }
-
     public void setZkHosts(String zkHosts) {
         this.zkHosts = zkHosts;
     }
 
     public String getGroupId() {
-        return groupId;
+        return this.clientConfigs.getGroupId();
     }
 
     public void setGroupId(String groupId) {
-        this.groupId = groupId;
+        this.clientConfigs.setGroupId(groupId);
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.clientConfigs.setSecretKey(secretKey);
     }
 
     @Override
     public void setPublishTopics(List<String> topics) {
         this.publishTopics = topics;
     }
-    
+
     @Override
-    public void setBindings( List<Binding> bindings) {
+    public void setBindings(List<Binding> bindings) {
         this.bindings = bindings;
     }
 
@@ -91,9 +89,9 @@ public class DefaultKiteClient implements KiteClient {
 
         //收集所有的topic
         Set<String> topics = new HashSet<String>();
-        if(null == publishTopics && !publishTopics.isEmpty()) {
+        if (null != publishTopics && !publishTopics.isEmpty()) {
             //发送方这个分组信息
-            this.qserverManager.publishTopics(this.groupId, getProducerName(), this.publishTopics);
+            this.qserverManager.publishTopics(this.getGroupId(), getProducerName(), this.publishTopics);
             topics.addAll(this.publishTopics);
         }
 
@@ -110,7 +108,7 @@ public class DefaultKiteClient implements KiteClient {
 
 
         //推送本地的订阅关系
-        qserverManager.subscribeTopics(this.groupId,bindings);
+        qserverManager.subscribeTopics(this.getGroupId(), bindings);
 
         logger.info("DefaultKiteClient|Init|SUCC|...");
 
@@ -140,12 +138,12 @@ public class DefaultKiteClient implements KiteClient {
         qserverManager.destroy();
         clientManager.close();
     }
-    
+
     @Override
     public SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException {
         return innerSendMessage(Protocol.CMD_STRING_MESSAGE, message, message.getHeader());
     }
-    
+
     @Override
     public SendResult sendBytesMessage(BytesMessage message) throws NoKiteqServerException {
         return innerSendMessage(Protocol.CMD_BYTES_MESSAGE, message, message.getHeader());
@@ -177,7 +175,7 @@ public class DefaultKiteClient implements KiteClient {
             txResponse.setMessageId(header.getMessageId());
 
             txCallback.doTransaction(txResponse);
-            
+
             if (txResponse.isRollback()) {
                 logger.warn("User rollback transaction " + header);
             } else {

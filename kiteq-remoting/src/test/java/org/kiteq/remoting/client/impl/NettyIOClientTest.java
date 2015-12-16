@@ -8,6 +8,8 @@ import org.kiteq.commons.util.ThreadUtils;
 import org.kiteq.protocol.KiteRemoting.ConnAuthAck;
 import org.kiteq.protocol.KiteRemoting.ConnMeta;
 import org.kiteq.protocol.Protocol;
+import org.kiteq.protocol.packet.KitePacket;
+import org.kiteq.remoting.listener.RemotingListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +30,22 @@ public class NettyIOClientTest {
     @Before
     public void init() {
         try {
-            kiteIOClient = new NettyKiteIOClient(GROUP_ID, SECRET_KEY, SERVER_URL);
+            kiteIOClient = new NettyKiteIOClient(GROUP_ID, SECRET_KEY, SERVER_URL, new RemotingListener() {
+                @Override
+                public KitePacket txAckReceived(KitePacket packet) {
+                    return null;
+                }
+
+                @Override
+                public KitePacket bytesMessageReceived(KitePacket packet) {
+                    return null;
+                }
+
+                @Override
+                public KitePacket stringMessageReceived(KitePacket packet) {
+                    return null;
+                }
+            });
             kiteIOClient.start();
         } catch (Exception e) {
             logger.error("client init error!", e);

@@ -22,7 +22,7 @@ public class QServerManager {
 
     private static final Logger logger = LoggerFactory.getLogger(QServerManager.class);
 
-    public static final String PATH_SERVER = "/kiteq/server/";
+    public static final String PATH_SERVER = "/kiteq/server";
 
     private static final String PATH_PRODUCER = "/kiteq/pub";
 
@@ -76,6 +76,10 @@ public class QServerManager {
     public void publishTopics(String group, String publisherTag, List<String> topics) throws Exception {
         for (String topic : topics) {
             String path = PATH_PRODUCER + "/" + topic +"/"+group +"/" + publisherTag;
+            if(null !=this.zkClient.checkExists().forPath(path)) {
+                //先删除再推送临时节点
+                this.zkClient.delete().forPath(path);
+            }
             String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
             logger.info("publishTopics|SUCC|" + eppath);
         }
@@ -107,9 +111,12 @@ public class QServerManager {
         for (Map.Entry<String, List<Binding>> entry : topics2Binds.entrySet()) {
             //开始推送订阅关系
             String path = PATH_CONSUMER + "/" + entry.getKey() + "/" + group + "-bind";
-            this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
+            Stat stat = this.zkClient.checkExists().forPath(path);
+            if(null == stat){
+                this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
+            }
 
-            Stat stat = this.zkClient.setData().forPath(path, JsonUtils.toJSON(entry.getValue()).getBytes("UTF-8"));
+            this.zkClient.setData().forPath(path, JsonUtils.toJSON(entry.getValue()).getBytes("UTF-8"));
             logger.info("subscribeTopics|Subscribe|SUCC|" + path + "|" + JsonUtils.toJSON(entry.getValue()));
         }
     }

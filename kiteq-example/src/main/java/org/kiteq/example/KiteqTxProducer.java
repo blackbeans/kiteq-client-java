@@ -12,9 +12,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.kiteq.client.ClientConfigs;
+import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.KiteClient;
-import org.kiteq.client.impl.DefaultKiteClient;
+import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.*;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.ParamUtils;
@@ -53,7 +53,6 @@ public class KiteqTxProducer {
         int workerNum = NumberUtils.toInt(params.get("-workers"), 10);
         LOGGER.info("workerNum=" + workerNum);
 
-        ClientConfigs clientConfigs = new ClientConfigs(groupId, secretKey);
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
             public void onMessageCheck(TxResponse response) {
@@ -75,18 +74,9 @@ public class KiteqTxProducer {
             binds.add(topic);
             clients[i].setPublishTopics(binds);
             clients[i].setZkHosts(zkAddr);
-            clients[i].setListener(new MessageListener() {
-                @Override
-                public boolean onMessage(Message message) {
-                    return false;
-                }
-
-                @Override
-                public void onMessageCheck(TxResponse tx) {
-
-                }
-            });
-            clients[i].setClientConfigs(clientConfigs);
+            clients[i].setGroupId(groupId);
+            clients[i].setSecretKey( secretKey);
+            clients[i].setListener(listener);
             try {
                 clients[i].init();
             } catch (Exception e) {

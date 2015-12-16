@@ -1,4 +1,4 @@
-package org.kiteq.client;
+package org.kiteq.client.manager;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.kiteq.client.binding.AbstractChangeWatcher;
@@ -114,7 +114,7 @@ public class ClientManager extends AbstractChangeWatcher {
         }
 
 
-        LOGGER.info("ALL KITEQ SERVER|" + topic2Servers + " ...");
+        LOGGER.info("ALL KITEQ SERVER|" + topic2Server + " ...");
         //创建所有可以使用的kiteqServer的连接
         for (final String server : serverList) {
             FutureTask<KiteIOClient> future = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
@@ -155,7 +155,7 @@ public class ClientManager extends AbstractChangeWatcher {
         this.reconnectManager = new ReconnectManager();
         this.reconnectManager.setMaxReconTimes(maxReconTimes);
         this.reconnectManager.start();
-        LOGGER.info("ClientManager|SUCC...");
+        LOGGER.info("ClientManager|SUCC|"+this.topic2Servers+"...");
     }
 
 
@@ -175,6 +175,9 @@ public class ClientManager extends AbstractChangeWatcher {
         KiteIOClient client = null;
         int i = 0;
         do {
+            if(serverUris.isEmpty()){
+               throw new NoKiteqServerException(topic);
+            }
             client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
             //如果是dead则丢给重连任务
             if (client.isDead()) {
@@ -198,7 +201,7 @@ public class ClientManager extends AbstractChangeWatcher {
                     c.close();
                 }
             } catch (Exception e) {
-                LOGGER.error("qServerNodeChange|CLOSE|KITE CLIENT|ERROR|" + entry.getKey(), e);
+                LOGGER.error("ClientManager|CLOSE|KITE CLIENT|ERROR|" + entry.getKey(), e);
             }
         }
     }
@@ -222,7 +225,7 @@ public class ClientManager extends AbstractChangeWatcher {
                         return ClientManager.this.createKiteIOClient(addr);
 
                     } catch (Exception e) {
-                        LOGGER.error("qServerNodeChange|createKiteIOClient|FAIL" + addr, e);
+                        LOGGER.error("ClientManager|qServerNodeChange|FAIL" + addr, e);
                         throw e;
                     }
                 }
@@ -240,10 +243,10 @@ public class ClientManager extends AbstractChangeWatcher {
             try {
                 client = this.hostport2Server.get(addr).get(10, TimeUnit.SECONDS);
             } catch (Exception e) {
-                LOGGER.error("qServerNodeChange|KITE CLIENT|ERROR|" + addr, e);
+                LOGGER.error("ClientManager|qServerNodeChange|KITE CLIENT|ERROR|" + addr, e);
             }
             if (null == client) {
-                LOGGER.warn("qServerNodeChange|NO KITE CLIENT|" + addr);
+                LOGGER.warn("ClientManager|qServerNodeChange|NO KITE CLIENT|" + addr);
             } else {
                 kiteIOClients.add(client);
             }
@@ -269,10 +272,19 @@ public class ClientManager extends AbstractChangeWatcher {
                 }
             }
         }
+        Iterator<String> it = this.hostport2Topics.keySet().iterator();
+        for(;it.hasNext();){
+            String next = it.next();
+            if(this.hostport2Topics.get(next).isEmpty()){
+                this.hostport2Topics.remove(next);
+                this.hostport2Server.remove(next);
+            }
+        }
 
         //topic对应的地址列表更新
         this.topic2Servers.replace(topic, kiteIOClients);
-        LOGGER.info("qServerNodeChange|ReInit IOClients|SUCC|" + topic + "|" + address + "|" + this.hostport2Topics);
+        LOGGER.info("ClientManager|qServerNodeChange|ReInit IOClients|SUCC|" + topic + "|" + address + "|" +
+                this.hostport2Topics);
     }
 
 

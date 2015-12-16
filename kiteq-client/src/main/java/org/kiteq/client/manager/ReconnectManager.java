@@ -1,4 +1,4 @@
-package org.kiteq.client;
+package org.kiteq.client.manager;
 
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;

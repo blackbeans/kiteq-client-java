@@ -215,7 +215,7 @@ public class DefaultKiteClient implements KiteClient {
 
             result.setMessageId(ack.getMessageId());
             result.setSuccess(ack.getStatus());
-
+            result.setErrorMessage(ack.getFeedback());
             if (logger.isDebugEnabled()) {
                 logger.debug("Receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
             }

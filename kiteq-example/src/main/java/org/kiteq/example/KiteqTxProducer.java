@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.*;

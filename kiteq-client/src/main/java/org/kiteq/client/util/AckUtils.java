@@ -8,16 +8,20 @@ import org.kiteq.protocol.KiteRemoting.Header;
  * @since Feb 27, 2015
  */
 public class AckUtils {
-    
-    public static DeliverAck buildDeliverAck(Header header,boolean succ) {
-        DeliverAck ack = DeliverAck.newBuilder()
+
+    public static DeliverAck buildDeliverAck(Header header, boolean succ, Throwable t) {
+        DeliverAck.Builder ack = DeliverAck.newBuilder()
                 .setGroupId(header.getGroupId())
                 .setMessageId(header.getMessageId())
                 .setMessageType(header.getMessageType())
                 .setTopic(header.getTopic())
-                .setStatus(succ)
-                .build();
-        return ack;
+                .setStatus(succ);
+        if (null != t) {
+            ack.setFeedback(t.getMessage());
+        } else{
+            ack.setFeedback("");
+        }
+        return ack.build();
     }
-    
+
 }

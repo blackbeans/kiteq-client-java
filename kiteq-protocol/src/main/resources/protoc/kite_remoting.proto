@@ -1,3 +1,8 @@
+
+package protoc;
+
+option java_package = "org.kiteq.protocol";
+
 //心跳请求包
 message HeartBeat{
     required int64 version  = 1;
@@ -28,15 +33,16 @@ message DeliverAck{
     required string messageId =1;//消息id
     required string topic = 2;
     required string messageType = 3;
-    required string groupId = 4; //消息处理  
+    required string groupId = 4; //消息处理
     required bool status =  5 [default = true];//处理状态
+    optional string feedback = 6;//处理状态
 }
 
 //事务确认数据包
-message TxACKPacket{    
-     required Header header  = 1; //消息头部
-     required int32 status = 2 [default = 0]; //事务状态 0; //未知  1;  //已提交 2; //回滚 
-     required string feedback = 3; //回馈
+message TxACKPacket{
+    required Header header  = 1; //消息头部
+    required int32 status = 2 [default = 0]; //事务状态 0; //未知  1;  //已提交 2; //回滚
+    required string feedback = 3; //回馈
 }
 
 
@@ -44,6 +50,7 @@ message Entry {
     required string key  = 1;
     required string value  = 2;
 }
+
 
 message Header{
     required string messageId = 1;
@@ -60,7 +67,7 @@ message Header{
 //byte类消息
 message BytesMessage{
     required Header  header= 1;
-    required  bytes body = 2;    
+    required  bytes body = 2;
 }
 
 
@@ -68,6 +75,6 @@ message BytesMessage{
 message StringMessage{
     required Header header = 1;
     required string body = 2;
-
 }
+
 

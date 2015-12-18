@@ -65,13 +65,16 @@ public class QRemotingListener implements RemotingListener {
 
     private KitePacket innerReceived(KitePacket packet, Message message) {
         boolean succ = false;
+        Throwable t = null;
         try {
             succ = listener.onMessage(message);
         } catch (Exception e) {
             LOGGER.error("bytesMessageReceived|FAIL|", e);
             succ = false;
+            t =e;
+
         }
-        KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(), succ);
+        KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(), succ,t);
         KitePacket response = new KitePacket(packet.getHeader().getOpaque(), Protocol.CMD_DELIVER_ACK, ack);
         return response;
     }

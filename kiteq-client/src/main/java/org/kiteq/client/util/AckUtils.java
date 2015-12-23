@@ -17,7 +17,7 @@ public class AckUtils {
                 .setTopic(header.getTopic())
                 .setStatus(succ);
         if (null != t) {
-            ack.setFeedback(t.getCause().getMessage());
+            ack.setFeedback(t.toString());
         }
         return ack.build();
     }

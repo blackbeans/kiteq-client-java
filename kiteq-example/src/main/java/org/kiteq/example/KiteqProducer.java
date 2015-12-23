@@ -40,7 +40,7 @@ public class KiteqProducer {
         Map<String, String> params = ParamUtils.parse(args);
         String zkAddr = StringUtils.defaultString(params.get("-zkAddr"), "localhost:2181");
         LOGGER.info("zkAddr=" + zkAddr);
-        final String groupId = StringUtils.defaultString(params.get("-groupId"), "s-mts-test");
+        final String groupId = StringUtils.defaultString(params.get("-groupId"), "p-mts-test");
         LOGGER.info("groupId=" + groupId);
         String secretKey = StringUtils.defaultString(params.get("-secretKey"), "123456");
         LOGGER.info("secretKey=" + secretKey);

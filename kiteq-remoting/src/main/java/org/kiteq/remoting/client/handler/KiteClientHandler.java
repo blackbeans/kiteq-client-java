@@ -98,7 +98,7 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
                 KitePacket reqPacket = new KitePacket(Protocol.CMD_HEARTBEAT, heartBeat);
                 ctx.writeAndFlush(reqPacket);
                 InetSocketAddress addr = (InetSocketAddress) ctx.channel().remoteAddress();
-                logger.info("KiteClientHandler|"+addr.getHostString()+":"+addr.getPort()+"|Heartbeat...");
+                logger.info("KiteClientHandler|"+addr.getHostName()+":"+addr.getPort()+"|Heartbeat...");
             }
         }
     }

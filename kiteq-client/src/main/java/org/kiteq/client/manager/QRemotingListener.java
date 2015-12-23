@@ -68,7 +68,7 @@ public class QRemotingListener implements RemotingListener {
         Throwable t = null;
         try {
             succ = listener.onMessage(message);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.error("bytesMessageReceived|FAIL|", e);
             succ = false;
             t =e;

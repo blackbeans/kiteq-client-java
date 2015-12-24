@@ -47,12 +47,6 @@ public class DefaultKiteClient implements KiteClient {
 
     private String zkHosts;
 
-    private String logPath;
-
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
-    }
-
     public void setListener(MessageListener listener) {
         this.listener = listener;
     }
@@ -85,8 +79,6 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public void init() throws Exception {
-        //初始化kite日志
-        LogInitUtils.initLog(logPath, this.getGroupId());
 
         //启动Qserver
         this.qserverManager = new QServerManager();

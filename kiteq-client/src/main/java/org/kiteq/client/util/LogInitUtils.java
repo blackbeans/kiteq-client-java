@@ -13,7 +13,6 @@ import java.util.Properties;
 
 
 public class LogInitUtils {
-    public static final Logger LOG = Logger.getLogger("kiteq");
     private static volatile boolean inited = false;
 
     private static final Properties log4jConfiguration = new Properties();
@@ -31,30 +30,19 @@ public class LogInitUtils {
         log4jConfiguration.put("log4j.appender.kiteQFile.layout.ConversionPattern", "%d %p [%c] \r\n\t%m%n");
     }
 
-    /**
-     * 默认使用/home/logs/作为日志输出目录。
-     */
-    public static void initLog(String logFileNameSuffix) {
-        initLog("/home/logs/kiteq", logFileNameSuffix);
-    }
 
     /**
      * 测试模式时，可以自己指定日志目录，因为Mac上默认无法在/home/下建立文件夹。
      */
-    public static void initLog(String logPath, String logFileNameSuffix) {
+    public static void initLog(String logFileNameSuffix) {
         if (inited) {
             return;
-        }
-
-        if (!logPath.endsWith(File.separator)) {
-            logPath += File.separator;
         }
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(LogInitUtils.class.getClassLoader());
         try {
             // Load kiteq log configuration file.
-            log4jConfiguration.put("log4j.appender.kiteQFile.File", logPath + "kiteq-" + logFileNameSuffix + ".log");
             PropertyConfigurator.configure(log4jConfiguration);
 
             // Change log file name: append file name suffix.
@@ -70,8 +58,6 @@ public class LogInitUtils {
                     File logFile = new File(newLogFilePath);
                     logFileAppender.setFile(logFile.getAbsolutePath());
                     logFileAppender.activateOptions(); // Important!
-
-                    LOG.info("Log [" + logFileAppender.getName() + "] path changed to: " + logFile.getAbsolutePath());
                 }
             }
 

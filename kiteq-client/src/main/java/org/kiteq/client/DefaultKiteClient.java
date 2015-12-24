@@ -79,6 +79,8 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public void init() throws Exception {
+        //初始化kite日志
+        LogInitUtils.initLog(this.getGroupId());
 
         //启动Qserver
         this.qserverManager = new QServerManager();

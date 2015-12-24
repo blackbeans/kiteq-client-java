@@ -90,8 +90,7 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             //写空闲连接空闲则尝试发送心跳保持连接
-            if (event.state() == IdleState.WRITER_IDLE || event.state() == IdleState.READER_IDLE
-                    ||event.state() == IdleState.ALL_IDLE) {
+            if (event.state() == IdleState.ALL_IDLE) {
                 //发送heartbeat
                 KiteRemoting.HeartBeat heartBeat = KiteRemoting.HeartBeat.newBuilder()
                         .setVersion(System.currentTimeMillis()).build();

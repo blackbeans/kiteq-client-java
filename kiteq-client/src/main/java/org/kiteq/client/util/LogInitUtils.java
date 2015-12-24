@@ -16,6 +16,7 @@ public class LogInitUtils {
     private static volatile boolean inited = false;
 
     private static final Properties log4jConfiguration = new Properties();
+
     static {
 
 
@@ -31,9 +32,6 @@ public class LogInitUtils {
     }
 
 
-    /**
-     * 测试模式时，可以自己指定日志目录，因为Mac上默认无法在/home/下建立文件夹。
-     */
     public static void initLog(String logFileNameSuffix) {
         if (inited) {
             return;
@@ -42,28 +40,32 @@ public class LogInitUtils {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(LogInitUtils.class.getClassLoader());
         try {
-            // Load kiteq log configuration file.
-            PropertyConfigurator.configure(log4jConfiguration);
+
 
             // Change log file name: append file name suffix.
             FileAppender fileAppender = null;
-            for (Enumeration<?> appenders = Logger.getRootLogger().getAllAppenders(); (null == fileAppender)
-                    && appenders.hasMoreElements();) {
+            Enumeration<?> appenders = Logger.getRootLogger().getAllAppenders();
+            for (; (null == fileAppender)
+                    && appenders.hasMoreElements(); ) {
                 Appender appender = (Appender) appenders.nextElement();
                 if (FileAppender.class.isInstance(appender)) {
                     FileAppender logFileAppender = (FileAppender) appender;
                     String oldLogFilePath = logFileAppender.getFile();
-                    String newLogFilePath = StringUtils.substringBeforeLast(oldLogFilePath, ".log") + "-"
+                    String newLogFilePath = StringUtils.substringBeforeLast(oldLogFilePath, "/") + "/kiteq-"
                             + logFileNameSuffix + ".log";
-                    File logFile = new File(newLogFilePath);
-                    logFileAppender.setFile(logFile.getAbsolutePath());
-                    logFileAppender.activateOptions(); // Important!
+                    log4jConfiguration.setProperty("log4j.appender.kiteQFile.file",newLogFilePath);
+                    break;
                 }
+            }
+
+            if (!inited) {
+                // Load kiteq log configuration file.
+                PropertyConfigurator.configure(log4jConfiguration);
             }
 
         } finally {
             Thread.currentThread().setContextClassLoader(classLoader);
-            inited =true;
+            inited = true;
         }
     }
 

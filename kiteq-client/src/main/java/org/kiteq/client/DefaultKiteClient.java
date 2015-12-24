@@ -7,6 +7,7 @@ import org.kiteq.client.manager.ClientManager;
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.*;
+import org.kiteq.client.util.LogInitUtils;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
@@ -46,6 +47,12 @@ public class DefaultKiteClient implements KiteClient {
 
     private String zkHosts;
 
+    private String logPath;
+
+    public void setLogPath(String logPath) {
+        this.logPath = logPath;
+    }
+
     public void setListener(MessageListener listener) {
         this.listener = listener;
     }
@@ -78,6 +85,8 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public void init() throws Exception {
+        //初始化kite日志
+        LogInitUtils.initLog(logPath, this.getGroupId());
 
         //启动Qserver
         this.qserverManager = new QServerManager();

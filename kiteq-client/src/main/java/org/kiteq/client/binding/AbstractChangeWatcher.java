@@ -19,6 +19,8 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
 
     protected CuratorFramework zkClient;
 
+    private final  Object lock = new Object();
+
     //only for test
     void setZkClient(CuratorFramework zkClient) {
         this.zkClient = zkClient;
@@ -31,11 +33,13 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
 
         switch (watchedEvent.getType()){
             case NodeChildrenChanged:
-
-                List<String> nodes =this.zkClient.getChildren().usingWatcher(this).forPath(watchedEvent.getPath());
-                String topic = watchedEvent.getPath().substring(watchedEvent.getPath().lastIndexOf("/") + 1);
-                this.qServerNodeChange(topic,nodes);
-                logger.info("NodeChildrenChanged|"+watchedEvent.getPath()+"|"+nodes);
+                //加一把全局的锁避免多次通知内部处理错误
+                synchronized (lock) {
+                    List<String> nodes = this.zkClient.getChildren().usingWatcher(this).forPath(watchedEvent.getPath());
+                    String topic = watchedEvent.getPath().substring(watchedEvent.getPath().lastIndexOf("/") + 1);
+                    this.qServerNodeChange(topic, nodes);
+                    logger.info("NodeChildrenChanged|"+watchedEvent.getPath()+"|"+nodes);
+                }
                 break;
             case NodeDeleted:
                 //ignored

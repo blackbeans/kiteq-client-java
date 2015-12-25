@@ -230,10 +230,11 @@ public class ClientManager extends AbstractChangeWatcher {
     @Override
     protected void qServerNodeChange(String topic, List<String> address) {
         //获取到新的topic对应的kiteqServer
-        LOGGER.info("qServerNodeChange|" + topic + "|" + address);
+        LOGGER.info("ClientManager|qServerNodeChange|" + topic + "|" + address);
         if (!this.topics.contains(topic)) {
             return;
         }
+
 
         for (final String addr : address) {
 

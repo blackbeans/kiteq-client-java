@@ -299,6 +299,7 @@ public class ClientManager extends AbstractChangeWatcher {
             if(this.hostport2Topics.get(next).isEmpty()){
                 this.hostport2Topics.remove(next);
                 this.hostport2Server.remove(next);
+                LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next );
             }
         }
 

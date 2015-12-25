@@ -97,8 +97,6 @@ public class NettyKiteIOClient implements KiteIOClient {
         if (this.handshake()) {
             this.alive.compareAndSet(false,true);
         }
-
-        KiteStats.start();
     }
 
     @Override

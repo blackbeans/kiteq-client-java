@@ -255,6 +255,19 @@ public class ClientManager extends AbstractChangeWatcher {
 
             if (null == exist) {
                 future.run();
+                exist = future;
+            }
+
+            KiteIOClient client = null;
+            try {
+                client = exist.get(10, TimeUnit.SECONDS);
+                //如果已经dead那么就需要发起重连
+                if (null!=client && client.isDead()){
+                    this.reconnectManager.submitReconnect(client,this.callback);
+                    LOGGER.warn("ClientManager|qServerNodeChange|KITE CLIENT Dead|submitReconnect|" + client.getHostPort());
+                }
+            } catch (Exception e) {
+                LOGGER.error("ClientManager|qServerNodeChange|KITE CLIENT|ERROR|" + addr, e);
             }
         }
 

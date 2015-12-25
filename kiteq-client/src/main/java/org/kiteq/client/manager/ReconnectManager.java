@@ -55,12 +55,17 @@ public class ReconnectManager {
                 public void run(Timeout timeout) throws Exception {
 
                     LOGGER.warn("ReconnectManager|Reconnecting|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
+                    if(!kiteIOClient.isDead()){
+                        ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
+                        return;
+                    }
                     //开启重连
                     boolean succ = kiteIOClient.reconnect();
                     if (succ) {
                         //如果成功则
                         callback.callback(succ,kiteIOClient);
                         LOGGER.warn("ReconnectManager|Reconnecting|SUCC|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
+                        ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
                         return;
                     }
 
@@ -71,6 +76,7 @@ public class ReconnectManager {
                         return ;
                     }
                     callback.callback(false,kiteIOClient);
+                    ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
                     LOGGER.warn("ReconnectManager|Reconnecting|FAIL|Give UP|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
 
                 }

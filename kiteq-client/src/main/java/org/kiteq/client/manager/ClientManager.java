@@ -55,7 +55,8 @@ public class ClientManager extends AbstractChangeWatcher {
     private ReconnectManager.IReconnectCallback callback = new ReconnectManager.IReconnectCallback() {
         @Override
         public void callback(boolean succ, KiteIOClient client) {
-            if (succ) {
+            //重连成功并且host到topic的对应关系中存在当前client的地址,则增加
+            if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
                 //如果成功需要恢复所有topic中该client
                 ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
                 Set<String> topics = tmp.get(client.getHostPort());
@@ -81,17 +82,22 @@ public class ClientManager extends AbstractChangeWatcher {
                 }
             } else {
 
-                ClientManager.this.hostport2Server.remove(client.getHostPort());
-                ClientManager.this.hostport2Topics.remove(client.getHostPort());
+                try {
+                    ClientManager.this.hostport2Server.remove(client.getHostPort());
+                    ClientManager.this.hostport2Topics.remove(client.getHostPort());
 
-                //直接删除对应这个连接下的的所有topic的对应关系
-                ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
-                Set<String> topics = tmp.get(client.getHostPort());
-                for (String topic : topics) {
-                    List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
-                    if (null != clients) {
-                        clients.remove(client);
+                    //直接删除对应这个连接下的的所有topic的对应关系
+                    ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+                    Set<String> topics = tmp.get(client.getHostPort());
+                    for (String topic : topics) {
+                        List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
+                        if (null != clients) {
+                            clients.remove(client);
+                        }
                     }
+                } finally {
+                    //总要关闭的
+                    client.close();
                 }
 
             }
@@ -199,8 +205,8 @@ public class ClientManager extends AbstractChangeWatcher {
                throw new NoKiteqServerException(topic);
             }
             client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
-            //如果是dead则丢给重连任务
-            if (client.isDead()) {
+            //如果是dead,并且当前的hostport到topic的列表中存在该机器,则丢给重连任务
+            if (client.isDead() && this.hostport2Topics.containsKey(client.getHostPort())) {
                 this.reconnectManager.submitReconnect(client, this.callback);
                 //移除掉
                 serverUris.remove(client);
@@ -255,19 +261,6 @@ public class ClientManager extends AbstractChangeWatcher {
 
             if (null == exist) {
                 future.run();
-                exist = future;
-            }
-
-            KiteIOClient client = null;
-            try {
-                client = exist.get(10, TimeUnit.SECONDS);
-                //如果已经dead那么就需要发起重连
-                if (null!=client && client.isDead()){
-                    this.reconnectManager.submitReconnect(client,this.callback);
-                    LOGGER.warn("ClientManager|qServerNodeChange|KITE CLIENT Dead|submitReconnect|" + client.getHostPort());
-                }
-            } catch (Exception e) {
-                LOGGER.error("ClientManager|qServerNodeChange|KITE CLIENT|ERROR|" + addr, e);
             }
         }
 
@@ -302,6 +295,7 @@ public class ClientManager extends AbstractChangeWatcher {
                 if (t.equalsIgnoreCase(topic) && !address.contains(entry.getKey())) {
                     //从地址中清理掉旧的对应关系
                     entry.getValue().remove(topic);
+                    LOGGER.info("ClientManager|qServerNodeChange|Remove Topic IOClients|" + topic + "|" + entry.getKey() );
                     break;
                 }
             }

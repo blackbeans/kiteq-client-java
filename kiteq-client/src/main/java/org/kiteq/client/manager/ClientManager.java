@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * luofucong at 2015-03-05.
@@ -53,53 +55,64 @@ public class ClientManager extends AbstractChangeWatcher {
 
     //重连回调方法
     private ReconnectManager.IReconnectCallback callback = new ReconnectManager.IReconnectCallback() {
+
+        private Lock lock = new ReentrantLock();
+
         @Override
         public void callback(boolean succ, KiteIOClient client) {
-            //重连成功并且host到topic的对应关系中存在当前client的地址,则增加
-            if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
-                //如果成功需要恢复所有topic中该client
-                ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
-                Set<String> topics = tmp.get(client.getHostPort());
-                for (String topic : topics) {
-                    List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
-                    if (null == clients) {
-                        clients = new ArrayList<KiteIOClient>();
-                        List<KiteIOClient> exist = ClientManager.this.topic2Servers.putIfAbsent(topic, clients);
-                        if (null != exist) {
-                            clients = exist;
-                        }
-                    }
 
-                    for(KiteIOClient c :clients) {
-                        //如果已经存在则放弃
-                        if(c.getHostPort().equalsIgnoreCase(client.getHostPort())){
-                            break;
-                        }
-                        //添加该client
-                        clients.add(client);
-                        //推送当前的发送方该分组IP
-                    }
-                }
-            } else {
-
-                try {
-                    ClientManager.this.hostport2Server.remove(client.getHostPort());
-                    ClientManager.this.hostport2Topics.remove(client.getHostPort());
-
-                    //直接删除对应这个连接下的的所有topic的对应关系
+            try {
+                lock.tryLock(10, TimeUnit.SECONDS);
+                //重连成功并且host到topic的对应关系中存在当前client的地址,则增加
+                if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
+                    //如果成功需要恢复所有topic中该client
                     ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
                     Set<String> topics = tmp.get(client.getHostPort());
                     for (String topic : topics) {
                         List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
-                        if (null != clients) {
-                            clients.remove(client);
+                        if (null == clients) {
+                            clients = new ArrayList<KiteIOClient>();
+                            List<KiteIOClient> exist = ClientManager.this.topic2Servers.putIfAbsent(topic, clients);
+                            if (null != exist) {
+                                clients = exist;
+                            }
+                        }
+
+                        for (KiteIOClient c : clients) {
+                            //如果已经存在则放弃
+                            if (c.getHostPort().equalsIgnoreCase(client.getHostPort())) {
+                                break;
+                            }
+                            //添加该client
+                            clients.add(client);
+                            //推送当前的发送方该分组IP
                         }
                     }
-                } finally {
-                    //总要关闭的
-                    client.close();
-                }
+                } else {
 
+                    try {
+                        ClientManager.this.hostport2Server.remove(client.getHostPort());
+                        ClientManager.this.hostport2Topics.remove(client.getHostPort());
+
+                        //直接删除对应这个连接下的的所有topic的对应关系
+                        ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+                        Set<String> topics = tmp.get(client.getHostPort());
+                        for (String topic : topics) {
+                            List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
+                            if (null != clients) {
+                                clients.remove(client);
+                            }
+                        }
+                    } finally {
+                        //总要关闭的
+                        client.close();
+                    }
+
+                }
+            } catch (InterruptedException e) {
+                LOGGER.error("reconnect:" + e.getMessage());
+            } finally {
+                lock.unlock();
             }
         }
     };
@@ -168,21 +181,22 @@ public class ClientManager extends AbstractChangeWatcher {
         this.reconnectManager = new ReconnectManager();
         this.reconnectManager.setMaxReconTimes(maxReconTimes);
         this.reconnectManager.start();
-        LOGGER.info("ClientManager|SUCC|"+this.topic2Servers+"...");
+        LOGGER.info("ClientManager|SUCC|" + this.topic2Servers + "...");
     }
 
     /**
      * only for test
+     *
      * @param topic
      * @return
      * @throws NoKiteqServerException
      */
-   List<KiteIOClient> getClient(String topic)throws NoKiteqServerException {
-       List<KiteIOClient> serverUris = this.topic2Servers.get(topic);
-       if (serverUris == null || serverUris.isEmpty()) {
-           throw new NoKiteqServerException(topic);
-       }
-       return serverUris;
+    List<KiteIOClient> getClient(String topic) throws NoKiteqServerException {
+        List<KiteIOClient> serverUris = this.topic2Servers.get(topic);
+        if (serverUris == null || serverUris.isEmpty()) {
+            throw new NoKiteqServerException(topic);
+        }
+        return serverUris;
     }
 
     /**
@@ -201,8 +215,8 @@ public class ClientManager extends AbstractChangeWatcher {
         KiteIOClient client = null;
         int i = 0;
         do {
-            if(serverUris.isEmpty()){
-               throw new NoKiteqServerException(topic);
+            if (serverUris.isEmpty()) {
+                throw new NoKiteqServerException(topic);
             }
             client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
             //如果是dead,并且当前的hostport到topic的列表中存在该机器,则丢给重连任务
@@ -295,18 +309,18 @@ public class ClientManager extends AbstractChangeWatcher {
                 if (t.equalsIgnoreCase(topic) && !address.contains(entry.getKey())) {
                     //从地址中清理掉旧的对应关系
                     entry.getValue().remove(topic);
-                    LOGGER.info("ClientManager|qServerNodeChange|Remove Topic IOClients|" + topic + "|" + entry.getKey() );
+                    LOGGER.info("ClientManager|qServerNodeChange|Remove Topic IOClients|" + topic + "|" + entry.getKey());
                     break;
                 }
             }
         }
         Iterator<String> it = this.hostport2Topics.keySet().iterator();
-        for(;it.hasNext();){
+        for (; it.hasNext(); ) {
             String next = it.next();
-            if(this.hostport2Topics.get(next).isEmpty()){
+            if (this.hostport2Topics.get(next).isEmpty()) {
                 this.hostport2Topics.remove(next);
                 this.hostport2Server.remove(next);
-                LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next );
+                LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next);
             }
         }
 
@@ -324,7 +338,7 @@ public class ClientManager extends AbstractChangeWatcher {
      * @throws Exception
      */
     private KiteIOClient createKiteIOClient(String hostport) throws Exception {
-        return  this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
+        return this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
     }
 
     /**
@@ -334,10 +348,10 @@ public class ClientManager extends AbstractChangeWatcher {
      * @return
      * @throws Exception
      */
-    protected  KiteIOClient createKiteIOClient(String hostport, String groupId,
+    protected KiteIOClient createKiteIOClient(String hostport, String groupId,
                                               String secretKey, RemotingListener listener) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(groupId,secretKey, hostport,listener);
+                new NettyKiteIOClient(groupId, secretKey, hostport, listener);
         kiteIOClient.start();
         return kiteIOClient;
     }

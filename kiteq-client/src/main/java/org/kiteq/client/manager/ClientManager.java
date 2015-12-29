@@ -56,13 +56,10 @@ public class ClientManager extends AbstractChangeWatcher {
     //重连回调方法
     private ReconnectManager.IReconnectCallback callback = new ReconnectManager.IReconnectCallback() {
 
-        private Lock lock = new ReentrantLock();
 
         @Override
         public void callback(boolean succ, KiteIOClient client) {
-
-            try {
-                lock.tryLock(10, TimeUnit.SECONDS);
+            synchronized (ClientManager.this.lock) {
                 //重连成功并且host到topic的对应关系中存在当前client的地址,则增加
                 if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
                     //如果成功需要恢复所有topic中该client
@@ -109,10 +106,6 @@ public class ClientManager extends AbstractChangeWatcher {
                     }
 
                 }
-            } catch (InterruptedException e) {
-                LOGGER.error("reconnect:" + e.getMessage());
-            } finally {
-                lock.unlock();
             }
         }
     };

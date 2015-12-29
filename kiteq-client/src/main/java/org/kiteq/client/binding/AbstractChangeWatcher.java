@@ -19,7 +19,7 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
 
     protected CuratorFramework zkClient;
 
-    private final  Object lock = new Object();
+    protected final  Object lock = new Object();
 
     //only for test
     void setZkClient(CuratorFramework zkClient) {

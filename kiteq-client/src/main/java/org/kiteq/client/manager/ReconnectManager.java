@@ -24,7 +24,7 @@ public class ReconnectManager {
     private final HashedWheelTimer timer =
             new HashedWheelTimer(new NamedThreadFactory("reconnector-", true), 1, TimeUnit.SECONDS, 10);
 
-    private int maxReconTimes = 20;
+    private int maxReconTimes = 10;
 
     public void setMaxReconTimes(int maxReconTimes) {
         this.maxReconTimes = maxReconTimes;

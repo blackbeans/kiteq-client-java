@@ -38,24 +38,17 @@ public class ClientManager extends AbstractChangeWatcher {
     private final QServerManager qserverManager;
 
     //重连任务
-    private static ReconnectManager reconnectManager;
+    private ReconnectManager reconnectManager;
 
     private final ClientConfigs clientConfigs;
 
     private final QRemotingListener listener;
 
     //最大重连次数
-    private static final int maxReconTimes = 30;
+    private final int maxReconTimes = 30;
 
     public void setTopics(Set<String> topics) {
         this.topics = topics;
-    }
-
-    static {
-        //启动重连任务,该重连任务共享
-        reconnectManager = new ReconnectManager();
-        reconnectManager.setMaxReconTimes(maxReconTimes);
-        reconnectManager.start();
     }
 
     //重连回调方法
@@ -77,9 +70,9 @@ public class ClientManager extends AbstractChangeWatcher {
                         }
                     }
 
-                    for (KiteIOClient c : clients) {
+                    for(KiteIOClient c :clients) {
                         //如果已经存在则放弃
-                        if (c.getHostPort().equalsIgnoreCase(client.getHostPort())) {
+                        if(c.getHostPort().equalsIgnoreCase(client.getHostPort())){
                             break;
                         }
                         //添加该client
@@ -170,22 +163,26 @@ public class ClientManager extends AbstractChangeWatcher {
                 topics.add(entry.getKey());
             }
         }
-        LOGGER.info("ClientManager|SUCC|" + this.topic2Servers + "...");
+
+        //启动重连任务
+        this.reconnectManager = new ReconnectManager();
+        this.reconnectManager.setMaxReconTimes(maxReconTimes);
+        this.reconnectManager.start();
+        LOGGER.info("ClientManager|SUCC|"+this.topic2Servers+"...");
     }
 
     /**
      * only for test
-     *
      * @param topic
      * @return
      * @throws NoKiteqServerException
      */
-    List<KiteIOClient> getClient(String topic) throws NoKiteqServerException {
-        List<KiteIOClient> serverUris = this.topic2Servers.get(topic);
-        if (serverUris == null || serverUris.isEmpty()) {
-            throw new NoKiteqServerException(topic);
-        }
-        return serverUris;
+   List<KiteIOClient> getClient(String topic)throws NoKiteqServerException {
+       List<KiteIOClient> serverUris = this.topic2Servers.get(topic);
+       if (serverUris == null || serverUris.isEmpty()) {
+           throw new NoKiteqServerException(topic);
+       }
+       return serverUris;
     }
 
     /**
@@ -204,8 +201,8 @@ public class ClientManager extends AbstractChangeWatcher {
         KiteIOClient client = null;
         int i = 0;
         do {
-            if (serverUris.isEmpty()) {
-                throw new NoKiteqServerException(topic);
+            if(serverUris.isEmpty()){
+               throw new NoKiteqServerException(topic);
             }
             client = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
             //如果是dead,并且当前的hostport到topic的列表中存在该机器,则丢给重连任务
@@ -298,18 +295,18 @@ public class ClientManager extends AbstractChangeWatcher {
                 if (t.equalsIgnoreCase(topic) && !address.contains(entry.getKey())) {
                     //从地址中清理掉旧的对应关系
                     entry.getValue().remove(topic);
-                    LOGGER.info("ClientManager|qServerNodeChange|Remove Topic IOClients|" + topic + "|" + entry.getKey());
+                    LOGGER.info("ClientManager|qServerNodeChange|Remove Topic IOClients|" + topic + "|" + entry.getKey() );
                     break;
                 }
             }
         }
         Iterator<String> it = this.hostport2Topics.keySet().iterator();
-        for (; it.hasNext(); ) {
+        for(;it.hasNext();){
             String next = it.next();
-            if (this.hostport2Topics.get(next).isEmpty()) {
+            if(this.hostport2Topics.get(next).isEmpty()){
                 this.hostport2Topics.remove(next);
                 this.hostport2Server.remove(next);
-                LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next);
+                LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next );
             }
         }
 
@@ -327,7 +324,7 @@ public class ClientManager extends AbstractChangeWatcher {
      * @throws Exception
      */
     private KiteIOClient createKiteIOClient(String hostport) throws Exception {
-        return this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
+        return  this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
     }
 
     /**
@@ -337,10 +334,10 @@ public class ClientManager extends AbstractChangeWatcher {
      * @return
      * @throws Exception
      */
-    protected KiteIOClient createKiteIOClient(String hostport, String groupId,
+    protected  KiteIOClient createKiteIOClient(String hostport, String groupId,
                                               String secretKey, RemotingListener listener) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(groupId, secretKey, hostport, listener);
+                new NettyKiteIOClient(groupId,secretKey, hostport,listener);
         kiteIOClient.start();
         return kiteIOClient;
     }

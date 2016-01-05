@@ -58,54 +58,86 @@ public class ClientManager extends AbstractChangeWatcher {
 
 
         @Override
-        public void callback(boolean succ, KiteIOClient client) {
-            synchronized (ClientManager.this.lock) {
-                //重连成功并且host到topic的对应关系中存在当前client的地址,则增加
-                if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
-                    //如果成功需要恢复所有topic中该client
-                    ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
-                    Set<String> topics = tmp.get(client.getHostPort());
-                    for (String topic : topics) {
-                        List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
-                        if (null == clients) {
-                            clients = new ArrayList<KiteIOClient>();
-                            List<KiteIOClient> exist = ClientManager.this.topic2Servers.putIfAbsent(topic, clients);
-                            if (null != exist) {
-                                clients = exist;
-                            }
-                        }
-
-                        for (KiteIOClient c : clients) {
-                            //如果已经存在则放弃
-                            if (c.getHostPort().equalsIgnoreCase(client.getHostPort())) {
-                                break;
-                            }
-                            //添加该client
-                            clients.add(client);
-                            //推送当前的发送方该分组IP
-                        }
-                    }
-                } else {
-
-                    try {
-                        ClientManager.this.hostport2Server.remove(client.getHostPort());
-                        ClientManager.this.hostport2Topics.remove(client.getHostPort());
-
-                        //直接删除对应这个连接下的的所有topic的对应关系
+        public void callback(boolean succ, final KiteIOClient client) {
+            try {
+                synchronized (ClientManager.this.lock) {
+                    //重连成功并且host到server的地址映射存在则需要重建
+                    if (succ && ClientManager.this.hostport2Topics.containsKey(client.getHostPort())) {
+                        //如果成功需要恢复所有topic中该client
                         ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+
                         Set<String> topics = tmp.get(client.getHostPort());
+                        //如果hostport没有对应的topic列表则认为无效的连接直接关闭
+                        if (null == topics || topics.isEmpty()) {
+                            //关闭连接
+                            client.close();
+                            return;
+                        }
+
+
+                        boolean added = false;
                         for (String topic : topics) {
                             List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
-                            if (null != clients) {
-                                clients.remove(client);
+                            if (null == clients) {
+                                clients = new CopyOnWriteArrayList<KiteIOClient>();
+                                List<KiteIOClient> exist = ClientManager.this.topic2Servers.putIfAbsent(topic, clients);
+                                if (null != exist) {
+                                    clients = exist;
+                                }
+                            }
+
+                            for (KiteIOClient c : clients) {
+                                //如果已经存在则放弃
+                                if (c.getHostPort().equalsIgnoreCase(client.getHostPort())) {
+                                    break;
+                                }
+                                //添加该client
+                                clients.add(client);
+                                added = true;
+                                //推送当前的发送方该分组IP
                             }
                         }
-                    } finally {
-                        //总要关闭的
-                        client.close();
-                    }
 
+                        //如果没有添加的则直接关闭
+                        if (added) {
+                            //将hostport放到对应关系里
+                            ClientManager.this.hostport2Server.put(client.getHostPort(),
+                                    new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
+                                        @Override
+                                        public KiteIOClient call() throws Exception {
+                                            return client;
+                                        }
+                                    }));
+                        } else {
+                            //如果没有添加则直接关闭掉当前的client
+                            client.close();
+                        }
+                    } else {
+
+                        try {
+                            ClientManager.this.hostport2Server.remove(client.getHostPort());
+                            ClientManager.this.hostport2Topics.remove(client.getHostPort());
+                            //直接删除对应这个连接下的的所有topic的对应关系
+                            ConcurrentMap<String/*hostport*/, Set<String>> tmp = ClientManager.this.hostport2Topics;
+                            Set<String> topics = tmp.get(client.getHostPort());
+                            for (String topic : topics) {
+                                List<KiteIOClient> clients = ClientManager.this.topic2Servers.get(topic);
+                                if (null != clients) {
+                                    clients.remove(client);
+                                }
+                            }
+                        } finally {
+                            //总要关闭的
+                            client.close();
+                        }
+
+                    }
                 }
+            } finally {
+                LOGGER.info("ClientManager|ReconnectManager|Callback|SUCC|" +
+                        ClientManager.this.hostport2Topics + "|" +
+                        ClientManager.this.hostport2Server + "|" +
+                        ClientManager.this.topic2Servers);
             }
         }
     };
@@ -174,7 +206,45 @@ public class ClientManager extends AbstractChangeWatcher {
         this.reconnectManager = new ReconnectManager();
         this.reconnectManager.setMaxReconTimes(maxReconTimes);
         this.reconnectManager.start();
+
+        //开启连接存活检查
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (ClientManager.this.lock) {
+                    ClientManager.this.checkIOClient();
+                }
+            }
+        }, 10, 30, TimeUnit.SECONDS);
         LOGGER.info("ClientManager|SUCC|" + this.topic2Servers + "...");
+    }
+
+
+    /**
+     * 检查当前IOClient是否存在断开连接的情况
+     */
+    private void checkIOClient() {
+        for (Map.Entry<String, FutureTask<KiteIOClient>> entry : this.hostport2Server.entrySet()) {
+            KiteIOClient client = null;
+            try {
+                client = entry.getValue().get(10, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                LOGGER.error("ClientManager|checkIOClient|KITE CLIENT|ERROR|" + entry.getKey(), e);
+            }
+            if (null == client) {
+                LOGGER.warn("ClientManager|checkIOClient|NO KITE CLIENT|" + entry.getKey());
+            } else {
+                //如果检测到已经不存活则需要重连
+                if (client.isDead()) {
+                    this.reconnectManager.submitReconnect(client, this.callback);
+                    for (Map.Entry<String, List<KiteIOClient>> ie : this.topic2Servers.entrySet()) {
+                        ie.getValue().remove(client);
+                    }
+                    LOGGER.error("ClientManager|checkIOClient|submitReconnect|" + entry.getKey());
+                }
+            }
+        }
+        LOGGER.info("ClientManager|checkIOClient|SUCC...");
     }
 
     /**
@@ -215,9 +285,9 @@ public class ClientManager extends AbstractChangeWatcher {
             //如果是dead,并且当前的hostport到topic的列表中存在该机器,则丢给重连任务
             if (client.isDead() && this.hostport2Topics.containsKey(client.getHostPort())) {
                 this.reconnectManager.submitReconnect(client, this.callback);
-                //移除掉
+                //从topic到hostport的列表中移除掉
                 serverUris.remove(client);
-            } else {
+            } else if (!client.isDead()) {
                 break;
             }
 
@@ -296,6 +366,9 @@ public class ClientManager extends AbstractChangeWatcher {
             topics.add(topic);
         }
 
+        //topic对应的地址列表更新
+        this.topic2Servers.put(topic, kiteIOClients);
+
         //清理掉不包含在新地址中的对应关系
         for (Map.Entry<String, Set<String>> entry : this.hostport2Topics.entrySet()) {
             for (String t : entry.getValue()) {
@@ -312,15 +385,25 @@ public class ClientManager extends AbstractChangeWatcher {
             String next = it.next();
             if (this.hostport2Topics.get(next).isEmpty()) {
                 this.hostport2Topics.remove(next);
-                this.hostport2Server.remove(next);
+                FutureTask<KiteIOClient> future = this.hostport2Server.remove(next);
+                try {
+                    if (null != future) {
+                        KiteIOClient client = future.get(10, TimeUnit.SECONDS);
+                        if (null != client) {
+                            kiteIOClients.add(client);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    LOGGER.error("ClientManager|qServerNodeChange|Remove IOClients|ERROR|" + next, e);
+                }
                 LOGGER.info("ClientManager|qServerNodeChange|Remove IOClients|" + topic + "|" + next);
             }
         }
 
-        //topic对应的地址列表更新
-        this.topic2Servers.replace(topic, kiteIOClients);
+
         LOGGER.info("ClientManager|qServerNodeChange|ReInit IOClients|SUCC|" + topic + "|" + address + "|" +
-                this.hostport2Topics);
+                this.hostport2Topics + "|" + this.hostport2Server + "|" + this.topic2Servers);
     }
 
     /**

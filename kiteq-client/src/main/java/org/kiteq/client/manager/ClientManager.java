@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * luofucong at 2015-03-05.
@@ -137,7 +135,7 @@ public class ClientManager extends AbstractChangeWatcher {
             } finally {
                 LOGGER.info("ClientManager|ReconnectManager|Callback|SUCC|\nhostport2Topics:" +
                         ClientManager.this.hostport2Topics + "|\nhostport2Server:" +
-                        ClientManager.this.hostport2Server.keySet() + "|topic2Servers:\n" +
+                        ClientManager.this.hostport2Server.keySet() + "|\ntopic2Servers:" +
                         ClientManager.this.topic2Servers);
             }
         }

@@ -100,14 +100,15 @@ public class ClientManager extends AbstractChangeWatcher {
 
                         //如果没有添加的则直接关闭
                         if (added) {
+                            FutureTask<KiteIOClient> task = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
+                                @Override
+                                public KiteIOClient call() throws Exception {
+                                    return client;
+                                }
+                            });
+                            task.run();
                             //将hostport放到对应关系里
-                            ClientManager.this.hostport2Server.put(client.getHostPort(),
-                                    new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
-                                        @Override
-                                        public KiteIOClient call() throws Exception {
-                                            return client;
-                                        }
-                                    }));
+                            ClientManager.this.hostport2Server.put(client.getHostPort(),task);
                         } else {
                             //如果没有添加则直接关闭掉当前的client
                             client.close();
@@ -134,9 +135,9 @@ public class ClientManager extends AbstractChangeWatcher {
                     }
                 }
             } finally {
-                LOGGER.info("ClientManager|ReconnectManager|Callback|SUCC|" +
-                        ClientManager.this.hostport2Topics + "|" +
-                        ClientManager.this.hostport2Server + "|" +
+                LOGGER.info("ClientManager|ReconnectManager|Callback|SUCC|\nhostport2Topics:" +
+                        ClientManager.this.hostport2Topics + "|\nhostport2Server:" +
+                        ClientManager.this.hostport2Server.keySet() + "|topic2Servers:\n" +
                         ClientManager.this.topic2Servers);
             }
         }

@@ -51,6 +51,7 @@ public class ReconnectManager {
         //只保留一个
         KiteIOClient exist = this.reconnectors.putIfAbsent(kiteIOClient.getHostPort(), kiteIOClient);
         if (null == exist) {
+            LOGGER.info("ReconnectManager|submitReconnect|SUCC|" + kiteIOClient.getHostPort());
             this.timer.newTimeout(new TimerTask() {
                 @Override
                 public void run(Timeout timeout) throws Exception {
@@ -62,10 +63,10 @@ public class ReconnectManager {
                     }
                     //开启重连
                     boolean succ = kiteIOClient.reconnect();
+                    LOGGER.warn("ReconnectManager|Reconnecting|SUCC:"+succ+"|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
                     if (succ) {
                         //如果成功则
                         callback.callback(succ,kiteIOClient);
-                        LOGGER.warn("ReconnectManager|Reconnecting|SUCC|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
                         ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
                         return;
                     }

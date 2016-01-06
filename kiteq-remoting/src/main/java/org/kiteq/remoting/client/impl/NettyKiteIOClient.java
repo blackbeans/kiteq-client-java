@@ -102,7 +102,6 @@ public class NettyKiteIOClient implements KiteIOClient {
     @Override
     public boolean reconnect() {
 
-        LOGGER.info("{}|reconnecting start|{}...", this.hostPort, retryCount);
         ChannelFuture future = null;
         try {
             future = bootstrap.connect(hostPort.getHost(), hostPort.getPort()).sync();
@@ -115,14 +114,12 @@ public class NettyKiteIOClient implements KiteIOClient {
             if (handshake()) {
                 this.alive.compareAndSet(false,true);
                 this.retryCount=0;
-                LOGGER.info(this.hostPort+"|reconnecting succ..." );
                 return true;
             } else {
                 //如果握手失败则关掉了解
                 future.channel().close();
             }
         }
-        LOGGER.info(this.hostPort+"|reconnecting fail|wait for next ...|"+retryCount);
         this.retryCount++;
         return false;
     }

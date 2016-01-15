@@ -75,8 +75,6 @@ public class ClientManager extends AbstractChangeWatcher {
                             return;
                         }
 
-
-                        boolean added = false;
                         for (String topic : topics) {
                             List<String> clients = ClientManager.this.topic2Servers.get(topic);
                             if (null == clients) {
@@ -98,32 +96,38 @@ public class ClientManager extends AbstractChangeWatcher {
 
                                 }
                             }
-
-                            //需要新增则新加
-                            if(needAdd) {
+                            //不存在先添加
+                            if (needAdd) {
                                 //添加该client
                                 clients.add(client.getHostPort());
-                                added = true;
                             }
                         }
 
-                        //如果没有添加的则直接关闭
-                        if (added) {
-                            FutureTask<KiteIOClient> task = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
-                                @Override
-                                public KiteIOClient call() throws Exception {
-                                    return client;
-                                }
-                            });
-                            task.run();
-                            //将hostport放到对应关系里
-                            ClientManager.this.hostport2Server.put(client.getHostPort(),task);
-                        } else {
-                            //删除该hostport
-                            ClientManager.this.hostport2Server.remove(client.getHostPort());
-                            //如果没有添加则直接关闭掉当前的client
-                            client.close();
+                        //强制覆盖掉
+                        FutureTask<KiteIOClient> task = new FutureTask<KiteIOClient>(new Callable<KiteIOClient>() {
+                            @Override
+                            public KiteIOClient call() throws Exception {
+                                return client;
+                            }
+                        });
+                        task.run();
+
+                        //将hostport放到对应关系里
+                        FutureTask<KiteIOClient> exist = ClientManager.this.hostport2Server.put(client.getHostPort(), task);
+                        if(null != exist){
+                            try {
+                              KiteIOClient existClient = exist.get(10 ,TimeUnit.SECONDS);
+                              if(null != existClient && !existClient.isDead()){
+                                  //关闭连接
+                                  existClient.close();
+                                  LOGGER.info("ClientManager|ReconnectManager|Callback|REPLACE CLIENT|CLOSE EXIST |"+client.getHostPort());
+                              }
+                            } catch (Exception e) {
+                                LOGGER.error("ClientManager|ReconnectManager|Callback|REPLACE CLIENT|CLOSE EXIST |"+client.getHostPort(),e);
+                            }
                         }
+
+
                     } else {
 
                         try {
@@ -141,6 +145,7 @@ public class ClientManager extends AbstractChangeWatcher {
                         } finally {
                             //总要关闭的
                             client.close();
+                            LOGGER.info("ClientManager|ReconnectManager|Callback|EXPIRED CLIENT |"+client.getHostPort());
                         }
 
                     }

@@ -418,6 +418,7 @@ public class ClientManager extends AbstractChangeWatcher {
                     try {
                         KiteIOClient client = futureTask.get(10, TimeUnit.SECONDS);
                         if (null != client) {
+                            this.reconnectManager.cancelReconnect(client);
                             client.close();
                         }
                     } catch (Exception e) {

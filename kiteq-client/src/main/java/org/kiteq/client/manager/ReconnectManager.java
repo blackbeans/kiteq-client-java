@@ -20,7 +20,9 @@ public class ReconnectManager {
     private static final Logger LOGGER = Logger.getLogger(ReconnectManager.class);
 
     //需要重连的连接
-    private ConcurrentMap<String, KiteIOClient> reconnectors = new ConcurrentHashMap<String, KiteIOClient>();
+    private final ConcurrentMap<String, KiteIOClient> reconnectors = new ConcurrentHashMap<String, KiteIOClient>();
+    //需要重连的连接
+    private final ConcurrentMap<String, Timeout> timeouts = new ConcurrentHashMap<String, Timeout>();
     private final HashedWheelTimer timer =
             new HashedWheelTimer(new NamedThreadFactory("reconnector-", true), 1, TimeUnit.SECONDS, 10);
 
@@ -52,7 +54,7 @@ public class ReconnectManager {
         KiteIOClient exist = this.reconnectors.putIfAbsent(kiteIOClient.getHostPort(), kiteIOClient);
         if (null == exist) {
             LOGGER.info("ReconnectManager|submitReconnect|SUCC|" + kiteIOClient.getHostPort());
-            this.timer.newTimeout(new TimerTask() {
+           Timeout timeout =  this.timer.newTimeout(new TimerTask() {
                 @Override
                 public void run(Timeout timeout) throws Exception {
 
@@ -66,24 +68,45 @@ public class ReconnectManager {
                     LOGGER.warn("ReconnectManager|Reconnecting|SUCC:"+succ+"|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
                     if (succ) {
                         //如果成功则
+                        cancelReconnect(kiteIOClient);
                         callback.callback(succ,kiteIOClient);
-                        ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
                         return;
                     }
 
                     if (kiteIOClient.getReconnectCount() < ReconnectManager.this.maxReconTimes) {
+
                         //小于20次则进行重连
-                        ReconnectManager.this.timer.newTimeout(this,
+                        Timeout tt = ReconnectManager.this.timer.newTimeout(this,
                                 (long) (Math.pow(2, kiteIOClient.getReconnectCount())), TimeUnit.SECONDS);
+                        ReconnectManager.this.timeouts.put(kiteIOClient.getHostPort(),tt);
                         return ;
                     }
+                    cancelReconnect(kiteIOClient);
                     callback.callback(false,kiteIOClient);
-                    ReconnectManager.this.reconnectors.remove(kiteIOClient.getHostPort());
+
                     LOGGER.warn("ReconnectManager|Reconnecting|FAIL|Give UP|"+kiteIOClient.getHostPort()+"|"+kiteIOClient.getReconnectCount());
 
                 }
             }, (long) (Math.pow(2, kiteIOClient.getReconnectCount())) , TimeUnit.SECONDS);
+
+            //保存对该server的重连超时任务
+            this.timeouts.put(kiteIOClient.getHostPort(),timeout);
         }
 
+    }
+    /**
+     * 取消重连任务
+     * @param kiteIOClient
+     */
+    public void cancelReconnect(KiteIOClient kiteIOClient){
+
+        try {
+            Timeout tt = this.timeouts.remove(kiteIOClient.getHostPort());
+            if (null != tt) {
+                tt.cancel();
+            }
+        } finally {
+            this.reconnectors.remove(kiteIOClient.getHostPort());
+        }
     }
 }

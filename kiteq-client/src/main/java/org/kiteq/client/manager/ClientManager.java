@@ -117,7 +117,8 @@ public class ClientManager extends AbstractChangeWatcher {
                         if(null != exist){
                             try {
                               KiteIOClient existClient = exist.get(10 ,TimeUnit.SECONDS);
-                              if(null != existClient && !existClient.isDead()){
+                              if(null != existClient && !existClient.isDead() &&
+                                      !existClient.equals(client)){
                                   //关闭连接
                                   existClient.close();
                                   LOGGER.info("ClientManager|ReconnectManager|Callback|REPLACE CLIENT|CLOSE EXIST |"+client.getHostPort());

@@ -315,9 +315,14 @@ public class ClientManager extends AbstractChangeWatcher {
             String hp = serverUris.get(RandomUtils.nextInt(0, serverUris.size()));
             KiteIOClient tmp = null;
             try {
-                tmp = this.hostport2Server.get(hp).get(10, TimeUnit.SECONDS);
-                //如果是dead,则丢给重连任务并清理掉
-                if (tmp.isDead()) {
+                Throwable t = null;
+                try {
+                    tmp = this.hostport2Server.get(hp).get(10, TimeUnit.SECONDS);
+                } catch (Exception e){
+                    t = e;
+                }
+                //如果是dead,则丢给重连任务并清理掉 ,或者不是timeout的异常那么久是初始化失败了
+                if (!( null != t &&(t instanceof TimeoutException)) || tmp.isDead()) {
                     this.reconnectManager.submitReconnect(tmp, this.callback);
                     //从topic到hostport的列表中移除掉
                     serverUris.remove(hp);

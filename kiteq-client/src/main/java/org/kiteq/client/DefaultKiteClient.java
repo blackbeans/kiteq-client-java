@@ -164,6 +164,7 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public SendResult sendTxMessage(BytesMessage message, TxCallback txCallback) throws NoKiteqServerException {
+
         SendResult result = sendBytesMessage(message);
         if (result.isSuccess()) {
             Header header = message.getHeader();

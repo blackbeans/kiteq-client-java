@@ -9,7 +9,9 @@ public class Binding {
     public static final byte BIND_DIRECT = 0;
     public static final byte BIND_REGX = 0;
     public static final byte BIND_FANOUT = 0;
-    
+
+    public static final String BIND_VERSION="1.0.0";
+
     private String groupId;
     private String topic;
     private String messageType;
@@ -80,6 +82,7 @@ public class Binding {
         b.setMessageType(messageType);
         b.setWatermark(watermark);
         b.setPersistent(persistent);
+        b.setVersion(BIND_VERSION);
         b.setBindType(BIND_DIRECT);
         return b;
     }

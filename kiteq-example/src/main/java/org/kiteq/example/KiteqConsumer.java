@@ -8,6 +8,7 @@ import org.kiteq.client.binding.Binding;
 import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.Message;
+import org.kiteq.commons.util.JsonUtils;
 import org.kiteq.commons.util.ParamUtils;
 
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ public class KiteqConsumer {
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
             public boolean onMessage(Message message) {
-                    LOGGER.warn(message);
+//                    LOGGER.warn(message);
+                System.out.println(message.getHeader());
                 return true;
             }
         };

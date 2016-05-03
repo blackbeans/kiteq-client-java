@@ -5840,6 +5840,23 @@ public final class KiteRemoting {
      */
     org.kiteq.protocol.KiteRemoting.EntryOrBuilder getPropertiesOrBuilder(
         int index);
+
+    /**
+     * <code>optional int64 createTime = 10;</code>
+     *
+     * <pre>
+     *消息生成时间
+     * </pre>
+     */
+    boolean hasCreateTime();
+    /**
+     * <code>optional int64 createTime = 10;</code>
+     *
+     * <pre>
+     *消息生成时间
+     * </pre>
+     */
+    long getCreateTime();
   }
   /**
    * Protobuf type {@code protoc.Header}
@@ -5943,6 +5960,11 @@ public final class KiteRemoting {
                 mutable_bitField0_ |= 0x00000100;
               }
               properties_.add(input.readMessage(org.kiteq.protocol.KiteRemoting.Entry.PARSER, extensionRegistry));
+              break;
+            }
+            case 80: {
+              bitField0_ |= 0x00000100;
+              createTime_ = input.readInt64();
               break;
             }
           }
@@ -6339,6 +6361,29 @@ public final class KiteRemoting {
       return properties_.get(index);
     }
 
+    public static final int CREATETIME_FIELD_NUMBER = 10;
+    private long createTime_;
+    /**
+     * <code>optional int64 createTime = 10;</code>
+     *
+     * <pre>
+     *消息生成时间
+     * </pre>
+     */
+    public boolean hasCreateTime() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional int64 createTime = 10;</code>
+     *
+     * <pre>
+     *消息生成时间
+     * </pre>
+     */
+    public long getCreateTime() {
+      return createTime_;
+    }
+
     private void initFields() {
       messageId_ = "";
       topic_ = "";
@@ -6349,6 +6394,7 @@ public final class KiteRemoting {
       commit_ = false;
       fly_ = false;
       properties_ = java.util.Collections.emptyList();
+      createTime_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6428,6 +6474,9 @@ public final class KiteRemoting {
       for (int i = 0; i < properties_.size(); i++) {
         output.writeMessage(9, properties_.get(i));
       }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt64(10, createTime_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6472,6 +6521,10 @@ public final class KiteRemoting {
       for (int i = 0; i < properties_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, properties_.get(i));
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, createTime_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6613,6 +6666,8 @@ public final class KiteRemoting {
         } else {
           propertiesBuilder_.clear();
         }
+        createTime_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -6682,6 +6737,10 @@ public final class KiteRemoting {
         } else {
           result.properties_ = propertiesBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.createTime_ = createTime_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6755,6 +6814,9 @@ public final class KiteRemoting {
               propertiesBuilder_.addAllMessages(other.properties_);
             }
           }
+        }
+        if (other.hasCreateTime()) {
+          setCreateTime(other.getCreateTime());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7699,6 +7761,54 @@ public final class KiteRemoting {
           properties_ = null;
         }
         return propertiesBuilder_;
+      }
+
+      private long createTime_ ;
+      /**
+       * <code>optional int64 createTime = 10;</code>
+       *
+       * <pre>
+       *消息生成时间
+       * </pre>
+       */
+      public boolean hasCreateTime() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int64 createTime = 10;</code>
+       *
+       * <pre>
+       *消息生成时间
+       * </pre>
+       */
+      public long getCreateTime() {
+        return createTime_;
+      }
+      /**
+       * <code>optional int64 createTime = 10;</code>
+       *
+       * <pre>
+       *消息生成时间
+       * </pre>
+       */
+      public Builder setCreateTime(long value) {
+        bitField0_ |= 0x00000200;
+        createTime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 createTime = 10;</code>
+       *
+       * <pre>
+       *消息生成时间
+       * </pre>
+       */
+      public Builder clearCreateTime() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        createTime_ = 0L;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:protoc.Header)
@@ -9101,15 +9211,16 @@ public final class KiteRemoting {
       "\030\006 \001(\t\"R\n\013TxACKPacket\022\036\n\006header\030\001 \002(\0132\016.",
       "protoc.Header\022\021\n\006status\030\002 \002(\005:\0010\022\020\n\010feed" +
       "back\030\003 \002(\t\"#\n\005Entry\022\013\n\003key\030\001 \002(\t\022\r\n\005valu" +
-      "e\030\002 \002(\t\"\313\001\n\006Header\022\021\n\tmessageId\030\001 \002(\t\022\r\n" +
+      "e\030\002 \002(\t\"\337\001\n\006Header\022\021\n\tmessageId\030\001 \002(\t\022\r\n" +
       "\005topic\030\002 \002(\t\022\023\n\013messageType\030\003 \002(\t\022\027\n\013exp" +
       "iredTime\030\004 \002(\003:\002-1\022\031\n\014deliverLimit\030\005 \002(\005" +
       ":\003100\022\017\n\007groupId\030\006 \002(\t\022\016\n\006commit\030\007 \002(\010\022\022" +
       "\n\003fly\030\010 \002(\010:\005false\022!\n\nproperties\030\t \003(\0132\r" +
-      ".protoc.Entry\"<\n\014BytesMessage\022\036\n\006header\030" +
-      "\001 \002(\0132\016.protoc.Header\022\014\n\004body\030\002 \002(\014\"=\n\rS" +
-      "tringMessage\022\036\n\006header\030\001 \002(\0132\016.protoc.He",
-      "ader\022\014\n\004body\030\002 \002(\tB\024\n\022org.kiteq.protocol"
+      ".protoc.Entry\022\022\n\ncreateTime\030\n \001(\003\"<\n\014Byt" +
+      "esMessage\022\036\n\006header\030\001 \002(\0132\016.protoc.Heade" +
+      "r\022\014\n\004body\030\002 \002(\014\"=\n\rStringMessage\022\036\n\006head",
+      "er\030\001 \002(\0132\016.protoc.Header\022\014\n\004body\030\002 \002(\tB\024" +
+      "\n\022org.kiteq.protocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9170,7 +9281,7 @@ public final class KiteRemoting {
     internal_static_protoc_Header_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protoc_Header_descriptor,
-        new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", "Properties", });
+        new java.lang.String[] { "MessageId", "Topic", "MessageType", "ExpiredTime", "DeliverLimit", "GroupId", "Commit", "Fly", "Properties", "CreateTime", });
     internal_static_protoc_BytesMessage_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_protoc_BytesMessage_fieldAccessorTable = new

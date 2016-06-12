@@ -214,6 +214,7 @@ public class DefaultKiteClient implements KiteClient {
 
             if (ack == null) {
                 result.setSuccess(false);
+                result.setErrorMessage("Receive store ack Timeout 3s");
                 return result;
             }
 

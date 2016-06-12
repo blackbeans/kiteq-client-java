@@ -3,6 +3,7 @@ package org.kiteq.protocol.packet;
 import org.kiteq.protocol.Protocol;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Author: easynoder
@@ -12,7 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class KitePacketHeader {
 
-    private static final AtomicInteger UNIQUE_ID = new AtomicInteger(0);
+    private static final AtomicLong UNIQUE_ID = new AtomicLong(0);
+
+    private static final int MAX_OPAQUE_ID = 50 * 10000;
 
     private int opaque;
     private byte cmdType;
@@ -35,12 +38,7 @@ public class KitePacketHeader {
     }
 
     private static int getPacketId() {
-        int id = UNIQUE_ID.getAndIncrement();
-        if (id == Integer.MAX_VALUE) {
-            UNIQUE_ID.compareAndSet(Integer.MAX_VALUE, 0);
-            return UNIQUE_ID.getAndIncrement();
-        }
-        return id;
+        return (int)(UNIQUE_ID.getAndIncrement() % MAX_OPAQUE_ID);
     }
 
     public long getExtension() {

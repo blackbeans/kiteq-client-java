@@ -74,6 +74,7 @@ public class ResponseFuture implements Future<KiteResponse> {
             condition.await();
             return response;
         } finally {
+            futureMap.remove(requestId);
             lock.unlock();
         }
     }

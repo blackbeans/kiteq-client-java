@@ -41,10 +41,11 @@ public class ResponseFuture implements Future<KiteResponse> {
     }
     
     public void setResponse(KiteResponse response) {
-        this.response = response;
-        
+        lock.lock();
         try {
-            lock.lock();
+            if (null == this.response){
+                this.response = response;
+            }
             condition.signalAll();
         } finally {
             lock.unlock();
@@ -68,28 +69,31 @@ public class ResponseFuture implements Future<KiteResponse> {
 
     @Override
     public KiteResponse get() throws InterruptedException, ExecutionException {
-        
+        this.lock.lock();
         try {
-            lock.lock();
-            condition.await();
-            return response;
+            if (null == response) {
+                condition.await();
+            }
         } finally {
             futureMap.remove(requestId);
-            lock.unlock();
+            this.lock.unlock();
         }
+        return response;
     }
 
     @Override
     public KiteResponse get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        
+        this.lock.lock();
         try {
-            lock.lock();
-            condition.await(timeout, unit);
-            return response;
+            if (null == response) {
+                condition.await(timeout,unit);
+            }
         } finally {
             futureMap.remove(requestId);
-            lock.unlock();
+            this.lock.unlock();
         }
+        return response;
+
     }
 
 }

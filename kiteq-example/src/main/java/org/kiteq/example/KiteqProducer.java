@@ -1,5 +1,6 @@
 package org.kiteq.example;
 
+import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -8,10 +9,12 @@ import org.kiteq.client.KiteClient;
 import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.Message;
 import org.kiteq.client.message.MessageListener;
+import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxResponse;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.ParamUtils;
 import org.kiteq.commons.util.ThreadUtils;
+import org.kiteq.protocol.KiteRemoting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,18 +94,34 @@ public class KiteqProducer {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
+                        SendResult result = null;
                         while (!Thread.currentThread().isInterrupted()) {
+
+                            KiteRemoting.BytesMessage  message =
+                                    buildBytesMessage(topic, groupId, messageType, String.valueOf(UID.getAndIncrement()));
+                            long start = System.currentTimeMillis();
                             try {
-                                StringMessage message =
-                                        buildMessage(topic, groupId, messageType, String.valueOf(UID.getAndIncrement()));
-                                client.sendStringMessage(message);
-                            } catch (NoKiteqServerException e) {
-
+                                result = client.sendBytesMessage(message);
+                            } catch (Throwable e) {
+                                LOGGER.error("KiteQProducer|Send BytesMessage|FAIL|"+message.getHeader().getMessageId(), e);
+                            } finally {
+                                if (null != result && result.isSuccess())  {
+                                    long cost = System.currentTimeMillis() - start;
+                                    if (cost > 100) {
+                                        LOGGER.warn("KiteQProducer|Send BytesMessage|FAIL|Cost Too Long "
+                                                +message.getHeader().getMessageId()+"|"+cost+"/100");
+                                    }
+                                } else if (null != result && !result.isSuccess()){
+                                    LOGGER.warn("KiteQProducer|Send BytesMessage|FAIL|"+result.getErrorMessage()+"|"+
+                                            message.getHeader().getMessageId());
+                                }else{
+                                    LOGGER.warn("KiteQProducer|Send BytesMessage|FAIL|NO RESULT|"+ message.getHeader().getMessageId());
+                                }
                             }
-
-                            if (sendInterval > 0) {
-                                ThreadUtils.sleep(sendInterval);
-                            }
+//
+//                            if (sendInterval > 0) {
+//                                ThreadUtils.sleep(sendInterval);
+//                            }
                         }
                     }
                 });
@@ -121,7 +140,22 @@ public class KiteqProducer {
                 .setDeliverLimit(100)
                 .setGroupId(groupId)
                 .setCommit(true)
-                .setFly(true).build();
+                .setFly(false).build();
         return StringMessage.newBuilder().setHeader(header).setBody(body).build();
+    }
+
+
+    private static KiteRemoting.BytesMessage buildBytesMessage(String topic, String groupId, String messageType, String body) {
+        Header header = Header.newBuilder()
+                .setMessageId(UUID.randomUUID().toString().replace("-", ""))
+                .setTopic(topic)
+                .setMessageType(messageType)
+                .setExpiredTime(System.currentTimeMillis() / 1000 + TimeUnit.MINUTES.toSeconds(10))
+                .setDeliverLimit(100)
+                .setGroupId(groupId)
+                .setCommit(true)
+                .setFly(false).build();
+        return KiteRemoting.BytesMessage.newBuilder().setHeader(header).setBody(ByteString.copyFromUtf8(body))
+                .build();
     }
 }

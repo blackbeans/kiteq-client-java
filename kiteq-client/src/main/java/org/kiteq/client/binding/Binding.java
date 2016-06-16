@@ -7,8 +7,8 @@ package org.kiteq.client.binding;
 public class Binding {
     
     public static final byte BIND_DIRECT = 0;
-    public static final byte BIND_REGX = 0;
-    public static final byte BIND_FANOUT = 0;
+    public static final byte BIND_REGX = 1;
+    public static final byte BIND_FANOUT = 2;
 
     public static final String BIND_VERSION="1.0.0";
 

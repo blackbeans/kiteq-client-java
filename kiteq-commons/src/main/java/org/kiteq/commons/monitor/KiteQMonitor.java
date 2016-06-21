@@ -49,10 +49,9 @@ public class KiteQMonitor {
         for(String t :titles){
             sb.append(t.toUpperCase()).append("\t");
         }
-        sb.append("\n");
+        sb.append("\n\t");
 
         for(String t :titles){
-
             Counter c = this.counters.get(t);
             sb.append(c.changed())
             .append("\t");

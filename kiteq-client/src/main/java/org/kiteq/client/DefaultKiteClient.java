@@ -9,6 +9,7 @@ import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.*;
 import org.kiteq.client.util.LogInitUtils;
 import org.kiteq.commons.exception.NoKiteqServerException;
+import org.kiteq.commons.monitor.KiteQMonitor;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.kiteq.protocol.KiteRemoting;
@@ -82,13 +83,21 @@ public class DefaultKiteClient implements KiteClient {
         //初始化kite日志
         LogInitUtils.initLog(this.getGroupId());
 
+
+
+
+        //start monitor
+        KiteQMonitor monitor = new KiteQMonitor();
+        monitor.init();
+
+
         //启动Qserver
         this.qserverManager = new QServerManager();
         this.qserverManager.setZkAddr(this.zkHosts);
         this.qserverManager.init();
 
         //创建client的管理者
-        this.clientManager = new ClientManager(qserverManager, clientConfigs, this.listener);
+        this.clientManager = new ClientManager(qserverManager, clientConfigs, this.listener,monitor);
 
         //收集所有的topic
         Set<String> topics = new HashSet<String>();

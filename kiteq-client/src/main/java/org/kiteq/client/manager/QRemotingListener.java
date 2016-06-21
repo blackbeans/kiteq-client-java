@@ -6,6 +6,7 @@ import org.kiteq.client.message.TxResponse;
 import org.kiteq.client.util.AckUtils;
 import org.kiteq.client.util.MessageUtils;
 
+import org.kiteq.commons.monitor.KiteQMonitor;
 import org.kiteq.protocol.KiteRemoting;
 import org.kiteq.protocol.Protocol;
 import org.kiteq.protocol.packet.KitePacket;
@@ -22,9 +23,10 @@ public class QRemotingListener implements RemotingListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(QRemotingListener.class);
 
 
+    private KiteQMonitor monitor;
     private MessageListener listener;
 
-    public QRemotingListener(MessageListener listener) {
+    public QRemotingListener(KiteQMonitor monitor , MessageListener listener) {
         this.listener = listener;
     }
 
@@ -34,6 +36,7 @@ public class QRemotingListener implements RemotingListener {
         final TxResponse txResponse = TxResponse.parseFrom(txAck);
 
         KiteRemoting.TxACKPacket.Builder builder = txAck.toBuilder();
+        Throwable t  = null;
         try {
             listener.onMessageCheck(txResponse);
             builder.setStatus(txResponse.getStatus());
@@ -41,6 +44,13 @@ public class QRemotingListener implements RemotingListener {
             //设置为回滚
             builder.setStatus(2);
             builder.setFeedback(e.getMessage());
+            t =  e;
+        } finally {
+            if (null != t) {
+                monitor.addData("CMD_ERR_TX", 1);
+            }else{
+                monitor.addData("CMD_TX",1);
+            }
         }
 
         KitePacket response = new KitePacket(packet.getHeader().getOpaque(), Protocol.CMD_TX_ACK, builder.build());
@@ -59,8 +69,8 @@ public class QRemotingListener implements RemotingListener {
     @Override
     public KitePacket stringMessageReceived(final KitePacket packet) {
         final KiteRemoting.StringMessage message = (KiteRemoting.StringMessage) packet.getMessage();
+            return innerReceived(packet, MessageUtils.convertMessage(message));
 
-        return innerReceived(packet, MessageUtils.convertMessage(message));
     }
 
     private KitePacket innerReceived(KitePacket packet, Message message) {
@@ -72,6 +82,15 @@ public class QRemotingListener implements RemotingListener {
             LOGGER.error("bytesMessageReceived|FAIL|", e);
             succ = false;
             t =e;
+
+        } finally {
+            String topic = message.getHeader().getTopic();
+            if (null != t) {
+                monitor.addData("ERR_MSG_"+ topic, 1);
+            }else{
+                monitor.addData("MSG_"+ topic,1);
+            }
+
 
         }
         KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(), succ,t);

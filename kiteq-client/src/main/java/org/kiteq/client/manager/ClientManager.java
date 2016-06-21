@@ -5,6 +5,7 @@ import org.kiteq.client.binding.AbstractChangeWatcher;
 import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.MessageListener;
 import org.kiteq.commons.exception.NoKiteqServerException;
+import org.kiteq.commons.monitor.KiteQMonitor;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
 import org.kiteq.remoting.listener.RemotingListener;
@@ -160,10 +161,11 @@ public class ClientManager extends AbstractChangeWatcher {
         }
     };
 
-    public ClientManager(QServerManager qServerManager, ClientConfigs clientConfigs, MessageListener listener) {
+    public ClientManager(QServerManager qServerManager, ClientConfigs clientConfigs,
+                         MessageListener listener, KiteQMonitor kiteQMonitor) {
         this.qserverManager = qServerManager;
         this.clientConfigs = clientConfigs;
-        this.listener = new QRemotingListener(listener);
+        this.listener = new QRemotingListener(kiteQMonitor,listener);
     }
 
 

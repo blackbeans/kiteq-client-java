@@ -89,7 +89,7 @@ public class QRemotingListener implements RemotingListener {
             if (null != t) {
                 monitor.addData("ERR_R_MSG_"+ topic, 1);
             }else{
-                monitor.addData("R_MSG"+ topic,1);
+                monitor.addData("R_MSG_"+ topic,1);
             }
 
 

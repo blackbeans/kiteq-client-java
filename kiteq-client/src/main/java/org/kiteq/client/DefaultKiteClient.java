@@ -220,7 +220,7 @@ public class DefaultKiteClient implements KiteClient {
             if (null != t) {
                 this.kiteQMonitor.addData("ERR_S_TX" + topic, 1);
             } else {
-                this.kiteQMonitor.addData("S_TX" + topic, 1);
+                this.kiteQMonitor.addData("S_TX_" + topic, 1);
             }
         }
     }

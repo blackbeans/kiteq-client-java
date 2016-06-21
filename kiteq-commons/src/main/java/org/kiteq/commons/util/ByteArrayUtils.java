@@ -14,7 +14,7 @@ public class ByteArrayUtils {
             return null;
         }
         
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         
         for (byte b : bytes) {
             sb.append(getHexString(b)).append(' ');
@@ -28,8 +28,8 @@ public class ByteArrayUtils {
         if (bytes == null) {
             return null;
         }
-        
-        StringBuffer sb = new StringBuffer();
+
+        StringBuilder sb = new StringBuilder();
         
         for (byte b : bytes) {
             if (b > 31 && b < 127 || b == 10 || b == 13) {

@@ -28,6 +28,7 @@ public class QRemotingListener implements RemotingListener {
 
     public QRemotingListener(KiteQMonitor monitor , MessageListener listener) {
         this.listener = listener;
+        this.monitor = monitor;
     }
 
     @Override
@@ -47,9 +48,9 @@ public class QRemotingListener implements RemotingListener {
             t =  e;
         } finally {
             if (null != t) {
-                monitor.addData("CMD_ERR_TX", 1);
+                monitor.addData("ERR_R_TX_"+builder.getHeader().getTopic(), 1);
             }else{
-                monitor.addData("CMD_TX",1);
+                monitor.addData("R_TX_"+builder.getHeader().getTopic(),1);
             }
         }
 
@@ -86,9 +87,9 @@ public class QRemotingListener implements RemotingListener {
         } finally {
             String topic = message.getHeader().getTopic();
             if (null != t) {
-                monitor.addData("ERR_MSG_"+ topic, 1);
+                monitor.addData("ERR_R_MSG_"+ topic, 1);
             }else{
-                monitor.addData("MSG_"+ topic,1);
+                monitor.addData("R_MSG"+ topic,1);
             }
 
 

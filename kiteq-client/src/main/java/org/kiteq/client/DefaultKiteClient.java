@@ -46,6 +46,8 @@ public class DefaultKiteClient implements KiteClient {
 
     private MessageListener listener;
 
+    private KiteQMonitor kiteQMonitor;
+
     private String zkHosts;
 
     public void setListener(MessageListener listener) {
@@ -89,7 +91,7 @@ public class DefaultKiteClient implements KiteClient {
         //start monitor
         KiteQMonitor monitor = new KiteQMonitor();
         monitor.init();
-
+        this.kiteQMonitor = monitor;
 
         //启动Qserver
         this.qserverManager = new QServerManager();
@@ -207,7 +209,20 @@ public class DefaultKiteClient implements KiteClient {
         txAck.setHeader(committedHeader);
         txAck.setStatus(txResponse.getStatus());
         txAck.setFeedback(StringUtils.defaultString(txResponse.getFeedback(), ""));
-        sendMessage(Protocol.CMD_TX_ACK, txAck.build(), committedHeader);
+
+        Throwable t = null;
+        try {
+            sendMessage(Protocol.CMD_TX_ACK, txAck.build(), committedHeader);
+        } catch (Throwable tx) {
+            t = tx;
+        } finally {
+            String topic = header.getTopic();
+            if (null != t) {
+                this.kiteQMonitor.addData("ERR_S_TX" + topic, 1);
+            } else {
+                this.kiteQMonitor.addData("S_TX" + topic, 1);
+            }
+        }
     }
 
     private void sendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
@@ -217,6 +232,7 @@ public class DefaultKiteClient implements KiteClient {
 
     private SendResult innerSendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
         SendResult result = new SendResult();
+        Throwable t = null;
         try {
             KiteIOClient kiteIOClient = clientManager.findClient(header.getTopic());
             MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, message);
@@ -234,13 +250,21 @@ public class DefaultKiteClient implements KiteClient {
                 logger.debug("Receive store ack - status: {}, feedback: {}", ack.getStatus(), ack.getFeedback());
             }
         } catch (NoKiteqServerException ex) {
+            t = ex;
             throw ex;
         } catch (Exception e) {
             logger.error("Send message error: {}", header, e);
-
+            t = e;
             result.setMessageId(header.getMessageId());
             result.setSuccess(false);
             result.setErrorMessage(e.getMessage());
+        } finally {
+            String topic = header.getTopic();
+            if (null != t) {
+                this.kiteQMonitor.addData("ERR_S_MSG_"+ topic, 1);
+            }else{
+                this.kiteQMonitor.addData("S_MSG_"+ topic,1);
+            }
         }
 
         return result;

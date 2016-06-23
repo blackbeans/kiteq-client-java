@@ -50,6 +50,8 @@ public abstract class AbstractChangeWatcher implements CuratorWatcher{
             case NodeDataChanged:
                 break;
             //ignore
+            default:
+                break;
         }
 
 

@@ -51,7 +51,7 @@ public class KiteQMonitor {
                     LOGGER.error("monitorUpload.formatOutput|FAIL", e);
                 }
             }
-        },  1,10, TimeUnit.SECONDS);
+        },  10,1, TimeUnit.SECONDS);
     }
 
     public void addData(String key, long count,long cost) {

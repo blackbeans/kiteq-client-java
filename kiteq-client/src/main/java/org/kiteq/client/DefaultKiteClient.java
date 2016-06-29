@@ -140,7 +140,7 @@ public class DefaultKiteClient implements KiteClient {
 
     }
 
-    private static String getProducerName() {
+     static String getProducerName() {
         String producerName;
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
         if (StringUtils.isEmpty(jvmName)) {
@@ -152,6 +152,8 @@ public class DefaultKiteClient implements KiteClient {
             }
             producerName = hostAddress;
         } else {
+            //去掉进程ID
+            jvmName = jvmName.substring(jvmName.indexOf('@')+1);
             producerName = jvmName;
         }
         return producerName;

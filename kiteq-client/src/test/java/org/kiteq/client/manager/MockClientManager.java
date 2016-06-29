@@ -2,6 +2,7 @@ package org.kiteq.client.manager;
 
 import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.MessageListener;
+import org.kiteq.commons.monitor.KiteQMonitor;
 import org.kiteq.remoting.client.KiteIOClient;
 import org.kiteq.remoting.client.impl.NettyKiteIOClient;
 import org.kiteq.remoting.listener.RemotingListener;
@@ -12,7 +13,7 @@ import org.kiteq.remoting.listener.RemotingListener;
  */
 public class MockClientManager extends ClientManager {
     public MockClientManager(QServerManager qServerManager, ClientConfigs clientConfigs, MessageListener listener) {
-        super(qServerManager, clientConfigs, listener);
+        super(qServerManager, clientConfigs, listener, (KiteQMonitor)null);
     }
 
 

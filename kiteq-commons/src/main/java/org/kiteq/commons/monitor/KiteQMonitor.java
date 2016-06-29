@@ -5,11 +5,7 @@ import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.transform.Result;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -85,14 +81,10 @@ public class KiteQMonitor {
 
         sb.append("\n\t");
 
-        Map<String,Object> monitorData = new HashMap<String, Object>();
+        Map<String,Object> monitorData = new TreeMap<String, Object>();
         for(String t :titles){
             Counter c = this.counters.get(t);
             Counter.CounterResult changed = c.changed();
-            sb.append(changed.changed)
-                    .append("\t")
-                    .append(changed.avgCostMilSeconds)
-                    .append("\t");
             monitorData.put(t.toUpperCase(), changed.changed);
             //平均耗时
             monitorData.put(t.toUpperCase()+"_AVG_COST",changed.avgCostMilSeconds);
@@ -106,6 +98,14 @@ public class KiteQMonitor {
         monitorData.put("WP-MaxPool",maxPoolSize);
         monitorData.put("WP-PoolSize",poolSize);
         monitorData.put("WP-QueueLen",queueLen);
+
+
+        for (Map.Entry<String, Object> entry : monitorData.entrySet()) {
+            sb.append(entry.getValue())
+                    .append("\t");
+        }
+
+
         sb.append("\n");
 
         //update

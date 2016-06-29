@@ -87,7 +87,7 @@ public class KiteQMonitor {
         //update
         if (null != this.monitorUpload){
             try {
-                this.monitorUpload.sendMonitorData("KiteQ->"+this.groupId,this.hostport,monitorData,System.currentTimeMillis());
+                this.monitorUpload.sendMonitorData("KiteQ-"+this.groupId,this.hostport,monitorData,System.currentTimeMillis());
             } catch (Exception e) {
                 //ignored
                 LOGGER.error("monitorUpload.sendMonitorData|FAIL|"+monitorData,e);

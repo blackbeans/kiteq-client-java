@@ -9,6 +9,7 @@ import org.kiteq.client.binding.QServerManager;
 import org.kiteq.client.message.*;
 import org.kiteq.client.util.LogInitUtils;
 import org.kiteq.commons.exception.NoKiteqServerException;
+import org.kiteq.commons.monitor.IMonitorUpload;
 import org.kiteq.commons.monitor.KiteQMonitor;
 import org.kiteq.commons.stats.KiteStats;
 import org.kiteq.commons.threadpool.ThreadPoolManager;
@@ -48,6 +49,9 @@ public class DefaultKiteClient implements KiteClient {
 
     private KiteQMonitor kiteQMonitor;
 
+    //上报监控数据
+    private IMonitorUpload monitorUpload;
+
     private String zkHosts;
 
     public void setListener(MessageListener listener) {
@@ -81,15 +85,22 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     @Override
+    public void setMonitorUpload(IMonitorUpload monitorUpload) {
+        this.monitorUpload = monitorUpload;
+    }
+
+    @Override
     public void init() throws Exception {
         //初始化kite日志
         LogInitUtils.initLog(this.getGroupId());
 
 
 
-
         //start monitor
         KiteQMonitor monitor = new KiteQMonitor();
+        monitor.setGroupId(this.getGroupId());
+        monitor.setHostport(getProducerName());
+        monitor.setMonitorUpload(this.monitorUpload);
         monitor.init();
         this.kiteQMonitor = monitor;
 

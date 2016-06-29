@@ -4,6 +4,7 @@ import org.kiteq.client.binding.Binding;
 import org.kiteq.client.message.SendResult;
 import org.kiteq.client.message.TxCallback;
 import org.kiteq.commons.exception.NoKiteqServerException;
+import org.kiteq.commons.monitor.IMonitorUpload;
 import org.kiteq.protocol.KiteRemoting.BytesMessage;
 import org.kiteq.protocol.KiteRemoting.StringMessage;
 
@@ -18,6 +19,8 @@ public interface KiteClient {
     void setPublishTopics(List<String> topics);
 
     void setBindings(List<Binding> bindings);
+
+    public void setMonitorUpload(IMonitorUpload monitorUpload);
 
     SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException;
 

@@ -1,9 +1,11 @@
 package org.kiteq.commons.monitor;
 
 
+import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.transform.Result;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +54,7 @@ public class KiteQMonitor {
         },0,1, TimeUnit.SECONDS);
     }
 
-    public void addData(String key, int count) {
+    public void addData(String key, long count,long cost) {
         Counter exist = this.counters.get(key);
         if (null == exist) {
             exist = new Counter();
@@ -62,6 +64,7 @@ public class KiteQMonitor {
             }
         }
         exist.incr(count);
+        exist.incrTime(cost);
     }
 
     private String formatOutput(){
@@ -70,18 +73,35 @@ public class KiteQMonitor {
         StringBuilder sb = new StringBuilder();
         for(String t :titles){
             sb.append(t.toUpperCase()).append("\t");
+            sb.append(t.toUpperCase()).append("_AVG_COST\t");
         }
+        sb.append("WP-MaxPool").append("\t");
+        sb.append("WP-PoolSize").append("\t");
+        sb.append("WP-QueueLen").append("\t");
+
         sb.append("\n\t");
 
         Map<String,Object> monitorData = new HashMap<String, Object>();
         for(String t :titles){
             Counter c = this.counters.get(t);
-            long changed = c.changed();
-            sb.append(changed)
-            .append("\t");
-            monitorData.put(t, changed);
-
+            Counter.CounterResult changed = c.changed();
+            sb.append(changed.changed)
+                    .append("\t")
+                    .append(changed.avgCostMilSeconds)
+                    .append("\t");
+            monitorData.put(t.toUpperCase(), changed.changed);
+            //平均耗时
+            monitorData.put(t.toUpperCase()+"_AVG_COST",changed.avgCostMilSeconds);
         }
+
+        //threadpool
+        int maxPoolSize = ThreadPoolManager.getWorkerExecutor().getMaximumPoolSize();
+        int poolSize = ThreadPoolManager.getWorkerExecutor().getPoolSize();
+        int queueLen = ThreadPoolManager.getWorkerExecutor().getQueue().size();
+
+        monitorData.put("WP-MaxPool",maxPoolSize);
+        monitorData.put("WP-PoolSize",poolSize);
+        monitorData.put("WP-QueueLen",queueLen);
         sb.append("\n");
 
         //update

@@ -2,6 +2,7 @@ package org.kiteq.client;
 
 import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.netty.util.internal.StringUtil;
 import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.manager.ClientManager;
 import org.kiteq.client.binding.Binding;
@@ -196,6 +197,7 @@ public class DefaultKiteClient implements KiteClient {
     }
 
     private void handleTxCallback(TxCallback txCallback, Header header) throws NoKiteqServerException {
+        long curr = System.currentTimeMillis();
         TxResponse txResponse = new TxResponse(header);
         try {
             txResponse.setMessageId(header.getMessageId());
@@ -227,11 +229,12 @@ public class DefaultKiteClient implements KiteClient {
         } catch (Throwable tx) {
             t = tx;
         } finally {
+            long cost = System.currentTimeMillis() -curr;
             String topic = header.getTopic();
             if (null != t) {
-                this.kiteQMonitor.addData("ERR_S_TX_" + topic, 1);
+                this.kiteQMonitor.addData("S_TX_" + topic+"_ERR", 1,cost);
             } else {
-                this.kiteQMonitor.addData("S_TX_" + topic, 1);
+                this.kiteQMonitor.addData("S_TX_" + topic, 1,cost);
             }
         }
     }
@@ -244,6 +247,7 @@ public class DefaultKiteClient implements KiteClient {
     private SendResult innerSendMessage(byte cmdType, Message message, Header header) throws NoKiteqServerException {
         SendResult result = new SendResult();
         Throwable t = null;
+        long curr = System.currentTimeMillis();
         try {
             KiteIOClient kiteIOClient = clientManager.findClient(header.getTopic());
             MessageStoreAck ack = kiteIOClient.sendAndGet(cmdType, message);
@@ -270,12 +274,15 @@ public class DefaultKiteClient implements KiteClient {
             result.setSuccess(false);
             result.setErrorMessage(e.getMessage());
         } finally {
+            long cost = System.currentTimeMillis() -curr;
             String topic = header.getTopic();
             if (null != t) {
-                this.kiteQMonitor.addData("ERR_S_MSG_"+ topic, 1);
+                this.kiteQMonitor.addData("S_MSG_"+ topic+"_ERR", 1,cost);
             }else{
-                this.kiteQMonitor.addData("S_MSG_"+ topic,1);
+                this.kiteQMonitor.addData("S_MSG_"+ topic,1,cost);
             }
+
+
         }
 
         return result;

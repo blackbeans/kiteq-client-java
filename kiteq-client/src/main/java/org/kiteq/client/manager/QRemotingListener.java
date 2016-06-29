@@ -38,6 +38,7 @@ public class QRemotingListener implements RemotingListener {
 
         KiteRemoting.TxACKPacket.Builder builder = txAck.toBuilder();
         Throwable t  = null;
+        long curr = System.currentTimeMillis();
         try {
             listener.onMessageCheck(txResponse);
             builder.setStatus(txResponse.getStatus());
@@ -47,10 +48,11 @@ public class QRemotingListener implements RemotingListener {
             builder.setFeedback(e.getMessage());
             t =  e;
         } finally {
+            long cost = System.currentTimeMillis()-curr;
             if (null != t) {
-                monitor.addData("ERR_R_TX_"+builder.getHeader().getTopic(), 1);
+                monitor.addData("ERR_R_TX_"+builder.getHeader().getTopic(), 1,cost);
             }else{
-                monitor.addData("R_TX_"+builder.getHeader().getTopic(),1);
+                monitor.addData("R_TX_"+builder.getHeader().getTopic(),1,cost);
             }
         }
 
@@ -77,6 +79,7 @@ public class QRemotingListener implements RemotingListener {
     private KitePacket innerReceived(KitePacket packet, Message message) {
         boolean succ = false;
         Throwable t = null;
+        long curr = System.currentTimeMillis();
         try {
             succ = listener.onMessage(message);
         } catch (Throwable e) {
@@ -85,13 +88,13 @@ public class QRemotingListener implements RemotingListener {
             t =e;
 
         } finally {
+            long cost = System.currentTimeMillis()-curr;
             String topic = message.getHeader().getTopic();
             if (null != t) {
-                monitor.addData("ERR_R_MSG_"+ topic, 1);
+                monitor.addData("R_MSG_"+ topic+"_ERR", 1,cost);
             }else{
-                monitor.addData("R_MSG_"+ topic,1);
+                monitor.addData("R_MSG_"+ topic,1,cost);
             }
-
 
         }
         KiteRemoting.DeliverAck ack = AckUtils.buildDeliverAck(message.getHeader(), succ,t);

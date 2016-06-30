@@ -40,7 +40,9 @@ public class Counter {
         //计算平均值
         CounterResult result = new CounterResult();
         result.changed = change;
-        result.avgCostMilSeconds = (tchange/change);
+        if(change>0) {
+            result.avgCostMilSeconds = (tchange / change);
+        }
 
         return result;
 

@@ -5,7 +5,6 @@ import org.kiteq.commons.threadpool.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.transform.Result;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -46,9 +45,13 @@ public class KiteQMonitor {
         SCHEDULED_THREAD_POOL_EXECUTOR.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-               LOGGER.info(KiteQMonitor.this.formatOutput());
+                try {
+                    LOGGER.info(KiteQMonitor.this.formatOutput());
+                } catch (Exception e) {
+                    LOGGER.error("monitorUpload.formatOutput|FAIL", e);
+                }
             }
-        },0,1, TimeUnit.SECONDS);
+        },  10,1, TimeUnit.SECONDS);
     }
 
     public void addData(String key, long count,long cost) {
@@ -103,7 +106,6 @@ public class KiteQMonitor {
             sb.append(entry.getValue())
                     .append("\t");
         }
-
         sb.append("\n");
 
         //update

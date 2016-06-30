@@ -80,7 +80,7 @@ public class KiteClientHandler extends ChannelInboundHandlerAdapter {
         super.channelInactive(ctx);
         this.alive.compareAndSet(true,false);
         InetSocketAddress addr = (InetSocketAddress) ctx.channel().remoteAddress();
-        logger.info("KiteClientHandler|"+addr.getHostString()+":"+addr.getPort()+"|Inactive...");
+        logger.info("KiteClientHandler|"+addr.getHostName()+":"+addr.getPort()+"|Inactive...");
     }
 
 

@@ -2,7 +2,6 @@ package org.kiteq.client;
 
 import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.netty.util.internal.StringUtil;
 import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.manager.ClientManager;
 import org.kiteq.client.binding.Binding;

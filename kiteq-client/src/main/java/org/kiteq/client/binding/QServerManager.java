@@ -80,7 +80,7 @@ public class QServerManager {
                 //先删除再推送临时节点
                 this.zkClient.delete().forPath(path);
             }
-            String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
+            String eppath = this.zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
             logger.info("publishTopics|SUCC|" + eppath);
         }
     }

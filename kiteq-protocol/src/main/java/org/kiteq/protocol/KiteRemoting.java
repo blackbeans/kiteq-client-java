@@ -70,16 +70,16 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
+            case 8: {
+              bitField0_ |= 0x00000001;
+              version_ = input.readInt64();
+              break;
+            }
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 done = true;
               }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              version_ = input.readInt64();
               break;
             }
           }
@@ -526,13 +526,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -543,6 +536,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               secretKey_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields, 
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -1270,13 +1270,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               status_ = input.readBool();
@@ -1286,6 +1279,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               feedback_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields, 
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -1942,13 +1942,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -1964,6 +1957,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
               feedback_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields, 
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -2831,13 +2831,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -2871,6 +2864,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
               feedback_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields, 
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -4182,13 +4182,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               org.kiteq.protocol.KiteRemoting.Header.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -4211,6 +4204,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
               feedback_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -5061,13 +5061,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -5078,6 +5071,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               value_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -5903,13 +5903,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -5965,6 +5958,13 @@ public final class KiteRemoting {
             case 80: {
               bitField0_ |= 0x00000100;
               createTime_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -7897,13 +7897,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               org.kiteq.protocol.KiteRemoting.Header.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7920,6 +7913,13 @@ public final class KiteRemoting {
             case 18: {
               bitField0_ |= 0x00000002;
               body_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }
@@ -8523,13 +8523,6 @@ public final class KiteRemoting {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               org.kiteq.protocol.KiteRemoting.Header.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -8547,6 +8540,13 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               body_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                      extensionRegistry, tag)) {
+                  done = true;
+              }
               break;
             }
           }

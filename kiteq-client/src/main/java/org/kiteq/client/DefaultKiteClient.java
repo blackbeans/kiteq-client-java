@@ -54,6 +54,7 @@ public class DefaultKiteClient implements KiteClient {
 
     private String zkHosts;
 
+
     public void setListener(MessageListener listener) {
         this.listener = listener;
     }
@@ -87,6 +88,10 @@ public class DefaultKiteClient implements KiteClient {
     @Override
     public void setMonitorUpload(IMonitorUpload monitorUpload) {
         this.monitorUpload = monitorUpload;
+    }
+
+    public void setWarmingupSeconds(int warmingupSeconds) {
+        this.clientConfigs.setWarmingupSeconds(warmingupSeconds);
     }
 
     @Override

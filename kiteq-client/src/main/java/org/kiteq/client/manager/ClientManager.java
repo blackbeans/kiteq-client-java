@@ -449,7 +449,7 @@ public class ClientManager extends AbstractChangeWatcher {
      * @throws Exception
      */
     private KiteIOClient createKiteIOClient(String hostport) throws Exception {
-        return this.createKiteIOClient(hostport, clientConfigs.groupId, clientConfigs.secretKey, this.listener);
+        return this.createKiteIOClient(hostport, clientConfigs, this.listener);
     }
 
     /**
@@ -459,10 +459,10 @@ public class ClientManager extends AbstractChangeWatcher {
      * @return
      * @throws Exception
      */
-    protected KiteIOClient createKiteIOClient(String hostport, String groupId,
-                                              String secretKey, RemotingListener listener) throws Exception {
+    protected KiteIOClient createKiteIOClient(String hostport,ClientConfigs configs, RemotingListener listener) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(groupId, secretKey, hostport, listener);
+                new NettyKiteIOClient(configs.getGroupId(),configs.getSecretKey(),
+                        configs.getWarmingupSeconds(), hostport, listener);
         kiteIOClient.start();
         return kiteIOClient;
     }

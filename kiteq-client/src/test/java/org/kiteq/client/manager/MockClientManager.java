@@ -29,7 +29,7 @@ public class MockClientManager extends ClientManager {
     protected KiteIOClient createKiteIOClient(String hostport, String groupId,
                                               String secretKey, RemotingListener listener) throws Exception {
         final KiteIOClient kiteIOClient =
-                new NettyKiteIOClient(groupId, secretKey, hostport, listener){
+                new NettyKiteIOClient(groupId, secretKey, 10,hostport, listener){
                     @Override
                     public boolean isDead() {
                         return MockClientManager.this.isDead(this.getHostPort());

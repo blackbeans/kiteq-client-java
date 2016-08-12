@@ -476,6 +476,23 @@ public final class KiteRemoting {
      */
     com.google.protobuf.ByteString
         getSecretKeyBytes();
+
+    /**
+     * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+     *
+     * <pre>
+     * 默认不预热
+     * </pre>
+     */
+    boolean hasWarmingupSec();
+    /**
+     * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+     *
+     * <pre>
+     * 默认不预热
+     * </pre>
+     */
+    int getWarmingupSec();
   }
   /**
    * Protobuf type {@code protoc.ConnMeta}
@@ -543,6 +560,11 @@ public final class KiteRemoting {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               secretKey_ = bs;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              warmingupSec_ = input.readInt32();
               break;
             }
           }
@@ -693,9 +715,33 @@ public final class KiteRemoting {
       }
     }
 
+    public static final int WARMINGUPSEC_FIELD_NUMBER = 3;
+    private int warmingupSec_;
+    /**
+     * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+     *
+     * <pre>
+     * 默认不预热
+     * </pre>
+     */
+    public boolean hasWarmingupSec() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+     *
+     * <pre>
+     * 默认不预热
+     * </pre>
+     */
+    public int getWarmingupSec() {
+      return warmingupSec_;
+    }
+
     private void initFields() {
       groupId_ = "";
       secretKey_ = "";
+      warmingupSec_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -724,6 +770,9 @@ public final class KiteRemoting {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getSecretKeyBytes());
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, warmingupSec_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -740,6 +789,10 @@ public final class KiteRemoting {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getSecretKeyBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, warmingupSec_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -866,6 +919,8 @@ public final class KiteRemoting {
         bitField0_ = (bitField0_ & ~0x00000001);
         secretKey_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        warmingupSec_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -902,6 +957,10 @@ public final class KiteRemoting {
           to_bitField0_ |= 0x00000002;
         }
         result.secretKey_ = secretKey_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.warmingupSec_ = warmingupSec_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -927,6 +986,9 @@ public final class KiteRemoting {
           bitField0_ |= 0x00000002;
           secretKey_ = other.secretKey_;
           onChanged();
+        }
+        if (other.hasWarmingupSec()) {
+          setWarmingupSec(other.getWarmingupSec());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1159,6 +1221,54 @@ public final class KiteRemoting {
   }
   bitField0_ |= 0x00000002;
         secretKey_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int warmingupSec_ ;
+      /**
+       * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+       *
+       * <pre>
+       * 默认不预热
+       * </pre>
+       */
+      public boolean hasWarmingupSec() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+       *
+       * <pre>
+       * 默认不预热
+       * </pre>
+       */
+      public int getWarmingupSec() {
+        return warmingupSec_;
+      }
+      /**
+       * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+       *
+       * <pre>
+       * 默认不预热
+       * </pre>
+       */
+      public Builder setWarmingupSec(int value) {
+        bitField0_ |= 0x00000004;
+        warmingupSec_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 warmingupSec = 3 [default = 0];</code>
+       *
+       * <pre>
+       * 默认不预热
+       * </pre>
+       */
+      public Builder clearWarmingupSec() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        warmingupSec_ = 0;
         onChanged();
         return this;
       }
@@ -9200,27 +9310,28 @@ public final class KiteRemoting {
   static {
     java.lang.String[] descriptorData = {
       "\n\023kite_remoting.proto\022\006protoc\"\034\n\tHeartBe" +
-      "at\022\017\n\007version\030\001 \002(\003\".\n\010ConnMeta\022\017\n\007group" +
-      "Id\030\001 \002(\t\022\021\n\tsecretKey\030\002 \002(\t\"5\n\013ConnAuthA" +
-      "ck\022\024\n\006status\030\001 \002(\010:\004true\022\020\n\010feedback\030\002 \002" +
-      "(\t\"L\n\017MessageStoreAck\022\021\n\tmessageId\030\001 \002(\t" +
-      "\022\024\n\006status\030\002 \002(\010:\004true\022\020\n\010feedback\030\003 \002(\t" +
-      "\"|\n\nDeliverAck\022\021\n\tmessageId\030\001 \002(\t\022\r\n\005top" +
-      "ic\030\002 \002(\t\022\023\n\013messageType\030\003 \002(\t\022\017\n\007groupId" +
-      "\030\004 \002(\t\022\024\n\006status\030\005 \002(\010:\004true\022\020\n\010feedback" +
-      "\030\006 \001(\t\"R\n\013TxACKPacket\022\036\n\006header\030\001 \002(\0132\016.",
-      "protoc.Header\022\021\n\006status\030\002 \002(\005:\0010\022\020\n\010feed" +
-      "back\030\003 \002(\t\"#\n\005Entry\022\013\n\003key\030\001 \002(\t\022\r\n\005valu" +
-      "e\030\002 \002(\t\"\337\001\n\006Header\022\021\n\tmessageId\030\001 \002(\t\022\r\n" +
-      "\005topic\030\002 \002(\t\022\023\n\013messageType\030\003 \002(\t\022\027\n\013exp" +
-      "iredTime\030\004 \002(\003:\002-1\022\031\n\014deliverLimit\030\005 \002(\005" +
-      ":\003100\022\017\n\007groupId\030\006 \002(\t\022\016\n\006commit\030\007 \002(\010\022\022" +
-      "\n\003fly\030\010 \002(\010:\005false\022!\n\nproperties\030\t \003(\0132\r" +
-      ".protoc.Entry\022\022\n\ncreateTime\030\n \001(\003\"<\n\014Byt" +
-      "esMessage\022\036\n\006header\030\001 \002(\0132\016.protoc.Heade" +
-      "r\022\014\n\004body\030\002 \002(\014\"=\n\rStringMessage\022\036\n\006head",
-      "er\030\001 \002(\0132\016.protoc.Header\022\014\n\004body\030\002 \002(\tB\024" +
-      "\n\022org.kiteq.protocol"
+      "at\022\017\n\007version\030\001 \002(\003\"G\n\010ConnMeta\022\017\n\007group" +
+      "Id\030\001 \002(\t\022\021\n\tsecretKey\030\002 \002(\t\022\027\n\014warmingup" +
+      "Sec\030\003 \001(\005:\0010\"5\n\013ConnAuthAck\022\024\n\006status\030\001 " +
+      "\002(\010:\004true\022\020\n\010feedback\030\002 \002(\t\"L\n\017MessageSt" +
+      "oreAck\022\021\n\tmessageId\030\001 \002(\t\022\024\n\006status\030\002 \002(" +
+      "\010:\004true\022\020\n\010feedback\030\003 \002(\t\"|\n\nDeliverAck\022" +
+      "\021\n\tmessageId\030\001 \002(\t\022\r\n\005topic\030\002 \002(\t\022\023\n\013mes" +
+      "sageType\030\003 \002(\t\022\017\n\007groupId\030\004 \002(\t\022\024\n\006statu" +
+      "s\030\005 \002(\010:\004true\022\020\n\010feedback\030\006 \001(\t\"R\n\013TxACK",
+      "Packet\022\036\n\006header\030\001 \002(\0132\016.protoc.Header\022\021" +
+      "\n\006status\030\002 \002(\005:\0010\022\020\n\010feedback\030\003 \002(\t\"#\n\005E" +
+      "ntry\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\"\337\001\n\006Hea" +
+      "der\022\021\n\tmessageId\030\001 \002(\t\022\r\n\005topic\030\002 \002(\t\022\023\n" +
+      "\013messageType\030\003 \002(\t\022\027\n\013expiredTime\030\004 \002(\003:" +
+      "\002-1\022\031\n\014deliverLimit\030\005 \002(\005:\003100\022\017\n\007groupI" +
+      "d\030\006 \002(\t\022\016\n\006commit\030\007 \002(\010\022\022\n\003fly\030\010 \002(\010:\005fa" +
+      "lse\022!\n\nproperties\030\t \003(\0132\r.protoc.Entry\022\022" +
+      "\n\ncreateTime\030\n \001(\003\"<\n\014BytesMessage\022\036\n\006he" +
+      "ader\030\001 \002(\0132\016.protoc.Header\022\014\n\004body\030\002 \002(\014",
+      "\"=\n\rStringMessage\022\036\n\006header\030\001 \002(\0132\016.prot" +
+      "oc.Header\022\014\n\004body\030\002 \002(\tB\024\n\022org.kiteq.pro" +
+      "tocol"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9245,7 +9356,7 @@ public final class KiteRemoting {
     internal_static_protoc_ConnMeta_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_protoc_ConnMeta_descriptor,
-        new java.lang.String[] { "GroupId", "SecretKey", });
+        new java.lang.String[] { "GroupId", "SecretKey", "WarmingupSec", });
     internal_static_protoc_ConnAuthAck_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_protoc_ConnAuthAck_fieldAccessorTable = new

@@ -20,6 +20,8 @@ public interface KiteClient {
 
     void setBindings(List<Binding> bindings);
 
+    public void setWarmingupSeconds(int warmingupSeconds);
+
     public void setMonitorUpload(IMonitorUpload monitorUpload);
 
     SendResult sendStringMessage(StringMessage message) throws NoKiteqServerException;

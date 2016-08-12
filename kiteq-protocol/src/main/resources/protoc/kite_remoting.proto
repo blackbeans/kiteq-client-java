@@ -1,4 +1,3 @@
-
 package protoc;
 
 option java_package = "org.kiteq.protocol";
@@ -10,8 +9,9 @@ message HeartBeat{
 
 //连接的Meta数据包
 message ConnMeta{
-    required string groupId = 1; //当前客户端连接所属分组名称
+    required string groupId = 1;    //当前客户端连接所属分组名称
     required string secretKey  = 2; //当前连接的授权key
+    optional int32 warmingupSec = 3 [default = 0];  // 默认不预热
 }
 
 //握手确认数据包
@@ -40,9 +40,9 @@ message DeliverAck{
 
 //事务确认数据包
 message TxACKPacket{
-    required Header header  = 1; //消息头部
-    required int32 status = 2 [default = 0]; //事务状态 0; //未知  1;  //已提交 2; //回滚
-    required string feedback = 3; //回馈
+     required Header header  = 1; //消息头部
+     required int32 status = 2 [default = 0]; //事务状态 0; //未知  1;  //已提交 2; //回滚
+     required string feedback = 3; //回馈
 }
 
 

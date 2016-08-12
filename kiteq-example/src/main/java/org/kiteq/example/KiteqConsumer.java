@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * luofucong at 2015-04-09.
@@ -37,29 +38,52 @@ public class KiteqConsumer {
         LOGGER.info("topic=" + topic);
         final String messageType = StringUtils.defaultString(params.get("-messageType"), "pay-succ");
         LOGGER.info("messageType=" + messageType);
-//        int clientNum = NumberUtils.toInt(params.get("-clients"), Runtime.getRuntime().availableProcessors() * 2);
+        int warmingupSec = NumberUtils.toInt(params.get("-warmingupSec"),60);
+        LOGGER.info("warmingupSec=" + warmingupSec);
+
+
+        final AtomicLong  count = new AtomicLong(0);
+        final AtomicLong lastCount = new AtomicLong(0);
         int clientNum = 1;
-        LOGGER.info("clientNum=" + clientNum);
-
-
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
             public boolean onMessage(Message message) {
 //                    LOGGER.warn(message);
-                System.out.println(message.getHeader());
+                count.incrementAndGet();
                 return true;
             }
         };
+
+
+
+        new Thread(){
+            @Override
+            public void run() {
+                while(true) {
+                    long c = count.get();
+                    long change = c-lastCount.get();
+                    lastCount.set(c);
+                    System.out.printf("%d tps\n", change);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
         DefaultKiteClient[] clients = new DefaultKiteClient[clientNum];
         for (int i = 0; i < clientNum; i++) {
             clients[i] = new DefaultKiteClient();
             List<Binding> binds = new ArrayList<Binding>();
-            binds.add(Binding.bindDirect(groupId, topic, messageType, 1000, true));
+            binds.add(Binding.bindDirect(groupId, topic, messageType, 8000, true));
             clients[i].setBindings(binds);
             clients[i].setZkHosts(zkAddr);
             clients[i].setListener(listener);
             clients[i].setGroupId(groupId);
-            clients[i].setSecretKey( secretKey);
+            clients[i].setSecretKey(secretKey);
+            clients[i].setWarmingupSeconds(warmingupSec);
             try {
                 clients[i].init();
             } catch (Exception e) {

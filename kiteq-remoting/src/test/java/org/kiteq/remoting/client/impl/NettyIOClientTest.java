@@ -30,7 +30,7 @@ public class NettyIOClientTest {
     @Before
     public void init() {
         try {
-            kiteIOClient = new NettyKiteIOClient(GROUP_ID, SECRET_KEY, SERVER_URL, new RemotingListener() {
+            kiteIOClient = new NettyKiteIOClient(GROUP_ID, SECRET_KEY,10, SERVER_URL, new RemotingListener() {
                 @Override
                 public KitePacket txAckReceived(KitePacket packet) {
                     return null;

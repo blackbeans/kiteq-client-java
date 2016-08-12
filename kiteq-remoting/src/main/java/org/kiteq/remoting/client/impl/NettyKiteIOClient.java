@@ -53,14 +53,18 @@ public class NettyKiteIOClient implements KiteIOClient {
 
     private volatile AtomicBoolean alive = new AtomicBoolean(false);
 
+
+    private int warmingupSec = 0;
+
     private RemotingListener listener;
 
     //重连次数
     private int retryCount = 0;
 
-    public NettyKiteIOClient(String groupId, String secretKey, String serverUrl, RemotingListener listener) {
+    public NettyKiteIOClient(String groupId, String secretKey,int warmingupSec, String serverUrl, RemotingListener listener) {
         this.groupId = groupId;
         this.secretKey = secretKey;
+        this.warmingupSec = warmingupSec;
         this.serverUrl = serverUrl;
         this.listener = listener;
         this.hostPort = HostPort.parse(serverUrl.split("\\?")[0]);
@@ -227,6 +231,7 @@ public class NettyKiteIOClient implements KiteIOClient {
         KiteRemoting.ConnMeta connMeta = KiteRemoting.ConnMeta.newBuilder()
                 .setGroupId(groupId)
                 .setSecretKey(secretKey)
+                .setWarmingupSec(this.warmingupSec)
                 .build();
 
         KiteRemoting.ConnAuthAck ack = sendAndGet(Protocol.CMD_CONN_META, connMeta);

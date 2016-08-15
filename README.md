@@ -1,4 +1,5 @@
 # A Java Client for KiteQ
+
 * More Details: https://github.com/blackbeans/kiteq
 
 ## Development
@@ -22,115 +23,164 @@
     <dependency>
         <groupId>org.kiteq</groupId>
         <artifactId>kiteq-client</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </dependency>
-
-## API
 
 ### Producer Example
 
-    import java.util.UUID;
-    
-    import org.kiteq.client.KiteClient;
-    import org.kiteq.client.DefaultKiteClient;
-    import org.kiteq.client.message.ListenerAdapter;
-    import org.kiteq.client.message.SendResult;
-    import org.kiteq.client.message.TxResponse;
-    import org.kiteq.commons.util.JsonUtils;
-    import org.kiteq.protocol.KiteRemoting.Header;
-    import org.kiteq.protocol.KiteRemoting.StringMessage;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
-    
-    public class KiteProducer {
-        private static final Logger logger = LoggerFactory.getLogger(KiteProducer.class);
+    ``` java
+       
+        public class KiteQProducerClient {
         
-        private static final String ZK_ADDR = "localhost:2181";
-        private static final String GROUP_ID = "pb-mts-test";
-        private static final String SECRET_KEY = "123456";
-        private static final String TOPOIC = "trade";
         
-        private KiteClient producer;
+            public static void main(String[] args) throws Exception {
         
-        public KiteProducer() {
-            producer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
-                @Override
-                public void onMessageCheck(TxResponse response) {
-                    logger.warn(JsonUtils.prettyPrint(response));
-                    response.commit();
+                //设置Producer发送的消息topic
+                List<String> publishTopics = new ArrayList<String>();
+                publishTopics.add("trade");
+        
+                DefaultKiteClient client = new DefaultKiteClient();
+                client.setZkHosts("localhost:2181");
+                client.setPublishTopics(publishTopics);
+                client.setGroupId("p-kiteq-group");
+                client.setSecretKey("default");
+                client.setListener(new MessageListener() {
+                    @Override
+                    public boolean onMessage(Message message) {
+                        /**
+                         *  Consumer接收消息的入口
+                         *   之后再显示返回 true的情况下,才认为消息消费成功
+                         *   否则 抛异常或者false的情况下,KiteQ会重投
+                         */
+        
+        
+                        return true;
+                    }
+        
+                    @Override
+                    public void onMessageCheck(TxResponse tx) {
+                        /**
+                         *  作为消息生产方独有的回调方法,用于处理2PC消息,回馈给KiteQ本地事务是否成功
+                         *  通过
+                         *  tx.Commit()或者tx.Rollback()进程或者抛出异常
+                         */
+        
+        
+                    }
+                });
+        
+                //不要忘记init
+                client.init();
+        
+        
+                Header header = Header.newBuilder()
+                        //消息ID生成不包含-的UUID
+                        .setMessageId(UUID.randomUUID().toString().replace("-", ""))
+                        //当前消息的TOPIC
+                        .setTopic("trade")
+                        //当前消息的MessageType
+                        .setMessageType("pay-succ")
+                        //当前生产者的分组ID
+                        .setGroupId("p-kiteq-group")
+                        //当前消息的失效时间 秒为单位
+                        .setExpiredTime(System.currentTimeMillis() / 1000 + TimeUnit.MINUTES.toSeconds(10))
+                        //消息投递的最大次数
+                        .setDeliverLimit(100)
+                        //消息是否为2PC消息
+                        .setCommit(true)
+                        //是否不需要存储直接投递
+                        .setFly(false).build();
+        
+                KiteRemoting.BytesMessage message = KiteRemoting.BytesMessage.newBuilder()
+                        .setHeader(header)
+                        .setBody(ByteString.copyFromUtf8("hello KiteQ"))
+                        .build();
+        
+                long start = System.currentTimeMillis();
+                SendResult result = null;
+                try {
+                    result = client.sendBytesMessage(message);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                } finally {
+                    if (null != result && result.isSuccess()) {
+                        long cost = System.currentTimeMillis() - start;
+                        if (cost > 100) {
+                            //TOO LONG
+                        }
+                    } else if (null != result && !result.isSuccess()) {
+                        //Send Message Fail   Retry
+                    } else {
+                        //Send Message But No Result   Retry
+                    }
                 }
-            });
-            producer.setPublishTopics(new String[] { TOPOIC });
-        }
         
-        private StringMessage buildMessage() {
-            String messageId = UUID.randomUUID().toString();
-            Header header = Header.newBuilder()
-                    .setMessageId(messageId)
-                    .setTopic(TOPOIC)
-                    .setMessageType("pay-succ")
-                    .setExpiredTime(System.currentTimeMillis())
-                    .setDeliverLimit(-1)
-                    .setGroupId("go-kite-test")
-                    .setCommit(false).build();
-            
-            StringMessage message = StringMessage.newBuilder()
-                    .setHeader(header)
-                    .setBody("echo").build();
-            return message;
+            }
         }
-        
-        public void start() {
-            producer.start();
-            SendResult result = producer.sendStringMessage(buildMessage());
-            logger.warn("Send result: {}", result);
-            producer.close();
-        }
-        
-        public static void main(String[] args) {
-            System.setProperty("kiteq.appName", "Producer");
-            new KiteProducer().start();
-        }
-    }
+
+      
+    ```
+    
+
 
 ### Consumer Example
-
-    import org.kiteq.binding.Binding;
-    import org.kiteq.client.KiteClient;
-    import org.kiteq.client.DefaultKiteClient;
-    import org.kiteq.client.message.ListenerAdapter;
-    import org.kiteq.client.message.Message;
-    import org.kiteq.commons.stats.KiteStats;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
     
-    public class KiteConsumer {
-        private static final Logger logger = LoggerFactory.getLogger(KiteConsumer.class);
+    ``` java
         
-        private static final String ZK_ADDR = "localhost:2181";
-        private static final String GROUP_ID = "s-mts-test";
-        private static final String SECRET_KEY = "123456";
+        public class KiteQConsumerClient {
         
-        private KiteClient consumer;
         
-        public KiteConsumer() {
-            consumer = new DefaultKiteClient(ZK_ADDR, GROUP_ID, SECRET_KEY, new ListenerAdapter() {
-                @Override
-                public boolean onMessage(Message message) {
-                    logger.warn("recv: {}", message);
-                    return true;
-                }
-            });
-            consumer.setBindings(new Binding[] { Binding.bindDirect(GROUP_ID, "trade", "pay-succ", 1000, true) });
+            public static void main(String[] args) throws Exception {
+        
+                //设置Consumer接收消息的Binding
+                List<Binding> bindings = new ArrayList<Binding>();
+                bindings.add(Binding.bindDirect("s-kiteq-group", "trade", "pay-succ", 6000, true));
+        
+                DefaultKiteClient client = new DefaultKiteClient();
+                client.setZkHosts("localhost:2181");
+                client.setBindings(bindings);
+                client.setGroupId("s-kiteq-group");
+                client.setSecretKey("default");
+        
+                //为了避免启动时,所在服务进程资源未初始化到最后状态
+                //可以设置预热时间。KiteQ会逐步在规定时间内放量到100%
+                client.setWarmingupSeconds(60);
+                client.setListener(new MessageListener() {
+                    @Override
+                    public boolean onMessage(Message message) {
+                        /**
+                         *  Consumer接收消息的入口
+                         *   之后再显示返回 true的情况下,才认为消息消费成功
+                         *   否则 抛异常或者false的情况下,KiteQ会重投
+                         */
+        
+                        /**
+                         * 处理业务逻辑
+                         */
+        
+                        String topic = message.getHeader().getTopic();
+                        String messageType = message.getHeader().getMessageType();
+        
+                        //根据自己的业务定义的Body反序列化为业务对象进行处理
+                        String body = ByteString.copyFrom(message.getBodyBytes()).toStringUtf8();
+        
+                        return true;
+                    }
+        
+                    @Override
+                    public void onMessageCheck(TxResponse tx) {
+                        //ignored ,作为消费方不用实现
+        
+                    }
+                });
+        
+                //不要忘记init
+                client.init();
+        
+            }
         }
-        
-        public void start() {
-            consumer.start();
-            KiteStats.close();
-        }
-        
-        public static void main(String[] args) {
-            System.setProperty("kiteq.appName", "Consumer");
-            new KiteConsumer().start();
-        }
-    }
+
+    
+    ```
+    
+   ### 强烈建议使用Spring管理DefaultKiteClient的配置

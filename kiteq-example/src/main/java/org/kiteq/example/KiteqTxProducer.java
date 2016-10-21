@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.kiteq.client.KiteClient;
 import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.*;
+import org.kiteq.commons.exception.KiteQClientException;
 import org.kiteq.commons.exception.NoKiteqServerException;
 import org.kiteq.commons.util.ParamUtils;
 import org.kiteq.commons.util.ThreadUtils;
@@ -54,7 +55,7 @@ public class KiteqTxProducer {
 
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
-            public void onMessageCheck(TxResponse response) {
+            public void onMessageCheck(TxResponse response) throws KiteQClientException{
                 Map<String, String> properties = response.getProperties();
                 String txId = properties.get("TxId");
                 if (txId != null) {
@@ -64,6 +65,11 @@ public class KiteqTxProducer {
                     LOGGER.warn("Rollback " + response);
                     response.rollback();
                 }
+            }
+
+            @Override
+            public boolean onMessage(Message message) throws KiteQClientException {
+                return true;
             }
         };
         DefaultKiteClient[] clients = new DefaultKiteClient[clientNum];

@@ -3,12 +3,12 @@ package org.kiteq.example;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.kiteq.client.manager.ClientConfigs;
 import org.kiteq.client.binding.Binding;
 import org.kiteq.client.DefaultKiteClient;
 import org.kiteq.client.message.ListenerAdapter;
 import org.kiteq.client.message.Message;
-import org.kiteq.commons.util.JsonUtils;
+import org.kiteq.client.message.TxResponse;
+import org.kiteq.commons.exception.KiteQClientException;
 import org.kiteq.commons.util.ParamUtils;
 
 import java.util.ArrayList;
@@ -47,10 +47,15 @@ public class KiteqConsumer {
         int clientNum = 1;
         ListenerAdapter listener = new ListenerAdapter() {
             @Override
-            public boolean onMessage(Message message) {
+            public boolean onMessage(Message message) throws KiteQClientException {
 //                    LOGGER.warn(message);
                 count.incrementAndGet();
                 return true;
+            }
+
+            @Override
+            public void onMessageCheck(TxResponse tx) throws KiteQClientException {
+                tx.commit();
             }
         };
 

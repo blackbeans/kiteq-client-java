@@ -5,15 +5,6 @@ package org.kiteq.client.message;
  * @since Feb 28, 2015
  */
 public abstract class ListenerAdapter implements MessageListener {
-    
-    @Override
-    public boolean onMessage(Message message) {
-        return true;
-    }
-    
-    @Override
-    public void onMessageCheck(TxResponse tx) {
-        tx.commit();
-    }
+
 
 }

@@ -12,12 +12,43 @@ public class KiteQClientException extends Exception {
 
     private String messageId;
 
-    public KiteQClientException(String topic, String messageType, String messageId) {
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public KiteQClientException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public KiteQClientException(String topic, String messageType,
+                                String messageId, Throwable t) {
+        super(t);
         this.topic = topic;
         this.messageType = messageType;
         this.messageId = messageId;
-
     }
+
 
 
     @Override

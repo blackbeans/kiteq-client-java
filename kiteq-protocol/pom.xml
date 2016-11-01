@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kiteq</groupId>
         <artifactId>kiteq</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>kiteq-protocol</artifactId>
 

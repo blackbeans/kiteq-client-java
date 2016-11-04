@@ -183,6 +183,13 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public SendResult sendTxMessage(StringMessage message, TxCallback txCallback) throws NoKiteqServerException {
+        //force set tx message's commit false
+        if(message.getHeader().getCommit()){
+            message = message.toBuilder().
+                    setHeader(message.getHeader().toBuilder().
+                            setCommit(false)).build();
+        }
+
         SendResult result = sendStringMessage(message);
         if (result.isSuccess()) {
             Header header = message.getHeader();
@@ -193,6 +200,12 @@ public class DefaultKiteClient implements KiteClient {
 
     @Override
     public SendResult sendTxMessage(BytesMessage message, TxCallback txCallback) throws NoKiteqServerException {
+        //force set tx message's commit false
+        if(message.getHeader().getCommit()){
+            message = message.toBuilder().
+                    setHeader(message.getHeader().toBuilder().
+                            setCommit(false)).build();
+        }
 
         SendResult result = sendBytesMessage(message);
         if (result.isSuccess()) {
